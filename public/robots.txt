@@ -1,0 +1,14 @@
+# Block search engines from indexing private/admin paths.
+# This is defense-in-depth ONLY — the real protection is auth + RLS, not URL secrecy.
+
+User-agent: *
+Disallow: /ashrafckvnradmin
+Disallow: /ashrafckvnradmin/
+Disallow: /api/
+
+# Public pages — explicitly allowed for crawlers
+Allow: /
+Allow: /products
+Allow: /products/
+Allow: /help
+Allow: /company

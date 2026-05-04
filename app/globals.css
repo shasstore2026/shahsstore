@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+
+/* 👇 ADD THIS BLOCK */
+@theme {
+  /* Create Tailwind animation utilities */
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-marquee-alt: marquee-alt 25s linear infinite;
+
+  /* First marquee: moves from 0% to -100% */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  /* Second marquee: from right to 0% for seamless loop */
+  @keyframes marquee-alt {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+}
+/* 👆 STOP ADDING HERE – the rest is your old CSS */
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: #FAFAF8;
+  color: #1a1a1a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.font-display {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Hide the native scrollbar entirely — OverlayScrollbar paints a thin
+   indicator on the right edge that auto-hides when not scrolling, so
+   the scrollbar never reserves layout space. */
+html {
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
