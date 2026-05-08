@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import SearchModal from "@/components/SearchModal";
 
-type ShirtStyle = {
+type Category = {
   id: string;
   name: string;
   display_order: number;
@@ -16,7 +16,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [shirtStyles, setShirtStyles] = useState<ShirtStyle[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [notificationVisible, setNotificationVisible] = useState(false);
   const pathname = usePathname();
 
@@ -24,24 +24,25 @@ export default function Navbar() {
   const isProductsPage = pathname.startsWith("/products");
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+    const handleScroll = () => setScrolled(window.scrollY > 60);
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Fetch shirt styles on mount
+  // Fetch categories on mount
   useEffect(() => {
-    async function fetchStyles() {
+    async function fetchCats() {
       try {
-        const res = await fetch("/api/shirt-styles");
+        const res = await fetch("/api/categories");
         if (!res.ok) return;
         const data = await res.json();
-        setShirtStyles(data);
+        setCategories(data);
       } catch {
-        // Silently fall back to showing only "All Shirts" link
+        // Silently fall back to showing only "Shop All" link
       }
     }
-    fetchStyles();
+    fetchCats();
   }, []);
 
   // Check if top notification is visible to adjust navbar position
@@ -56,12 +57,11 @@ export default function Navbar() {
 
   const isTransparent = isHome && !scrolled;
 
-  // Build nav links: "All Shirts" fixed first, then first 4 shirt styles dynamically
   const dynamicLinks: Record<string, string> = {
-    "All Shirts": "/products",
+    "Shop All": "/products",
   };
-  shirtStyles.slice(0, 4).forEach((style) => {
-    dynamicLinks[style.name] = `/products?category=${encodeURIComponent(style.name)}`;
+  categories.slice(0, 4).forEach((cat) => {
+    dynamicLinks[cat.name] = `/products?category=${encodeURIComponent(cat.name)}`;
   });
 
   return (
@@ -69,67 +69,82 @@ export default function Navbar() {
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       <nav
-        className={`fixed left-0 right-0 z-40 transition-[background-color,box-shadow,border-color] duration-500 ${
+        className={`fixed left-0 right-0 z-40 transition-[background-color,box-shadow,border-color,backdrop-filter] duration-500 ${
           isTransparent
             ? "bg-transparent"
-            : "bg-white/95 backdrop-blur-sm shadow-sm border-b border-stone-100"
+            : "bg-[var(--color-shas-bg)]/85 backdrop-blur-md shadow-[0_1px_0_var(--color-shas-line)]"
         }`}
         style={{ top: notificationVisible ? "var(--top-bar-height, 0px)" : "0px" }}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-5 flex justify-between items-center">
-          {/* Logo */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-5 flex justify-between items-center gap-6">
+          {/* Logo — always black for legibility on cream hero AND scrolled state */}
           <Link
             href="/"
             aria-label="Shasstore — Home"
-            className="flex flex-col leading-none text-stone-900"
+            className="flex flex-col leading-none text-black"
           >
             <span
-              className="text-2xl md:text-3xl tracking-[0.25em] uppercase"
-              style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400 }}
+              className="font-italiana text-2xl md:text-3xl tracking-[0.32em] uppercase"
+              style={{ fontWeight: 400 }}
             >
               Shasstore
             </span>
-            <span className="text-[0.6rem] md:text-xs tracking-[0.5em] uppercase text-stone-500 mt-0.5 self-end pr-0.5">
-              Fashion
+            <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.55em] uppercase mt-1 self-end pr-0.5 text-black/65">
+              by shahanas
             </span>
           </Link>
 
-          {/* Desktop Nav — hidden on /products pages */}
+          {/* Desktop Nav — always black, hover rose */}
           {!isProductsPage && (
-            <div className="hidden md:flex gap-10 text-xs font-medium tracking-[0.2em] uppercase text-stone-500">
+            <div className="hidden md:flex gap-8 lg:gap-10 text-[0.7rem] font-medium tracking-[0.28em] uppercase text-black/75">
               {Object.keys(dynamicLinks).map((item) => (
                 <Link
                   key={item}
                   href={dynamicLinks[item]}
-                  className="hover:text-stone-900 transition-colors duration-300 relative group pb-0.5"
+                  className="relative group pb-1 transition-colors duration-300 hover:text-[var(--color-shas-rose)]"
                 >
                   {item}
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-stone-400 transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-[var(--color-shas-rose)] transition-all duration-300 group-hover:w-full" />
                 </Link>
               ))}
             </div>
           )}
 
-          {/* Right Icons */}
-          <div className="flex items-center gap-4 md:gap-6">
+          {/* Right Icons — always black */}
+          <div className="flex items-center gap-4 md:gap-5 text-black">
             {/* Search */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="text-stone-400 hover:text-stone-900 transition-colors"
+              className="hover:text-[var(--color-shas-rose)] transition-colors"
               aria-label="Search"
             >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <svg className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth={1.4} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
             </button>
 
+            {/* Wishlist (visual only — to be wired later) */}
+            <button
+              aria-label="Wishlist"
+              className="hidden sm:inline-flex hover:text-[var(--color-shas-rose)] transition-colors"
+              onClick={() => {
+                // Placeholder — admin will wire wishlist later
+              }}
+            >
+              <svg className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth={1.4} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
+
             {/* Cart */}
-            <Link href="/cart" className="relative group" aria-label="Shopping cart">
-              <svg className="h-6 w-6 text-stone-400 group-hover:text-stone-900 transition-colors" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            <Link href="/cart" className="relative group" aria-label="Shopping bag">
+              <svg className="h-[22px] w-[22px] group-hover:text-[var(--color-shas-rose)] transition-colors" fill="none" stroke="currentColor" strokeWidth={1.4} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
               </svg>
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-stone-800 text-white text-[10px] font-medium rounded-full h-[18px] w-[18px] flex items-center justify-center leading-none">
+                <span
+                  className="absolute -top-1.5 -right-2 bg-[var(--color-shas-rose)] text-white text-[10px] font-medium rounded-full h-[18px] min-w-[18px] px-1 flex items-center justify-center leading-none"
+                >
                   {totalItems}
                 </span>
               )}
@@ -138,8 +153,9 @@ export default function Navbar() {
             {/* Mobile toggle */}
             {!isProductsPage && (
               <button
-                className="md:hidden text-stone-500"
+                className="md:hidden"
                 onClick={() => setMenuOpen(!menuOpen)}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round"
@@ -153,23 +169,30 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {menuOpen && !isProductsPage && (
-          <div className="md:hidden bg-white border-t border-stone-100 px-4 py-6 flex flex-col gap-5">
+          <div className="md:hidden bg-[var(--color-shas-bg)] border-t border-[var(--color-shas-line)] px-5 py-7 flex flex-col gap-5 animate-fade-in">
             {Object.keys(dynamicLinks).map((item) => (
               <Link
                 key={item}
                 href={dynamicLinks[item]}
                 onClick={() => setMenuOpen(false)}
-                className="text-stone-500 hover:text-stone-900 text-xs tracking-[0.2em] uppercase font-medium transition-colors"
+                className="text-shas-plum hover:text-[var(--color-shas-rose)] text-xs tracking-[0.3em] uppercase font-medium transition-colors"
               >
                 {item}
               </Link>
             ))}
             <button
               onClick={() => { setMenuOpen(false); setSearchOpen(true); }}
-              className="text-left text-stone-500 hover:text-stone-900 text-xs tracking-[0.2em] uppercase font-medium transition-colors"
+              className="text-left text-shas-plum hover:text-[var(--color-shas-rose)] text-xs tracking-[0.3em] uppercase font-medium transition-colors"
             >
               Search
             </button>
+            <Link
+              href="/help"
+              onClick={() => setMenuOpen(false)}
+              className="text-shas-muted hover:text-[var(--color-shas-rose)] text-xs tracking-[0.3em] uppercase font-medium transition-colors"
+            >
+              Help & Support
+            </Link>
           </div>
         )}
       </nav>

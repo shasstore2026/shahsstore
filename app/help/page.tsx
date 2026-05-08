@@ -2,12 +2,18 @@ import { getHelpContent } from "@/lib/products";
 
 function BulletContent({ text }: { text: string }) {
   const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-  if (lines.length === 0) return null;
+  if (lines.length === 0) {
+    return (
+      <p className="text-[var(--color-shas-muted)] text-sm font-light italic">
+        Content coming soon — your atelier team is curating this.
+      </p>
+    );
+  }
   return (
     <ul className="space-y-3">
       {lines.map((line, i) => (
-        <li key={i} className="flex items-start gap-3 text-stone-500 text-sm font-light leading-relaxed">
-          <span className="text-stone-300 mt-1">✦</span>
+        <li key={i} className="flex items-start gap-3 text-[var(--color-shas-muted)] text-sm font-light leading-relaxed">
+          <span className="text-[var(--color-shas-rose)] mt-1">✦</span>
           <span>{line}</span>
         </li>
       ))}
@@ -17,58 +23,71 @@ function BulletContent({ text }: { text: string }) {
 
 export default async function HelpPage() {
   const help = await getHelpContent();
-  if (!help) return <p>Content unavailable.</p>;
+  if (!help)
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6 bg-[var(--color-shas-bg)]">
+        <p className="text-[var(--color-shas-muted)] italic">Content unavailable.</p>
+      </div>
+    );
 
   return (
-    <div className="bg-[#FAFAF8] min-h-screen pt-32 pb-24">
-      <div className="max-w-3xl mx-auto px-8">
-        <p className="text-xs tracking-[0.4em] text-stone-400 uppercase mb-3">Support</p>
-        <h1 className="text-5xl text-stone-900 font-light mb-16"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Help Centre
+    <div className="bg-[var(--color-shas-bg)] min-h-screen pt-28 md:pt-36 pb-24">
+      {/* Editorial header */}
+      <div className="max-w-3xl mx-auto px-6 md:px-8 mb-12 md:mb-20 reveal">
+        <span className="divider-rose mb-4">Support</span>
+        <h1 className="font-display text-5xl md:text-7xl text-[var(--color-shas-plum)] font-light leading-[1.05] mb-4">
+          Help <em className="text-[var(--color-shas-rose)]">Centre</em>
         </h1>
+        <p className="text-[var(--color-shas-muted)] text-base font-light max-w-xl">
+          Everything you need — sizing, returns, shipping, jewellery care. We&apos;re here, and so are real humans on WhatsApp.
+        </p>
+      </div>
 
-        {/* Size Guide */}
-        <section id="size-guide" className="mb-16 scroll-mt-32">
-          <h2 className="text-2xl text-stone-900 font-light mb-6 pb-3 border-b border-stone-100"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Shirt Size Guide
+      <div className="max-w-3xl mx-auto px-6 md:px-8 space-y-16 md:space-y-20">
+        <section id="size-guide" className="scroll-mt-32 reveal">
+          <h2 className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-6 pb-3 border-b border-[var(--color-shas-line)]">
+            Size &amp; Fit Guide
           </h2>
           <BulletContent text={help.size_guide} />
         </section>
 
-        {/* Returns */}
-        <section id="returns" className="mb-16 scroll-mt-32">
-          <h2 className="text-2xl text-stone-900 font-light mb-6 pb-3 border-b border-stone-100"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Returns Policy
+        <section id="returns" className="scroll-mt-32 reveal">
+          <h2 className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-6 pb-3 border-b border-[var(--color-shas-line)]">
+            Returns &amp; Exchanges
           </h2>
           <BulletContent text={help.returns} />
         </section>
 
-        {/* Shipping */}
-        <section id="shipping" className="mb-16 scroll-mt-32">
-          <h2 className="text-2xl text-stone-900 font-light mb-6 pb-3 border-b border-stone-100"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Shipping Info
+        <section id="shipping" className="scroll-mt-32 reveal">
+          <h2 className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-6 pb-3 border-b border-[var(--color-shas-line)]">
+            Shipping
           </h2>
           <BulletContent text={help.shipping} />
         </section>
 
-        {/* FAQ */}
-        <section id="faq" className="scroll-mt-32">
-          <h2 className="text-2xl text-stone-900 font-light mb-6 pb-3 border-b border-stone-100"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            FAQ
+        <section id="faq" className="scroll-mt-32 reveal">
+          <h2 className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-6 pb-3 border-b border-[var(--color-shas-line)]">
+            Frequently Asked
           </h2>
-          <div className="space-y-6">
-            {help.faq.map((item, i) => (
-              <div key={i} className="border-b border-stone-100 pb-6">
-                <p className="text-stone-800 text-sm font-medium mb-2">{item.question}</p>
-                <p className="text-stone-500 text-sm font-light leading-relaxed">{item.answer}</p>
-              </div>
-            ))}
-          </div>
+          {help.faq.length === 0 ? (
+            <p className="text-[var(--color-shas-muted)] text-sm font-light italic">
+              FAQ entries will appear here once added in the admin.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {help.faq.map((item, i) => (
+                <details key={i} className="group surface-soft p-5 cursor-pointer">
+                  <summary className="flex items-center justify-between list-none">
+                    <p className="text-[var(--color-shas-plum)] text-sm md:text-base font-medium pr-4">{item.question}</p>
+                    <span className="text-[var(--color-shas-rose)] text-2xl leading-none transition-transform duration-300 group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="text-[var(--color-shas-muted)] text-sm font-light leading-relaxed mt-4">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </div>

@@ -118,7 +118,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     const parts = text.split(regex);
     return parts.map((part, i) =>
       part.toLowerCase() === trimmed.toLowerCase() ? (
-        <mark key={i} className="bg-stone-200 text-stone-900 rounded-sm px-0.5">
+        <mark key={i} className="bg-[var(--color-shas-line)] text-[var(--color-shas-plum)] rounded-sm px-0.5">
           {part}
         </mark>
       ) : (
@@ -131,7 +131,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-[var(--color-shas-plum)]/40 backdrop-blur-sm z-50"
         onClick={onClose}
       />
 
@@ -140,7 +140,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         {/* Input row */}
         <div className="max-w-3xl mx-auto px-6 py-5 flex items-center gap-4">
           <svg
-            className="w-5 h-5 text-stone-400 flex-shrink-0"
+            className="w-5 h-5 text-[var(--color-shas-muted)] flex-shrink-0"
             fill="none"
             stroke="currentColor"
             strokeWidth={1.5}
@@ -158,15 +158,15 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by shirt name, category..."
-            className="flex-1 text-base text-stone-800 placeholder:text-stone-400 focus:outline-none"
+            className="flex-1 text-base text-[var(--color-shas-plum)] placeholder:text-[var(--color-shas-muted)] focus:outline-none"
           />
           {loading && (
-            <div className="w-4 h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[var(--color-shas-line-strong)] border-t-[var(--color-shas-plum)] rounded-full animate-spin" />
           )}
           {query && !loading && (
             <button
               onClick={() => setQuery("")}
-              className="text-stone-300 hover:text-stone-500 transition-colors"
+              className="text-[var(--color-shas-line-strong)] hover:text-[var(--color-shas-muted)] transition-colors"
               aria-label="Clear"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           )}
           <button
             onClick={onClose}
-            className="text-xs tracking-widest uppercase text-stone-400 hover:text-stone-700 transition-colors ml-2"
+            className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] hover:text-[var(--color-shas-plum)] transition-colors ml-2"
           >
             Close
           </button>
@@ -184,8 +184,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
         {/* Results */}
         {results.length > 0 && (
-          <div className="max-w-3xl mx-auto px-6 pb-6 border-t border-stone-100">
-            <p className="text-xs tracking-[0.2em] text-stone-400 uppercase py-4">
+          <div className="max-w-3xl mx-auto px-6 pb-6 border-t border-[var(--color-shas-cream)]">
+            <p className="text-xs tracking-[0.2em] text-[var(--color-shas-muted)] uppercase py-4">
               {results.length} result{results.length !== 1 ? "s" : ""} for &quot;{query}&quot;
             </p>
             <div className="space-y-2">
@@ -194,9 +194,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   key={product.id}
                   href={`/products/${product.id}`}
                   onClick={onClose}
-                  className="flex items-center gap-4 p-3 hover:bg-stone-50 transition-colors group"
+                  className="flex items-center gap-4 p-3 hover:bg-[var(--color-shas-cream)]/50 transition-colors group"
                 >
-                  <div className="relative w-14 h-14 bg-stone-100 flex-shrink-0 overflow-hidden">
+                  <div className="relative w-14 h-14 bg-[var(--color-shas-cream)] flex-shrink-0 overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -205,10 +205,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-stone-800 font-medium group-hover:text-stone-600 transition-colors truncate">
+                    <p className="text-sm text-[var(--color-shas-plum)] font-medium group-hover:text-[var(--color-shas-plum)] transition-colors truncate">
                       {highlight(product.name)}
                     </p>
-                    <p className="text-xs text-stone-400 mt-0.5">
+                    <p className="text-xs text-[var(--color-shas-muted)] mt-0.5">
                       {highlight(product.category)} · ₹{product.price.toLocaleString()}
                     </p>
                   </div>
@@ -229,7 +229,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
         {/* Error */}
         {error && !loading && (
-          <div className="max-w-3xl mx-auto px-6 pb-8 border-t border-stone-100 text-center pt-8">
+          <div className="max-w-3xl mx-auto px-6 pb-8 border-t border-[var(--color-shas-cream)] text-center pt-8">
             <p className="text-red-400 text-sm">
               Something went wrong. Please try again.
             </p>
@@ -238,11 +238,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
         {/* No results */}
         {query.trim() && !loading && !error && results.length === 0 && (
-          <div className="max-w-3xl mx-auto px-6 pb-8 border-t border-stone-100 text-center pt-8">
-            <p className="text-stone-400 text-sm">
+          <div className="max-w-3xl mx-auto px-6 pb-8 border-t border-[var(--color-shas-cream)] text-center pt-8">
+            <p className="text-[var(--color-shas-muted)] text-sm">
               No shirts found for <strong>&quot;{query}&quot;</strong>
             </p>
-            <p className="text-stone-300 text-xs mt-1">
+            <p className="text-[var(--color-shas-line-strong)] text-xs mt-1">
               Try searching for &quot;formal&quot;, &quot;linen&quot; or &quot;casual&quot;
             </p>
           </div>
@@ -250,8 +250,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
         {/* Default: popular suggestions */}
         {!query && (
-          <div className="max-w-3xl mx-auto px-6 pb-6 border-t border-stone-100">
-            <p className="text-xs tracking-[0.2em] text-stone-400 uppercase py-4">
+          <div className="max-w-3xl mx-auto px-6 pb-6 border-t border-[var(--color-shas-cream)]">
+            <p className="text-xs tracking-[0.2em] text-[var(--color-shas-muted)] uppercase py-4">
               Popular searches
             </p>
             <div className="flex flex-wrap gap-2">
@@ -260,7 +260,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <button
                     key={term}
                     onClick={() => setQuery(term)}
-                    className="text-xs px-4 py-2 border border-stone-200 text-stone-500 hover:border-stone-500 hover:text-stone-800 transition-all"
+                    className="text-xs px-4 py-2 border border-[var(--color-shas-line)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-muted)] hover:text-[var(--color-shas-plum)] transition-all"
                   >
                     {term}
                   </button>

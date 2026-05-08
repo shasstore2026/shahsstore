@@ -42,45 +42,51 @@ export default async function OrderSuccessPage() {
   }>;
 
   return (
-    <div className="bg-[#FAFAF8] min-h-screen flex items-center justify-center px-4 pt-20 md:pt-24">
-      <div className="text-center max-w-lg">
-        {/* Success Icon */}
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-          <svg className="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+    <div className="bg-[var(--color-shas-bg)] min-h-screen flex items-center justify-center px-4 pt-24 pb-16 relative overflow-hidden">
+      {/* Soft ambient circles */}
+      <div aria-hidden className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[var(--color-shas-blush)]/40 blur-3xl pointer-events-none" />
+      <div aria-hidden className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[var(--color-shas-cream)]/60 blur-3xl pointer-events-none" />
+
+      <div className="text-center max-w-xl reveal relative z-10">
+        {/* Animated check */}
+        <div className="relative w-24 h-24 mx-auto mb-10">
+          <div aria-hidden className="absolute inset-0 rounded-full bg-[var(--color-shas-rose)]/15 animate-pulse" />
+          <div className="relative w-24 h-24 rounded-full bg-[var(--color-shas-rose)] flex items-center justify-center shadow-[0_15px_40px_-10px_rgba(201,162,125,0.5)]">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
         </div>
 
-        <h1
-          className="text-3xl md:text-5xl text-stone-900 font-light mb-3"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          Your Order is Confirmed
+        <span className="divider-rose mb-5">Confirmed</span>
+
+        <h1 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light mb-4 leading-tight">
+          Your order is on its way <em className="text-[var(--color-shas-rose)]">✦</em>
         </h1>
 
-        <p className="text-stone-500 text-sm font-light leading-relaxed mb-8 max-w-md mx-auto">
-          We will update you about your order through WhatsApp and email.
+        <p className="text-[var(--color-shas-muted)] text-base md:text-lg font-light leading-relaxed mb-10 max-w-md mx-auto">
+          Thank you. We&apos;re wrapping your pieces with care — we&apos;ll send updates on WhatsApp and email so you know exactly when to expect them.
         </p>
 
         {channels.length > 0 && (
           <>
-            <p className="text-xs tracking-[0.3em] uppercase text-stone-400 mb-4">
-              For any enquiry related to your order
+            <p className="text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-muted)] mb-5">
+              Need anything? We&apos;re a message away
             </p>
-            <div className="flex justify-center gap-4 sm:gap-6 mb-10 flex-wrap">
+            <div className="flex justify-center gap-5 sm:gap-7 mb-12 flex-wrap">
               {channels.map(({ key, label, href, external, svg }) => (
                 <a
                   key={key}
                   href={href}
                   {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="group flex flex-col items-center gap-2 w-24"
+                  className="group flex flex-col items-center gap-2.5 w-24"
                 >
-                  <span className="w-12 h-12 rounded-full border border-stone-200 flex items-center justify-center bg-white group-hover:border-stone-700 group-hover:bg-stone-50 transition-colors">
-                    <svg className="w-5 h-5 text-stone-600 group-hover:text-stone-900" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                  <span className="w-14 h-14 rounded-full border border-[var(--color-shas-line-strong)] flex items-center justify-center bg-white group-hover:border-[var(--color-shas-rose)] group-hover:bg-[var(--color-shas-blush)]/30 transition-all duration-300">
+                    <svg className="w-5 h-5 text-[var(--color-shas-plum)] group-hover:text-[var(--color-shas-rose)] transition-colors" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                       {svg}
                     </svg>
                   </span>
-                  <span className="text-xs text-stone-500 tracking-wide uppercase group-hover:text-stone-900 transition-colors">
+                  <span className="text-[0.65rem] text-[var(--color-shas-muted)] tracking-[0.25em] uppercase group-hover:text-[var(--color-shas-rose)] transition-colors">
                     {label}
                   </span>
                 </a>
@@ -90,15 +96,12 @@ export default async function OrderSuccessPage() {
         )}
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            href="/products"
-            className="inline-block bg-stone-900 text-white px-10 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-stone-700 transition-all duration-300"
-          >
+          <Link href="/products" className="btn-plum">
             Continue Shopping
           </Link>
           <Link
             href="/"
-            className="inline-block border border-stone-200 text-stone-600 px-10 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-stone-50 transition-all duration-300"
+            className="inline-flex items-center justify-center border border-[var(--color-shas-line-strong)] text-[var(--color-shas-plum)] px-10 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)] transition-all duration-300"
           >
             Back to Home
           </Link>

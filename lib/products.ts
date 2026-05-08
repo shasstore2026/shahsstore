@@ -87,7 +87,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 }
 
 // ── Shirt styles ──────────────────────────────────
-export type ShirtStyle = {
+export type Category = {
   id: string;
   name: string;
   description: string;
@@ -95,9 +95,9 @@ export type ShirtStyle = {
   display_order: number;
 };
 
-export async function getShirtStyles(): Promise<ShirtStyle[]> {
+export async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
-    .from("shirt_styles")
+    .from("categories")
     .select("*")
     .order("display_order", { ascending: true });
 
@@ -106,19 +106,76 @@ export async function getShirtStyles(): Promise<ShirtStyle[]> {
 }
 
 // ── Homepage content ──────────────────────────────
+export type LookbookImage = { image: string; link?: string; label?: string };
+export type Testimonial = { quote: string; name: string; place: string };
+
 export type HomepageContent = {
+  // legacy / hero
   hero_title: string;
   hero_subtitle: string;
   hero_cta_text: string;
   hero_cta_link: string;
   hero_image: string;
+  // USP marquee strip on homepage (also still used by old marquee admin page)
   marquee_items: string[];
+  // legacy story/cta fields — kept for backwards compatibility
   why_title: string;
   cta_title: string;
   cta_subtitle: string;
   cta_button_text: string;
+  // top notification (separate row component, also lives on homepage)
   top_notification_enabled?: boolean;
   top_notification_items?: string[];
+
+  // ── Story / editorial spotlight ────────────────────
+  story_eyebrow: string;
+  story_title: string;
+  story_subtitle: string;
+  story_paragraph: string;
+  story_image: string;
+  story_cta_text: string;
+  story_cta_link: string;
+
+  // ── Lookbook ───────────────────────────────────────
+  lookbook_eyebrow: string;
+  lookbook_title: string;
+  lookbook_subtitle: string;
+  lookbook_images: LookbookImage[];
+
+  // ── Testimonials ───────────────────────────────────
+  testimonials_eyebrow: string;
+  testimonials_title: string;
+  testimonials: Testimonial[];
+
+  // ── Instagram ──────────────────────────────────────
+  instagram_eyebrow: string;
+  instagram_title: string;
+  instagram_handle: string;
+  instagram_profile_url: string;
+  instagram_images: string[];
+
+  // ── Closing CTA ────────────────────────────────────
+  closing_cta_eyebrow: string;
+  closing_cta_title: string;
+  closing_cta_title_accent: string;
+  closing_cta_subtitle: string;
+  closing_cta_primary_text: string;
+  closing_cta_primary_link: string;
+  closing_cta_secondary_text: string;
+  closing_cta_secondary_link: string;
+
+  // ── Section visibility toggles ─────────────────────
+  show_usp_strip: boolean;
+  show_categories: boolean;
+  show_featured: boolean;
+  show_story: boolean;
+  show_lookbook: boolean;
+  show_testimonials: boolean;
+  show_instagram: boolean;
+  show_closing_cta: boolean;
+
+  // Surfaced for admin form (passed back when editing)
+  id?: string;
 };
 
 export type MaintenanceStatus = {
@@ -172,34 +229,105 @@ export async function getTopNotification(): Promise<{
   };
 }
 
+/**
+ * Default fallback shape — every field has a friendly placeholder so the
+ * homepage renders gracefully even before the admin fills anything in.
+ */
+function emptyHomepageContent(): HomepageContent {
+  return {
+    hero_title: "Curated Pieces, Just For You",
+    hero_subtitle: "",
+    hero_cta_text: "Explore",
+    hero_cta_link: "/products",
+    hero_image: "",
+    marquee_items: [
+      "Free Shipping Over ₹2000",
+      "Hand-curated Edits",
+      "14-Day Easy Returns",
+      "Premium Fabrics & Finishes",
+      "Made With Love in India",
+    ],
+    why_title: "",
+    cta_title: "",
+    cta_subtitle: "",
+    cta_button_text: "Shop All",
+    top_notification_enabled: false,
+    top_notification_items: [],
+
+    story_eyebrow: "Our Story",
+    story_title: "Curated for the moments you'll remember.",
+    story_subtitle:
+      "Every piece in our boutique is chosen with care.",
+    story_paragraph: "",
+    story_image: "",
+    story_cta_text: "Shop the Edit",
+    story_cta_link: "/products",
+
+    lookbook_eyebrow: "The Lookbook",
+    lookbook_title: "Styled for the season",
+    lookbook_subtitle: "",
+    lookbook_images: [],
+
+    testimonials_eyebrow: "Loved By",
+    testimonials_title: "From our community",
+    testimonials: [],
+
+    instagram_eyebrow: "Follow Along",
+    instagram_title: "@shasstore on Instagram",
+    instagram_handle: "@shasstore",
+    instagram_profile_url: "",
+    instagram_images: [],
+
+    closing_cta_eyebrow: "The Shasstore Promise",
+    closing_cta_title: "",
+    closing_cta_title_accent: "",
+    closing_cta_subtitle: "",
+    closing_cta_primary_text: "Shop the Collection",
+    closing_cta_primary_link: "/products",
+    closing_cta_secondary_text: "",
+    closing_cta_secondary_link: "",
+
+    show_usp_strip: true,
+    show_categories: true,
+    show_featured: true,
+    show_story: true,
+    show_lookbook: true,
+    show_testimonials: true,
+    show_instagram: true,
+    show_closing_cta: true,
+  };
+}
+
 export async function getHomepageContent(): Promise<HomepageContent> {
   const { data, error } = await supabase
     .from("homepage_content")
     .select("*")
     .single();
 
-  if (error) {
-    console.error(error.message);
-    return {
-      hero_title: "A Shirt for Every Moment",
-      hero_subtitle: "Premium men's shirts crafted for comfort and style",
-      hero_cta_text: "Explore Collection",
-      hero_cta_link: "/products",
-      hero_image: "",
-      marquee_items: [
-        "Free Delivery Over ₹2000",
-        "14 Day Returns",
-        "Premium Shirt Fabrics",
-        "Specialist in Men's Shirts",
-      ],
-      why_title: "The Shirt Specialists",
-      cta_title: "A Shirt for Every Chapter of Your Day.",
-      cta_subtitle:
-        "Morning meetings. Weekend brunches. Evening events. Shasstore has the perfect shirt for every moment — crafted to last, designed to impress.",
-      cta_button_text: "Shop All Shirts",
-    };
+  if (error || !data) {
+    if (error) console.error(error.message);
+    return emptyHomepageContent();
   }
-  return data;
+
+  // Coerce jsonb columns into typed arrays. Postgres returns them as parsed
+  // JS objects, but if older rows have null we fill with empty arrays.
+  const lookbook = Array.isArray(data.lookbook_images)
+    ? (data.lookbook_images as LookbookImage[])
+    : [];
+  const testimonials = Array.isArray(data.testimonials)
+    ? (data.testimonials as Testimonial[])
+    : [];
+
+  // Merge with defaults so the homepage works even if a column is null.
+  const fallback = emptyHomepageContent();
+  return {
+    ...fallback,
+    ...data,
+    lookbook_images: lookbook,
+    testimonials,
+    marquee_items: Array.isArray(data.marquee_items) ? data.marquee_items : fallback.marquee_items,
+    instagram_images: Array.isArray(data.instagram_images) ? data.instagram_images : [],
+  };
 }
 // Hero banner------------------------
 export type HeroBanner = {

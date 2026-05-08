@@ -14,7 +14,7 @@ export default function MaintenanceOverlay({
   initialPhone2?: string;
 }) {
   const pathname = usePathname();
-  const isAdmin = pathname?.startsWith("/ashrafckvnradmin");
+  const isAdmin = pathname?.startsWith("/shasstorebyshahanas");
 
   // Initialize from server props so the overlay can show on first paint
   const [manualEnabled, setManualEnabled] = useState(initialEnabled);
@@ -130,23 +130,23 @@ export default function MaintenanceOverlay({
           </svg>
         </div>
 
-        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-3">
+        <p className="text-xs tracking-[0.3em] text-[var(--color-shas-muted)] uppercase mb-3">
           {reason === "manual" ? "We'll be right back" : "Notice"}
         </p>
 
         <h2
-          className="text-3xl md:text-4xl text-stone-900 font-light mb-4"
+          className="text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-4"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
           {title}
         </h2>
 
-        <p className="text-stone-500 text-sm font-light leading-relaxed mb-6">
+        <p className="text-[var(--color-shas-muted)] text-sm font-light leading-relaxed mb-6">
           {subtitle}
         </p>
 
         {reason === "database" && (
-          <div className="flex items-center justify-center gap-2 text-xs text-stone-400 mb-6">
+          <div className="flex items-center justify-center gap-2 text-xs text-[var(--color-shas-muted)] mb-6">
             <span className="inline-block w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
             <span className="tracking-widest uppercase">Reconnecting...</span>
           </div>
@@ -154,15 +154,15 @@ export default function MaintenanceOverlay({
 
         {/* Contact phones */}
         {(phone1 || phone2) && (
-          <div className="border-t border-stone-100 pt-5 mb-6">
-            <p className="text-xs tracking-widest uppercase text-stone-400 mb-3">
+          <div className="border-t border-[var(--color-shas-cream)] pt-5 mb-6">
+            <p className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] mb-3">
               For Urgent Queries
             </p>
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               {phone1 && (
                 <a
                   href={`tel:${phone1.replace(/\s/g, "")}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-stone-50 hover:bg-stone-100 border border-stone-200 rounded text-sm text-stone-700 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-shas-cream)]/50 hover:bg-[var(--color-shas-cream)] border border-[var(--color-shas-line)] rounded text-sm text-[var(--color-shas-plum)] transition-colors"
                 >
                   <span>📞</span> {phone1}
                 </a>
@@ -170,7 +170,7 @@ export default function MaintenanceOverlay({
               {phone2 && (
                 <a
                   href={`tel:${phone2.replace(/\s/g, "")}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-stone-50 hover:bg-stone-100 border border-stone-200 rounded text-sm text-stone-700 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-shas-cream)]/50 hover:bg-[var(--color-shas-cream)] border border-[var(--color-shas-line)] rounded text-sm text-[var(--color-shas-plum)] transition-colors"
                 >
                   <span>📞</span> {phone2}
                 </a>
@@ -181,7 +181,7 @@ export default function MaintenanceOverlay({
 
         <button
           onClick={handleRetry}
-          className="w-full bg-stone-900 text-white py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-stone-700 transition-all duration-300"
+          className="w-full bg-[var(--color-shas-plum)] text-white py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[var(--color-shas-plum)] transition-all duration-300"
         >
           Try Again
         </button>

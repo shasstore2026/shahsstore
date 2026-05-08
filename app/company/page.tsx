@@ -1,64 +1,78 @@
 import { getCompanyContent } from "@/lib/products";
+import Link from "next/link";
 
-function BulletContent({ text }: { text: string }) {
+function Bullets({ text }: { text: string }) {
   const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-  if (lines.length === 0) return null;
+  if (lines.length === 0) {
+    return (
+      <p className="text-[var(--color-shas-muted)] text-sm font-light italic">
+        Add your story in the admin.
+      </p>
+    );
+  }
   return (
-    <ul className="space-y-3">
+    <div className="space-y-4">
       {lines.map((line, i) => (
-        <li key={i} className="flex items-start gap-3 text-stone-500 text-sm font-light leading-relaxed">
-          <span className="text-stone-300 mt-1">✦</span>
-          <span>{line}</span>
-        </li>
+        <p key={i} className="text-[var(--color-shas-muted)] text-base font-light leading-relaxed">
+          {line}
+        </p>
       ))}
-    </ul>
+    </div>
   );
 }
 
 export default async function CompanyPage() {
   const company = await getCompanyContent();
-  if (!company) return <p>Content unavailable.</p>;
+  if (!company)
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6 bg-[var(--color-shas-bg)]">
+        <p className="text-[var(--color-shas-muted)] italic">Content unavailable.</p>
+      </div>
+    );
 
   return (
-    <div className="bg-[#FAFAF8] min-h-screen pt-32 pb-24">
-      <div className="max-w-3xl mx-auto px-8">
-        <p className="text-xs tracking-[0.4em] text-stone-400 uppercase mb-3">Company</p>
-        <div className="mb-16">
-          <h1 className="text-5xl text-stone-900 font-light leading-none"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Shasstore
-          </h1>
-          <p className="text-stone-400 text-sm tracking-[0.5em] uppercase mt-2 ml-1">
-            Fashion
-          </p>
-        </div>
+    <div className="bg-[var(--color-shas-bg)] min-h-screen pt-28 md:pt-36 pb-24">
+      {/* Hero — the brand mark, large */}
+      <div className="max-w-4xl mx-auto px-6 md:px-8 mb-16 md:mb-24 reveal text-center">
+        <span className="divider-rose mb-5">The Atelier</span>
+        <h1 className="font-italiana text-6xl md:text-8xl lg:text-9xl text-[var(--color-shas-plum)] tracking-[0.18em] leading-none mb-3 uppercase">
+          Shasstore
+        </h1>
+        <p className="text-[var(--color-shas-rose)] text-xs md:text-sm tracking-[0.55em] uppercase mt-3">
+          by shahanas
+        </p>
+        <p className="font-display italic text-2xl md:text-3xl text-[var(--color-shas-muted)] mt-8 max-w-xl mx-auto leading-snug">
+          A boutique for the woman who values
+          <br />
+          considered design and quiet luxury.
+        </p>
+      </div>
 
-        {/* About */}
-        <section id="about" className="mb-16 scroll-mt-32">
-          <h2 className="text-2xl text-stone-900 font-light mb-6 pb-3 border-b border-stone-100"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            About Shasstore
+      <div className="max-w-3xl mx-auto px-6 md:px-8 space-y-16 md:space-y-20">
+        <section id="about" className="scroll-mt-32 reveal">
+          <h2 className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-6 pb-3 border-b border-[var(--color-shas-line)]">
+            Our Story
           </h2>
-          <BulletContent text={company.about} />
+          <Bullets text={company.about} />
         </section>
 
-        {/* Contact */}
-        <section id="contact" className="scroll-mt-32">
-          <h2 className="text-2xl text-stone-900 font-light mb-6 pb-3 border-b border-stone-100"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Contact Us
+        <section id="contact" className="scroll-mt-32 reveal">
+          <h2 className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-6 pb-3 border-b border-[var(--color-shas-line)]">
+            Get in Touch
           </h2>
-          <BulletContent text={company.contact} />
+          <Bullets text={company.contact} />
 
           {(company.contact_email || company.contact_whatsapp || company.contact_phone) && (
-            <div className="mt-8 space-y-3">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
               {company.contact_email && (
                 <a
                   href={`mailto:${company.contact_email}`}
-                  className="flex items-center gap-3 text-stone-600 hover:text-stone-900 text-sm transition-colors"
+                  className="surface-soft p-5 group hover:border-[var(--color-shas-rose)] transition-colors"
                 >
-                  <span className="text-xs tracking-widest uppercase text-stone-400 w-24">Email</span>
-                  <span className="font-light">{company.contact_email}</span>
+                  <p className="text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)]">Email</p>
+                  <p className="text-[var(--color-shas-plum)] text-sm mt-2 font-light break-all group-hover:text-[var(--color-shas-rose)] transition-colors">
+                    {company.contact_email}
+                  </p>
                 </a>
               )}
               {company.contact_whatsapp && (
@@ -66,23 +80,36 @@ export default async function CompanyPage() {
                   href={`https://wa.me/${company.contact_whatsapp.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-stone-600 hover:text-stone-900 text-sm transition-colors"
+                  className="surface-soft p-5 group hover:border-[var(--color-shas-rose)] transition-colors"
                 >
-                  <span className="text-xs tracking-widest uppercase text-stone-400 w-24">WhatsApp</span>
-                  <span className="font-light">{company.contact_whatsapp}</span>
+                  <p className="text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)]">WhatsApp</p>
+                  <p className="text-[var(--color-shas-plum)] text-sm mt-2 font-light group-hover:text-[var(--color-shas-rose)] transition-colors">
+                    {company.contact_whatsapp}
+                  </p>
                 </a>
               )}
               {company.contact_phone && (
                 <a
                   href={`tel:${company.contact_phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-3 text-stone-600 hover:text-stone-900 text-sm transition-colors"
+                  className="surface-soft p-5 group hover:border-[var(--color-shas-rose)] transition-colors"
                 >
-                  <span className="text-xs tracking-widest uppercase text-stone-400 w-24">Call Us</span>
-                  <span className="font-light">{company.contact_phone}</span>
+                  <p className="text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)]">Call Us</p>
+                  <p className="text-[var(--color-shas-plum)] text-sm mt-2 font-light group-hover:text-[var(--color-shas-rose)] transition-colors">
+                    {company.contact_phone}
+                  </p>
                 </a>
               )}
             </div>
           )}
+        </section>
+
+        <section className="text-center pt-6 reveal">
+          <p className="font-display italic text-xl text-[var(--color-shas-muted)] mb-6">
+            Style is a quiet conversation between you and your wardrobe.
+          </p>
+          <Link href="/products" className="btn-plum">
+            Shop the Collection
+          </Link>
         </section>
       </div>
     </div>

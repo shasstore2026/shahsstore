@@ -136,29 +136,29 @@ function SizeGuideModal({ sizeGuide, onClose }: { sizeGuide: string; onClose: ()
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4" onClick={onClose}>
       <div className="bg-white max-w-lg w-full p-8 relative" onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose} className="absolute top-4 right-5 text-stone-400 hover:text-stone-900 text-xl">✕</button>
-        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Reference</p>
-        <h2 className="text-3xl text-stone-900 font-light mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Shirt Size Guide
+        <button onClick={onClose} className="absolute top-4 right-5 text-[var(--color-shas-muted)] hover:text-[var(--color-shas-plum)] text-xl">✕</button>
+        <p className="text-xs tracking-[0.3em] text-[var(--color-shas-rose)] uppercase mb-2">Reference</p>
+        <h2 className="font-display text-3xl text-[var(--color-shas-plum)] font-light mb-6">
+          Size &amp; Fit Guide
         </h2>
         {rows.length > 0 ? (
-          <div className="overflow-hidden border border-stone-100">
+          <div className="overflow-hidden border border-[var(--color-shas-cream)]">
             <table className="w-full text-sm">
-              <thead className="bg-stone-50">
+              <thead className="bg-[var(--color-shas-cream)]/50">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs tracking-widest uppercase text-stone-400 font-medium border-b border-stone-100">Size</th>
-                  <th className="text-left px-4 py-3 text-xs tracking-widest uppercase text-stone-400 font-medium border-b border-stone-100">Details</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-widest uppercase text-[var(--color-shas-muted)] font-medium border-b border-[var(--color-shas-cream)]">Size</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-widest uppercase text-[var(--color-shas-muted)] font-medium border-b border-[var(--color-shas-cream)]">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-50">
+              <tbody className="divide-y divide-[var(--color-shas-line)]">
                 {rows.map((row, i) => {
                   const dashIndex = row.indexOf("–");
                   const size = dashIndex > -1 ? row.slice(0, dashIndex).trim() : row;
                   const detail = dashIndex > -1 ? row.slice(dashIndex + 1).trim() : "";
                   return (
-                    <tr key={i} className="hover:bg-stone-50">
-                      <td className="px-4 py-3 text-stone-700 font-medium">{size}</td>
-                      <td className="px-4 py-3 text-stone-500 font-light">{detail || "—"}</td>
+                    <tr key={i} className="hover:bg-[var(--color-shas-cream)]/50">
+                      <td className="px-4 py-3 text-[var(--color-shas-plum)] font-medium">{size}</td>
+                      <td className="px-4 py-3 text-[var(--color-shas-muted)] font-light">{detail || "—"}</td>
                     </tr>
                   );
                 })}
@@ -166,9 +166,9 @@ function SizeGuideModal({ sizeGuide, onClose }: { sizeGuide: string; onClose: ()
             </table>
           </div>
         ) : (
-          <p className="text-stone-400 text-sm">No size guide available.</p>
+          <p className="text-[var(--color-shas-muted)] text-sm">No size guide available.</p>
         )}
-        <p className="text-xs text-stone-400 mt-4 font-light">Tip: For a relaxed fit, go one size up.</p>
+        <p className="text-xs text-[var(--color-shas-muted)] mt-4 font-light italic">Tip: When between sizes, we suggest going up — you can always cinch with a belt.</p>
       </div>
     </div>
   );
@@ -186,16 +186,16 @@ function AccordionSection({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-stone-200">
+    <div className="border-b border-[var(--color-shas-line)]">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between py-5 text-left group"
       >
-        <span className="text-sm tracking-[0.2em] uppercase text-stone-700 font-medium group-hover:text-stone-900 transition-colors">
+        <span className="text-sm tracking-[0.2em] uppercase text-[var(--color-shas-plum)] font-medium group-hover:text-[var(--color-shas-plum)] transition-colors">
           {title}
         </span>
         <span
-          className={`text-stone-400 text-xl transition-transform duration-300 ${
+          className={`text-[var(--color-shas-muted)] text-xl transition-transform duration-300 ${
             open ? "rotate-45" : ""
           }`}
         >
@@ -217,19 +217,16 @@ function AccordionSection({
 function RelatedProducts({ products }: { products: Product[] }) {
   if (products.length === 0) return null;
   return (
-    <div className="bg-white border-t border-stone-100 py-12 md:py-20">
+    <div className="bg-white border-t border-[var(--color-shas-cream)] py-12 md:py-20">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
-        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">You may also like</p>
-        <h2
-          className="text-3xl md:text-5xl text-stone-900 font-light mb-8 md:mb-12"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          Similar Styles
+        <span className="divider-rose mb-4">You may also love</span>
+        <h2 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light mb-8 md:mb-12">
+          Pieces that pair beautifully
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {products.map((p) => (
             <Link key={p.id} href={`/products/${p.id}`} className="group">
-              <div className="relative w-full h-56 md:h-80 bg-stone-100 overflow-hidden mb-3">
+              <div className="relative w-full h-56 md:h-80 bg-[var(--color-shas-cream)] overflow-hidden mb-3">
                 <Image
                   src={p.image}
                   alt={p.name}
@@ -238,14 +235,14 @@ function RelatedProducts({ products }: { products: Product[] }) {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <p className="text-xs tracking-widest uppercase text-stone-400 mb-1">{p.category}</p>
+              <p className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] mb-1">{p.category}</p>
               <h3
-                className="text-stone-800 text-sm md:text-base font-light leading-snug mb-1 group-hover:text-stone-600 transition-colors"
+                className="text-[var(--color-shas-plum)] text-sm md:text-base font-light leading-snug mb-1 group-hover:text-[var(--color-shas-plum)] transition-colors"
                 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.05rem" }}
               >
                 {p.name}
               </h3>
-              <p className="text-stone-700 text-sm font-medium">₹{p.price.toLocaleString()}</p>
+              <p className="text-[var(--color-shas-plum)] text-sm font-medium">₹{p.price.toLocaleString()}</p>
             </Link>
           ))}
         </div>
@@ -339,12 +336,12 @@ export default function ProductDetailClient({
 
       {/* Breadcrumb */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6">
-        <p className="text-xs tracking-[0.2em] text-stone-400 uppercase">
-          <Link href="/" className="hover:text-stone-700 transition-colors">Home</Link>
+        <p className="text-xs tracking-[0.25em] text-[var(--color-shas-muted)] uppercase">
+          <Link href="/" className="hover:text-[var(--color-shas-rose)] transition-colors">Home</Link>
           {" "}&rsaquo;{" "}
-          <Link href="/products" className="hover:text-stone-700 transition-colors">Shirts</Link>
+          <Link href="/products" className="hover:text-[var(--color-shas-rose)] transition-colors">Shop</Link>
           {" "}&rsaquo;{" "}
-          <span className="text-stone-600">{product.name}</span>
+          <span className="text-[var(--color-shas-plum)]">{product.name}</span>
         </p>
       </div>
 
@@ -353,7 +350,7 @@ export default function ProductDetailClient({
         {/* Image Gallery — sticky on desktop */}
         <div className="flex flex-col gap-4 md:sticky md:top-28 md:self-start">
           <div
-            className="relative w-full h-[360px] md:h-[520px] bg-stone-100 overflow-hidden cursor-zoom-in group"
+            className="relative w-full h-[360px] md:h-[520px] bg-[var(--color-shas-cream)] overflow-hidden cursor-zoom-in group"
             onClick={() => {
               setLightboxIndex(activeIndex >= 0 ? activeIndex : 0);
               setLightboxOpen(true);
@@ -371,7 +368,7 @@ export default function ProductDetailClient({
             </div>
             {!product.inStock && (
               <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                <span className="text-stone-500 text-xs tracking-[0.3em] uppercase border border-stone-300 px-6 py-3">
+                <span className="text-[var(--color-shas-muted)] text-xs tracking-[0.3em] uppercase border border-[var(--color-shas-line-strong)] px-6 py-3">
                   Sold Out
                 </span>
               </div>
@@ -382,7 +379,7 @@ export default function ProductDetailClient({
             <div className="relative flex items-center gap-2">
               <button
                 onClick={() => scrollThumbs("left")}
-                className="flex-shrink-0 w-8 h-8 bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-900 transition-all text-lg"
+                className="flex-shrink-0 w-8 h-8 bg-white border border-[var(--color-shas-line)] flex items-center justify-center text-[var(--color-shas-muted)] hover:border-[var(--color-shas-plum)] hover:text-[var(--color-shas-plum)] transition-all text-lg"
               >
                 ‹
               </button>
@@ -396,8 +393,8 @@ export default function ProductDetailClient({
                     key={i}
                     onClick={() => setActiveImage(img)}
                     style={{ width: "72px", height: "80px", position: "relative", flexShrink: 0 }}
-                    className={`block overflow-hidden border-2 transition-all duration-200 bg-stone-100 ${
-                      activeImage === img ? "border-stone-900" : "border-transparent hover:border-stone-300"
+                    className={`block overflow-hidden border-2 transition-all duration-200 bg-[var(--color-shas-cream)] ${
+                      activeImage === img ? "border-[var(--color-shas-plum)]" : "border-transparent hover:border-[var(--color-shas-line-strong)]"
                     }`}
                   >
                     <Image src={img} alt={`${product.name} view ${i + 1}`} fill sizes="72px" className="object-cover" />
@@ -406,7 +403,7 @@ export default function ProductDetailClient({
               </div>
               <button
                 onClick={() => scrollThumbs("right")}
-                className="flex-shrink-0 w-8 h-8 bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-900 transition-all text-lg"
+                className="flex-shrink-0 w-8 h-8 bg-white border border-[var(--color-shas-line)] flex items-center justify-center text-[var(--color-shas-muted)] hover:border-[var(--color-shas-plum)] hover:text-[var(--color-shas-plum)] transition-all text-lg"
               >
                 ›
               </button>
@@ -416,21 +413,20 @@ export default function ProductDetailClient({
 
         {/* Product Info */}
         <div className="pt-4">
-          <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-3">{product.category} Shirt</p>
-          <h1 className="text-2xl md:text-4xl text-stone-900 font-light leading-tight mb-4"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] text-[var(--color-shas-rose)] uppercase mb-3">{product.category}</p>
+          <h1 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light leading-tight mb-4">
             {product.name}
           </h1>
           {(() => {
             const discount = getDiscountPercent(product.price, product.original_price);
             return (
               <div className="flex items-baseline gap-3 flex-wrap mb-6">
-                <p className="text-xl md:text-2xl text-stone-900 font-medium">
+                <p className="text-xl md:text-2xl text-[var(--color-shas-plum)] font-medium">
                   ₹{product.price.toLocaleString()}
                 </p>
                 {discount > 0 && product.original_price && (
                   <>
-                    <p className="text-base md:text-lg text-stone-400 line-through font-light">
+                    <p className="text-base md:text-lg text-[var(--color-shas-muted)] line-through font-light">
                       ₹{product.original_price.toLocaleString()}
                     </p>
                     <span className="bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded tracking-wider">
@@ -441,8 +437,8 @@ export default function ProductDetailClient({
               </div>
             );
           })()}
-          <div className="w-12 h-px bg-stone-300 mb-6" />
-          <p className="text-stone-500 font-light leading-relaxed text-sm mb-8">{product.description}</p>
+          <div className="w-12 h-px bg-[var(--color-shas-line-strong)] mb-6" />
+          <p className="text-[var(--color-shas-muted)] font-light leading-relaxed text-sm mb-8">{product.description}</p>
 
           {/* ── Sizes with per-size stock ── */}
           <div
@@ -450,16 +446,16 @@ export default function ProductDetailClient({
             className={`mb-8 ${sizeError ? "shake" : ""}`}
           >
             <div className="flex justify-between items-center mb-3">
-              <p className={`text-xs tracking-[0.2em] uppercase font-medium transition-colors duration-300 ${
-                sizeError ? "text-red-500" : "text-stone-700"
+              <p className={`text-xs tracking-[0.25em] uppercase font-medium transition-colors duration-300 ${
+                sizeError ? "text-red-500" : "text-[var(--color-shas-plum)]"
               }`}>
-                Collar Size
+                Select Size
               </p>
               <button
                 onClick={() => setSizeGuideOpen(true)}
-                className="text-xs text-stone-400 underline underline-offset-4 hover:text-stone-700 transition-colors"
+                className="text-xs text-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose-deep)] transition-colors underline underline-offset-4"
               >
-                Size Guide
+                Size & Fit Guide
               </button>
             </div>
             <div className="flex gap-2 flex-wrap pt-2">
@@ -481,12 +477,12 @@ export default function ProductDetailClient({
                     disabled={isOut}
                     className={`relative border px-5 py-2.5 text-xs tracking-widest uppercase font-medium transition-all duration-200 ${
                       isOut
-                        ? "border-stone-200 text-stone-300 bg-stone-50 line-through cursor-not-allowed"
+                        ? "border-[var(--color-shas-line)] text-[var(--color-shas-line-strong)] bg-[var(--color-shas-cream)]/50 line-through cursor-not-allowed"
                         : selectedSize === size
-                        ? "bg-stone-900 text-white border-stone-900"
+                        ? "bg-[var(--color-shas-plum)] text-white border-[var(--color-shas-plum)]"
                         : sizeError
                         ? "border-red-300 text-red-400 hover:border-red-500"
-                        : "border-stone-200 text-stone-500 hover:border-stone-600 hover:text-stone-800"
+                        : "border-[var(--color-shas-line)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-plum)] hover:text-[var(--color-shas-plum)]"
                     }`}
                   >
                     {size}
@@ -510,53 +506,62 @@ export default function ProductDetailClient({
 
             {/* Inline error or hint */}
             <p className={`text-xs mt-2 transition-all duration-300 ${
-              sizeError ? "text-red-400" : "text-stone-400"
+              sizeError ? "text-red-400" : "text-[var(--color-shas-muted)]"
             }`}>
-              {sizeError ? "⚠ Please select a collar size to continue" : !selectedSize ? "Please select a size to continue" : ""}
+              {sizeError ? "Please choose a size to continue" : !selectedSize ? "Please select a size to continue" : ""}
             </p>
           </div>
 
           {/* Add to Cart / Go to Cart */}
-          <div className="flex gap-4 mb-8">
+          <div className="flex gap-3 mb-8">
             <button
               onClick={handleAddToCart}
               disabled={!productInStock}
               className={`flex-1 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 ${
                 !productInStock
-                  ? "bg-stone-200 text-stone-400 cursor-not-allowed"
+                  ? "bg-[var(--color-shas-line)] text-[var(--color-shas-muted)] cursor-not-allowed"
                   : isInCart
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                  : "bg-stone-900 text-white hover:bg-stone-700"
+                  ? "bg-[var(--color-shas-sage)] text-white hover:opacity-90"
+                  : "bg-[var(--color-shas-plum)] text-white hover:bg-[var(--color-shas-plum-soft)]"
               }`}
             >
-              {!productInStock ? "Sold Out" : isInCart ? "✓ Go to Cart →" : "Add to Cart"}
+              {!productInStock ? "Sold Out" : isInCart ? "✓ Go to Bag →" : "Add to Bag"}
+            </button>
+            <button
+              aria-label="Add to wishlist"
+              className="px-5 border border-[var(--color-shas-line-strong)] text-[var(--color-shas-plum)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)] transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.4} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
             </button>
           </div>
 
           {/* Badges */}
-          <div className="border-t border-stone-100 pt-6 space-y-3 mb-8">
+          <div className="border-t border-[var(--color-shas-line)] pt-6 space-y-3 mb-8">
             {[
-              ["🚚", "Free delivery on orders over ₹2,000"],
-              ["↩️", "14-day hassle-free returns"],
-              ["✦", "Premium fabric, precision tailored"],
+              ["✦", "Free delivery on orders over ₹2,000"],
+              ["✦", "14-day hassle-free returns"],
+              ["✦", "Hand-curated, premium materials"],
+              ["✦", "Wrapped with care, ready for gifting"],
             ].map(([icon, text]) => (
               <div key={text} className="flex items-center gap-3">
-                <span className="text-base">{icon}</span>
-                <p className="text-xs text-stone-500 font-light tracking-wide">{text}</p>
+                <span className="text-[var(--color-shas-rose)]">{icon}</span>
+                <p className="text-xs text-[var(--color-shas-muted)] font-light tracking-wide">{text}</p>
               </div>
             ))}
           </div>
 
           {/* ── Accordion Sections ── */}
-          <div className="border-t border-stone-200">
+          <div className="border-t border-[var(--color-shas-line)]">
             {/* Product Details */}
             {product.product_details && Object.keys(product.product_details).length > 0 && (
               <AccordionSection title="Product Details" defaultOpen>
                 <div className="space-y-2.5 pt-2">
                   {Object.entries(product.product_details).map(([key, value]) => (
-                    <div key={key} className="flex justify-between gap-4 py-2 border-b border-stone-100 text-sm">
-                      <span className="text-stone-500 font-light">{key}</span>
-                      <span className="text-stone-800 font-medium text-right">{value}</span>
+                    <div key={key} className="flex justify-between gap-4 py-2 border-b border-[var(--color-shas-cream)] text-sm">
+                      <span className="text-[var(--color-shas-muted)] font-light">{key}</span>
+                      <span className="text-[var(--color-shas-plum)] font-medium text-right">{value}</span>
                     </div>
                   ))}
                 </div>
@@ -566,10 +571,10 @@ export default function ProductDetailClient({
             {/* About this item */}
             {product.about_items && product.about_items.length > 0 && (
               <AccordionSection title="About this item">
-                <ul className="space-y-3 pt-2 text-sm text-stone-600 font-light leading-relaxed">
+                <ul className="space-y-3 pt-2 text-sm text-[var(--color-shas-plum)] font-light leading-relaxed">
                   {product.about_items.map((item, i) => (
                     <li key={i} className="flex gap-3">
-                      <span className="text-stone-400 mt-1">•</span>
+                      <span className="text-[var(--color-shas-muted)] mt-1">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -582,9 +587,9 @@ export default function ProductDetailClient({
               <AccordionSection title="Style Specifications">
                 <div className="space-y-2.5 pt-2">
                   {Object.entries(product.style_specs).map(([key, value]) => (
-                    <div key={key} className="flex justify-between gap-4 py-2 border-b border-stone-100 text-sm">
-                      <span className="text-stone-500 font-light">{key}</span>
-                      <span className="text-stone-800 font-medium text-right">{value}</span>
+                    <div key={key} className="flex justify-between gap-4 py-2 border-b border-[var(--color-shas-cream)] text-sm">
+                      <span className="text-[var(--color-shas-muted)] font-light">{key}</span>
+                      <span className="text-[var(--color-shas-plum)] font-medium text-right">{value}</span>
                     </div>
                   ))}
                 </div>

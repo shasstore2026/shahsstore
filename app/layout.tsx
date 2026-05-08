@@ -13,8 +13,9 @@ import { headers } from "next/headers";
 import { getMaintenanceStatus } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "Shasstore — Premium Men's Shirts",
-  description: "India's premium men's shirt specialist",
+  title: "Shasstore — Curated Dresses & Jewellery",
+  description:
+    "A curated boutique for ladies' dresses and jewellery — pieces designed to feel as good as they look.",
 };
 
 export default async function RootLayout({
@@ -24,7 +25,7 @@ export default async function RootLayout({
 }) {
   const headersList = await headers();
   const pathname = headersList.get("x-invoke-path") || "";
-  const isAdmin = pathname.startsWith("/ashrafckvnradmin");
+  const isAdmin = pathname.startsWith("/shasstorebyshahanas");
 
   // Fetch initial maintenance status server-side so the overlay is
   // visible IMMEDIATELY on page load (no fetch delay)

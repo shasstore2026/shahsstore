@@ -64,6 +64,6 @@ export async function POST(req: NextRequest) {
   }
 
   // Cookie was set by createSupabaseServerClient via response cookies;
-  // returning success lets the client redirect to /ashrafckvnradmin.
+  // returning success lets the client redirect to /shasstorebyshahanas.
   return NextResponse.json({ success: true });
 }

@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                 amount: order.amount,
                 currency: "INR",
                 name: "Shasstore",
-                description: "Premium Men's Shirts",
+                description: "Curated Dresses & Jewellery",
                 image: "/logo.png",
                 order_id: order.id,
                 prefill: {
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
                     email: form.email,
                     contact: form.phone,
                 },
-                theme: { color: "#1c1917" },
+                theme: { color: "#3E1F2A" },
                 handler: async (response: any) => {
                     setPlacingOrder(true);
                     try {
@@ -235,15 +235,13 @@ export default function CheckoutPage() {
     // Empty cart guard
     if (cartItems.length === 0) {
         return (
-            <div className="bg-[#FAFAF8] min-h-screen flex items-center justify-center pt-24">
+            <div className="bg-[var(--color-shas-bg)] min-h-screen flex items-center justify-center pt-24">
                 <div className="text-center px-8">
-                    <p className="text-5xl text-stone-300 font-light mb-6"
-                        style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    <p className="font-display text-4xl md:text-5xl text-[var(--color-shas-plum)] font-light mb-6">
                         Nothing to checkout.
                     </p>
-                    <Link href="/products"
-                        className="inline-block bg-stone-900 text-white px-10 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-stone-700 transition-all duration-300">
-                        Shop All Shirts
+                    <Link href="/products" className="btn-plum">
+                        Browse the Collection
                     </Link>
                 </div>
             </div>
@@ -252,10 +250,10 @@ export default function CheckoutPage() {
 
     const inputClass = (field: FormFields) => {
         const hasError = touched[field] && errors[field];
-        return `w-full border px-4 py-3 text-sm font-light focus:outline-none bg-white placeholder:text-stone-300 transition-colors ${
+        return `w-full border px-4 py-3 text-sm font-light focus:outline-none bg-white placeholder:text-[var(--color-shas-line-strong)] transition-colors ${
             hasError
                 ? "border-red-400 text-red-700 focus:border-red-500"
-                : "border-stone-200 text-stone-800 focus:border-stone-500"
+                : "border-[var(--color-shas-line)] text-[var(--color-shas-plum)] focus:border-[var(--color-shas-rose)]"
         }`;
     };
 
@@ -267,20 +265,17 @@ export default function CheckoutPage() {
     ];
 
     return (
-        <div className="bg-[#FAFAF8] min-h-screen pt-20 md:pt-32 pb-12 md:pb-24">
+        <div className="bg-[var(--color-shas-bg)] min-h-screen pt-24 md:pt-32 pb-12 md:pb-24">
             {/* Placing-order full-screen overlay — shown while verify-payment is in flight */}
             {placingOrder && (
-                <div className="fixed inset-0 z-[9999] bg-white/95 backdrop-blur-sm flex items-center justify-center px-6">
+                <div className="fixed inset-0 z-[9999] bg-[var(--color-shas-bg)]/95 backdrop-blur-sm flex items-center justify-center px-6">
                     <div className="text-center max-w-sm">
-                        <div className="w-12 h-12 mx-auto mb-6 border-2 border-stone-200 border-t-stone-900 rounded-full animate-spin" />
-                        <p
-                            className="text-2xl md:text-3xl text-stone-900 font-light mb-2"
-                            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                        >
-                            Order is placing
+                        <div className="w-12 h-12 mx-auto mb-6 border-2 border-[var(--color-shas-line)] border-t-[var(--color-shas-rose)] rounded-full animate-spin" />
+                        <p className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] font-light mb-2">
+                            Confirming your order
                         </p>
-                        <p className="text-sm text-stone-500 font-light">
-                            Please don&apos;t close or refresh this page — we&apos;re confirming your payment.
+                        <p className="text-sm text-[var(--color-shas-muted)] font-light">
+                            Please don&apos;t close or refresh — we&apos;re finalising your payment.
                         </p>
                     </div>
                 </div>
@@ -288,10 +283,9 @@ export default function CheckoutPage() {
             <div className="max-w-5xl mx-auto px-4 md:px-8">
 
                 {/* Header */}
-                <div className="mb-12">
-                    <p className="text-xs tracking-[0.4em] text-stone-400 uppercase mb-2">Final Step</p>
-                    <h1 className="text-3xl md:text-5xl text-stone-900 font-light"
-                        style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <div className="mb-12 reveal">
+                    <span className="divider-rose mb-3">Final Step</span>
+                    <h1 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light">
                         Checkout
                     </h1>
                 </div>
@@ -308,16 +302,15 @@ export default function CheckoutPage() {
                     {/* ── Left — Delivery Form ── */}
                     <div className="lg:col-span-2 space-y-6">
                         <form noValidate onSubmit={(e) => { e.preventDefault(); handlePayment(); }}>
-                            <div className="bg-white border border-stone-100 p-8">
-                                <h2 className="text-xl text-stone-900 font-light mb-6"
-                                    style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                            <div className="surface-soft p-8">
+                                <h2 className="font-display text-2xl text-[var(--color-shas-plum)] font-light mb-6">
                                     Delivery Details
                                 </h2>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {fields.map((field) => (
                                         <div key={field.name}>
-                                            <label className="text-xs tracking-widest uppercase text-stone-400 block mb-2">
+                                            <label className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] block mb-2">
                                                 {field.label}
                                             </label>
                                             <input
@@ -339,7 +332,7 @@ export default function CheckoutPage() {
 
                                     {/* Address — full width */}
                                     <div className="sm:col-span-2">
-                                        <label className="text-xs tracking-widest uppercase text-stone-400 block mb-2">
+                                        <label className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] block mb-2">
                                             Address *
                                         </label>
                                         <input
@@ -359,7 +352,7 @@ export default function CheckoutPage() {
 
                                     {/* City — full width */}
                                     <div className="sm:col-span-2">
-                                        <label className="text-xs tracking-widest uppercase text-stone-400 block mb-2">
+                                        <label className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] block mb-2">
                                             City *
                                         </label>
                                         <input
@@ -381,22 +374,21 @@ export default function CheckoutPage() {
                         </form>
 
                         {/* Cart Items Summary */}
-                        <div className="bg-white border border-stone-100 p-8">
-                            <h2 className="text-xl text-stone-900 font-light mb-6"
-                                style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                        <div className="surface-soft p-8">
+                            <h2 className="font-display text-2xl text-[var(--color-shas-plum)] font-light mb-6">
                                 Order Items
                             </h2>
                             <div className="space-y-4">
                                 {cartItems.map((item) => (
                                     <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4 items-center">
-                                        <div className="relative w-14 h-16 bg-stone-100 flex-shrink-0 overflow-hidden">
+                                        <div className="relative w-14 h-16 bg-[var(--color-shas-cream)] flex-shrink-0 overflow-hidden">
                                             <Image src={item.image} alt={item.name} fill className="object-cover" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-stone-800 text-sm font-light">{item.name}</p>
-                                            <p className="text-stone-400 text-xs">Size: {item.selectedSize} × {item.quantity}</p>
+                                            <p className="text-[var(--color-shas-plum)] text-sm font-light">{item.name}</p>
+                                            <p className="text-[var(--color-shas-muted)] text-xs">Size: {item.selectedSize} × {item.quantity}</p>
                                         </div>
-                                        <p className="text-stone-700 text-sm font-medium">
+                                        <p className="text-[var(--color-shas-plum)] text-sm font-medium">
                                             ₹{(item.price * item.quantity).toLocaleString()}
                                         </p>
                                     </div>
@@ -407,31 +399,30 @@ export default function CheckoutPage() {
 
                     {/* ── Right — Order Summary + Pay Button ── */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white border border-stone-100 p-8 sticky top-28">
-                            <h2 className="text-2xl text-stone-900 font-light mb-6"
+                        <div className="surface-soft p-8 sticky top-28">
+                            <h2 className="text-2xl text-[var(--color-shas-plum)] font-light mb-6"
                                 style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                                 Summary
                             </h2>
 
                             <div className="space-y-3 text-sm mb-6">
-                                <div className="flex justify-between text-stone-500">
+                                <div className="flex justify-between text-[var(--color-shas-muted)]">
                                     <span>Subtotal</span>
                                     <span>₹{totalPrice.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-stone-500">
+                                <div className="flex justify-between text-[var(--color-shas-muted)]">
                                     <span>Delivery</span>
-                                    <span className={deliveryCharge === 0 ? "text-emerald-600" : ""}>
-                                        {deliveryCharge === 0 ? "Free" : `₹${deliveryCharge}`}
+                                    <span className={deliveryCharge === 0 ? "text-[var(--color-shas-sage)] font-medium" : ""}>
+                                        {deliveryCharge === 0 ? "Complimentary" : `₹${deliveryCharge}`}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="border-t border-stone-100 pt-5 mb-8 flex justify-between items-center">
-                                <span className="text-lg text-stone-900"
-                                    style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                            <div className="border-t border-[var(--color-shas-line)] pt-5 mb-8 flex justify-between items-center">
+                                <span className="font-display text-xl text-[var(--color-shas-plum)]">
                                     Total
                                 </span>
-                                <span className="text-lg font-medium text-stone-900">
+                                <span className="text-lg font-medium text-[var(--color-shas-plum)]">
                                     ₹{grandTotal.toLocaleString()}
                                 </span>
                             </div>
@@ -442,28 +433,29 @@ export default function CheckoutPage() {
                                 onClick={handlePayment}
                                 disabled={loading}
                                 className={`w-full py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 ${loading
-                                        ? "bg-stone-400 text-white cursor-not-allowed"
-                                        : "bg-stone-900 text-white hover:bg-stone-700"
+                                        ? "bg-[var(--color-shas-line-strong)] text-white cursor-not-allowed"
+                                        : "bg-[var(--color-shas-plum)] text-white hover:bg-[var(--color-shas-plum-soft)]"
                                     }`}
                             >
                                 {loading ? "Opening Payment..." : `Pay ₹${grandTotal.toLocaleString()}`}
                             </button>
 
                             <Link href="/cart"
-                                className="block text-center text-xs text-stone-400 hover:text-stone-700 tracking-widest uppercase mt-4 transition-colors">
-                                ← Back to Cart
+                                className="block text-center text-[0.65rem] text-[var(--color-shas-muted)] hover:text-[var(--color-shas-rose)] tracking-[0.3em] uppercase mt-4 transition-colors">
+                                ← Back to Bag
                             </Link>
 
                             {/* Trust badges */}
-                            <div className="mt-6 pt-6 border-t border-stone-100 space-y-2">
+                            <div className="mt-6 pt-6 border-t border-[var(--color-shas-line)] space-y-2">
                                 {[
-                                    ["🔒", "100% Secure Payment"],
-                                    ["↩️", "14-day easy returns"],
-                                    ["🚚", "Free delivery over ₹2,000"],
+                                    ["✦", "100% Secure Payment"],
+                                    ["✦", "14-day easy returns"],
+                                    ["✦", "Wrapped with care"],
+                                    ["✦", "Free delivery over ₹2,000"],
                                 ].map(([icon, text]) => (
-                                    <div key={text} className="flex items-center gap-2">
-                                        <span className="text-sm">{icon}</span>
-                                        <p className="text-xs text-stone-400 font-light">{text}</p>
+                                    <div key={text} className="flex items-center gap-2.5">
+                                        <span className="text-[var(--color-shas-rose)] text-xs">{icon}</span>
+                                        <p className="text-[0.7rem] text-[var(--color-shas-muted)] font-light">{text}</p>
                                     </div>
                                 ))}
                             </div>

@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
 
   // Pass pathname to server components via request header (NOT response header
    // — that would leak it to the client). RootLayout reads this to skip the
-   // maintenance overlay and chrome on /ashrafckvnradmin pages.
+   // maintenance overlay and chrome on /shasstorebyshahanas pages.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-invoke-path", pathname);
 
@@ -16,8 +16,8 @@ export async function proxy(request: NextRequest) {
   });
 
   const needsAdminAuth =
-    (pathname.startsWith("/ashrafckvnradmin") &&
-      !pathname.startsWith("/ashrafckvnradmin/login")) ||
+    (pathname.startsWith("/shasstorebyshahanas") &&
+      !pathname.startsWith("/shasstorebyshahanas/login")) ||
     pathname === "/api/upload-image" ||
     pathname.startsWith("/api/admin/");
 
@@ -47,7 +47,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
       return NextResponse.redirect(
-        new URL("/ashrafckvnradmin/login", request.url)
+        new URL("/shasstorebyshahanas/login", request.url)
       );
     }
 
@@ -64,7 +64,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
       return NextResponse.redirect(
-        new URL("/ashrafckvnradmin/login", request.url)
+        new URL("/shasstorebyshahanas/login", request.url)
       );
     }
   }

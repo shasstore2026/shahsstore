@@ -19,8 +19,8 @@ const SECURITY_HEADERS = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://jzbupujpgjhqsqvnktdj.supabase.co https://images.unsplash.com https://www.printmate.in https://encrypted-tbn0.gstatic.com",
-      "connect-src 'self' https://jzbupujpgjhqsqvnktdj.supabase.co wss://jzbupujpgjhqsqvnktdj.supabase.co https://api.razorpay.com https://lumberjack.razorpay.com https://vitals.vercel-insights.com",
+      "img-src 'self' data: blob: https://lgixdwopjzuedvqddeig.supabase.co https://images.unsplash.com https://www.printmate.in https://encrypted-tbn0.gstatic.com",
+      "connect-src 'self' https://lgixdwopjzuedvqddeig.supabase.co wss://lgixdwopjzuedvqddeig.supabase.co https://api.razorpay.com https://lumberjack.razorpay.com https://vitals.vercel-insights.com",
       "frame-src https://api.razorpay.com https://checkout.razorpay.com",
       "object-src 'none'",
       "base-uri 'self'",
@@ -41,7 +41,10 @@ const nextConfig: NextConfig = {
   experimental: {
     staleTimes: {
       dynamic: 0,
-      static: 0,
+      // Next.js 16 requires a minimum of 30 here. The intent of this whole
+      // block is `dynamic: 0` (which is what actually matters for fresh
+      // admin updates); `static` only affects truly static segments.
+      static: 30,
     },
   },
 
@@ -53,7 +56,7 @@ const nextConfig: NextConfig = {
       // Pin to OUR Supabase project — '*' would let an admin point images at
       // any other Supabase project, which Next.js Image would then fetch
       // server-side (SSRF risk).
-      { protocol: "https", hostname: "jzbupujpgjhqsqvnktdj.supabase.co" },
+      { protocol: "https", hostname: "lgixdwopjzuedvqddeig.supabase.co" },
     ],
   },
 

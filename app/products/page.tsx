@@ -1,5 +1,5 @@
 import ProductCard from "@/components/ProductCard";
-import { getProducts, getProductsByCategory, getShirtStyles } from "@/lib/products";
+import { getProducts, getCategories } from "@/lib/products";
 import { Product } from "@/types";
 import Link from "next/link";
 
@@ -9,74 +9,91 @@ export default async function ProductsPage({
   searchParams: Promise<{ category?: string; fit?: string; fabric?: string; occasion?: string }>;
 }) {
   const params = await searchParams;
-  const [allProducts, shirtStyles] = await Promise.all([
+  const [allProducts, categories] = await Promise.all([
     getProducts(),
-    getShirtStyles(),
+    getCategories(),
   ]);
 
   // Active category — from any query param
   const cat = params.fit ?? params.fabric ?? params.occasion ?? params.category;
 
-  // Filter products by matching category name against shirt style names
+  // Filter products
   const filtered: Product[] = cat
     ? allProducts.filter((p) => p.category.toLowerCase() === cat.toLowerCase())
     : allProducts;
 
-  // Page title — use matching shirt style name or fallback
-  const activeStyle = shirtStyles.find(
-    (s) => s.name.toLowerCase() === cat?.toLowerCase()
+  // Page title
+  const activeCat = categories.find(
+    (c) => c.name.toLowerCase() === cat?.toLowerCase()
   );
-  const pageTitle = cat ? (activeStyle?.name ?? cat) : "All Men's Shirts";
+  const pageTitle = cat ? (activeCat?.name ?? cat) : "The Collection";
+  const pageSub = cat
+    ? activeCat?.description ?? "A handpicked edit, refreshed often."
+    : "Every piece, hand-curated for you.";
 
   return (
-    <div className="bg-[#FAFAF8] min-h-screen">
-      {/* Page Header */}
-      <div className="bg-[#F5F0E8] pt-20 md:pt-32 pb-8 md:pb-12 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-[0.4em] text-stone-400 uppercase mb-3">
-            Men&apos;s Shirts
-          </p>
-          <h1
-            className="text-3xl md:text-5xl text-stone-900 font-light"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-          >
+    <div className="bg-[var(--color-shas-bg)] min-h-screen">
+      {/* Editorial header */}
+      <div className="relative bg-[var(--color-shas-cream)] pt-24 md:pt-36 pb-10 md:pb-16 px-4 md:px-8 overflow-hidden">
+        {/* Soft mesh */}
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-60 pointer-events-none"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 12% 80%, #F4D9CF 0%, transparent 40%),
+              radial-gradient(circle at 88% 20%, #E8DDD0 0%, transparent 35%)
+            `,
+          }}
+        />
+        <p
+          aria-hidden
+          className="font-italiana absolute top-12 right-6 md:right-16 text-[6rem] md:text-[10rem] text-[var(--color-shas-rose)]/15 leading-none select-none pointer-events-none hidden sm:block"
+        >
+          ✦
+        </p>
+
+        <div className="relative max-w-7xl mx-auto">
+          <span className="divider-rose mb-4">Curated Edit</span>
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-[var(--color-shas-plum)] font-light leading-[1.05]">
             {pageTitle}
           </h1>
+          <p className="text-[var(--color-shas-muted)] mt-3 md:mt-4 max-w-xl text-sm md:text-base font-light">
+            {pageSub}
+          </p>
+          <p className="mt-4 md:mt-6 text-xs tracking-[0.3em] uppercase text-[var(--color-shas-muted)]">
+            {filtered.length} {filtered.length === 1 ? "Piece" : "Pieces"}
+          </p>
         </div>
       </div>
 
-      {/* Filter Tabs — dynamic from shirt_styles. Top offset matches the
-          actual navbar height (76px mobile / 94px desktop after the
-          Shasstore/Fashion two-line wordmark) so the bar pins flush below it. */}
-      <div className="border-b border-stone-200 bg-white sticky z-40 top-[calc(76px+var(--top-bar-height,0px))] md:top-[calc(94px+var(--top-bar-height,0px))]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex gap-4 md:gap-8 overflow-x-auto">
-
-          {/* All Shirts tab — always first */}
+      {/* Filter chips */}
+      <div className="border-b border-[var(--color-shas-line)] bg-[var(--color-shas-bg)]/95 backdrop-blur-md sticky z-30 top-[calc(76px+var(--top-bar-height,0px))] md:top-[calc(94px+var(--top-bar-height,0px))]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex gap-3 md:gap-4 overflow-x-auto py-3">
           <Link
             href="/products"
-            className={`py-4 text-xs tracking-[0.2em] uppercase font-medium whitespace-nowrap border-b-2 transition-all duration-300 ${
+            className={`px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border transition-all duration-300 ${
               !cat
-                ? "border-[#c8b89a] text-[#c8b89a]"
-                : "border-transparent text-stone-400 hover:text-stone-700"
+                ? "border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white"
+                : "border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)]"
             }`}
           >
-            All Shirts
+            All
           </Link>
 
-          {/* Dynamic tabs from shirt_styles table */}
-          {shirtStyles.map((style) => {
-            const isActive = cat?.toLowerCase() === style.name.toLowerCase();
+          {categories.map((c) => {
+            const isActive = cat?.toLowerCase() === c.name.toLowerCase();
             return (
               <Link
-                key={style.id}
-                href={`/products?category=${encodeURIComponent(style.name)}`}
-                className={`py-4 text-xs tracking-[0.2em] uppercase font-medium whitespace-nowrap border-b-2 transition-all duration-300 ${
+                key={c.id}
+                href={`/products?category=${encodeURIComponent(c.name)}`}
+                className={`px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border transition-all duration-300 ${
                   isActive
-                    ? "border-[#c8b89a] text-[#c8b89a]"
-                    : "border-transparent text-stone-400 hover:text-stone-700"
+                    ? "border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white"
+                    : "border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)]"
                 }`}
               >
-                {style.name}
+                {c.name}
               </Link>
             );
           })}
@@ -84,30 +101,27 @@ export default async function ProductsPage({
       </div>
 
       {/* Product Grid */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-14">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">
         {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <p
-              className="text-stone-400 text-lg font-light"
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            >
-              No shirts found in this category.
+            <p className="font-display italic text-3xl text-[var(--color-shas-rose)] mb-3">
+              Nothing here yet.
             </p>
-            <Link
-              href="/products"
-              className="text-xs tracking-widest uppercase text-stone-500 underline underline-offset-4 mt-4 inline-block hover:text-stone-900 transition-colors"
-            >
-              View All Shirts
+            <p className="text-sm text-[var(--color-shas-muted)] max-w-sm mx-auto mb-6 font-light">
+              We&apos;re still styling this drop. Browse the full edit while we get this category ready.
+            </p>
+            <Link href="/products" className="link-underline text-xs tracking-[0.3em] uppercase">
+              View Everything →
             </Link>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
-              {filtered.map((product: Product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">
+            {filtered.map((product: Product, i) => (
+              <div key={product.id} className="reveal" style={{ ['--reveal-delay' as string]: `${(i % 8) * 0.06}s` }}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

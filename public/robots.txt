@@ -2,8 +2,8 @@
 # This is defense-in-depth ONLY — the real protection is auth + RLS, not URL secrecy.
 
 User-agent: *
-Disallow: /ashrafckvnradmin
-Disallow: /ashrafckvnradmin/
+Disallow: /shasstorebyshahanas
+Disallow: /shasstorebyshahanas/
 Disallow: /api/
 
 # Public pages — explicitly allowed for crawlers

@@ -122,7 +122,7 @@ async function getReferencedPaths(): Promise<Set<string>> {
   }
 
   // Shirt styles: image
-  const { data: styles } = await supabaseAdmin.from("shirt_styles").select("image");
+  const { data: styles } = await supabaseAdmin.from("categories").select("image");
   for (const s of styles ?? []) addUrl(s.image as string | null);
 
   // Hero banner: main_image

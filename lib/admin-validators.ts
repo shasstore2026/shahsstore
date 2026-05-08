@@ -29,15 +29,15 @@ export async function validateFeaturedOrder(
   }
 }
 
-/** Check if a shirt-style display_order value is available. */
-export async function validateStyleOrder(
+/** Check if a category display_order value is available. */
+export async function validateCategoryOrder(
   value: string | number | null | undefined,
   excludeId?: string
 ): Promise<ValidationResult | null> {
   if (value === null || value === undefined || value === "") return null;
 
   try {
-    const res = await fetch("/api/admin/validate-style-order", {
+    const res = await fetch("/api/admin/validate-category-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ value, excludeId }),

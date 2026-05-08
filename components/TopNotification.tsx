@@ -16,7 +16,7 @@ export default function TopNotification() {
   const pathname = usePathname();
 
   // Don't show on admin pages
-  const isAdmin = pathname?.startsWith("/ashrafckvnradmin");
+  const isAdmin = pathname?.startsWith("/shasstorebyshahanas");
   const isVisible = !isAdmin && enabled && items.length > 0;
 
   useEffect(() => {

@@ -1,62 +1,276 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&family=Italiana&display=swap');
 
 @import "tailwindcss";
 
-/* 👇 ADD THIS BLOCK */
+/* ──────────────────────────────────────────────────────────────────
+   Shasstore design tokens — modern boutique-luxe palette built for
+   a ladies' fashion + jewellery storefront.
+   Ivory/cream base + blush + rose-gold + deep plum + sage accents.
+   ────────────────────────────────────────────────────────────────── */
 @theme {
-  /* Create Tailwind animation utilities */
-  --animate-marquee: marquee 25s linear infinite;
+  /* Brand palette */
+  --color-shas-bg: #FAF7F3;        /* ivory base — replaces stone-50 */
+  --color-shas-cream: #F5EFE6;     /* warm cream — soft section bg */
+  --color-shas-blush: #F4D9CF;     /* blush pink — accents */
+  --color-shas-blush-soft: #FBE9E1;
+  --color-shas-rose: #C9A27D;      /* rose-gold — primary accent */
+  --color-shas-rose-deep: #A07951; /* hover/darker rose */
+  --color-shas-plum: #3E1F2A;      /* deep plum — primary text on light, primary CTA */
+  --color-shas-plum-soft: #5C2D3E;
+  --color-shas-sage: #A9B89C;      /* secondary sage */
+  --color-shas-charcoal: #2A2520;  /* warm near-black */
+  --color-shas-line: #E8E0D5;      /* hairline divider */
+  --color-shas-line-strong: #D6C8B5;
+  --color-shas-muted: #8B7E6E;     /* muted text */
+
+  /* Animations */
+  --animate-marquee: marquee 35s linear infinite;
+  --animate-marquee-slow: marquee 60s linear infinite;
   --animate-marquee-alt: marquee-alt 25s linear infinite;
+  --animate-fade-up: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fadeIn 0.6s ease forwards;
+  --animate-ken-burns: kenBurns 18s ease-in-out infinite alternate;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spin-slow: spin 14s linear infinite;
 
-  /* First marquee: moves from 0% to -100% */
   @keyframes marquee {
-    0% {
-      transform: translateX(0%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
   }
-
-  /* Second marquee: from right to 0% for seamless loop */
   @keyframes marquee-alt {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0%); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes kenBurns {
+    0% { transform: scale(1.04) translate(0%, 0%); }
+    100% { transform: scale(1.16) translate(-2%, -2%); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
 }
-/* 👆 STOP ADDING HERE – the rest is your old CSS */
-
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Jost', sans-serif;
-  background-color: #FAFAF8;
-  color: #1a1a1a;
-}
-
 html {
   scroll-behavior: smooth;
-}
-
-.font-display {
-  font-family: 'Cormorant Garamond', serif;
-}
-
-/* Hide the native scrollbar entirely — OverlayScrollbar paints a thin
-   indicator on the right edge that auto-hides when not scrolling, so
-   the scrollbar never reserves layout space. */
-html {
   scrollbar-width: none; /* Firefox */
 }
 html::-webkit-scrollbar {
   width: 0;
   height: 0;
   display: none;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--color-shas-bg);
+  color: var(--color-shas-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Typography utilities
+   ────────────────────────────────────────────────────────────────── */
+.font-display {
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: -0.005em;
+}
+.font-italiana {
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.04em;
+}
+.eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--color-shas-rose);
+}
+.eyebrow-muted {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--color-shas-muted);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-shas-blush);
+  color: var(--color-shas-plum);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Reusable visual primitives
+   ────────────────────────────────────────────────────────────────── */
+.divider-rose {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-shas-rose);
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.divider-rose::before,
+.divider-rose::after {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* Button — primary plum */
+.btn-plum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-shas-plum);
+  color: #fff;
+  padding: 0.95rem 2.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.btn-plum:hover {
+  background: var(--color-shas-plum-soft);
+  transform: translateY(-1px);
+}
+
+/* Button — outline rose */
+.btn-rose-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-shas-rose);
+  color: var(--color-shas-rose);
+  padding: 0.9rem 2.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+.btn-rose-outline:hover {
+  background: var(--color-shas-rose);
+  color: #fff;
+}
+
+/* Surface card with soft warm shadow */
+.surface-soft {
+  background: #fff;
+  border: 1px solid var(--color-shas-line);
+  box-shadow: 0 1px 0 rgba(62, 31, 42, 0.02);
+}
+
+/* Animated underline link */
+.link-underline {
+  position: relative;
+  padding-bottom: 2px;
+  color: var(--color-shas-charcoal);
+  transition: color 0.3s ease;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-shas-rose);
+  transition: width 0.3s ease;
+}
+.link-underline:hover {
+  color: var(--color-shas-rose);
+}
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Image hover zoom */
+.img-zoom-wrap {
+  overflow: hidden;
+}
+.img-zoom-wrap img,
+.img-zoom-wrap > img,
+.img-zoom > * {
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img-zoom-wrap:hover img,
+.img-zoom:hover > * {
+  transform: scale(1.06);
+}
+
+/* Glass blur surface (for hero overlay cards) */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(110%);
+  -webkit-backdrop-filter: blur(14px) saturate(110%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+/* Subtle vertical line accent */
+.vline-rose {
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--color-shas-rose) 30%, var(--color-shas-rose) 70%, transparent);
+}
+
+/* Marquee row */
+.marquee-row {
+  display: flex;
+  gap: 4rem;
+  white-space: nowrap;
+  animation: marquee 35s linear infinite;
+  will-change: transform;
+}
+.marquee-row.fast { animation-duration: 22s; }
+.marquee-row.slow { animation-duration: 55s; }
+.marquee-row > * { flex-shrink: 0; }
+@media (max-width: 640px) {
+  .marquee-row { animation-duration: 22s; gap: 2.5rem; }
+}
+
+/* Reveal-on-scroll helper (CSS-only fallback — pages add this class to elements) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Reduce motion — be respectful */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .marquee-row,
+  .img-zoom-wrap img {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

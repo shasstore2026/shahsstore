@@ -61,9 +61,9 @@ async function ensureFeaturedOrderAvailable(
   }
 }
 
-/** Find smallest unused positive integer for shirt_styles.display_order */
+/** Find smallest unused positive integer for categories.display_order */
 async function suggestNextStyleOrder(): Promise<number> {
-  const { data } = await supabaseAdmin.from("shirt_styles").select("display_order");
+  const { data } = await supabaseAdmin.from("categories").select("display_order");
   const used = new Set(
     (data ?? []).map((r) => r.display_order as number).filter((n) => n != null)
   );
@@ -80,7 +80,7 @@ async function ensureStyleOrderAvailable(
   if (!displayOrder || displayOrder < 1) return;
 
   let query = supabaseAdmin
-    .from("shirt_styles")
+    .from("categories")
     .select("id, name")
     .eq("display_order", displayOrder);
   if (excludeId) query = query.neq("id", excludeId);
@@ -164,7 +164,7 @@ function isAllowedImageUrl(url: string): boolean {
     const parsed = new URL(url);
     const host = parsed.hostname;
     return (
-      host === "jzbupujpgjhqsqvnktdj.supabase.co" ||
+      host === "lgixdwopjzuedvqddeig.supabase.co" || // shasstore Supabase project
       host === "images.unsplash.com" ||
       host === "www.printmate.in" ||
       host === "encrypted-tbn0.gstatic.com"
@@ -318,7 +318,7 @@ export async function addProduct(formData: FormData) {
     console.error("addProduct error:", error.message);
     throw new Error("Failed to add product");
   }
-  revalidatePath("/ashrafckvnradmin/products");
+  revalidatePath("/shasstorebyshahanas/products");
   revalidatePath("/products");
   revalidatePath("/");
 }
@@ -427,7 +427,7 @@ export async function updateProduct(id: string, formData: FormData) {
     }
   }
 
-  revalidatePath("/ashrafckvnradmin/products");
+  revalidatePath("/shasstorebyshahanas/products");
   revalidatePath("/products");
   revalidatePath("/");
 }
@@ -466,7 +466,7 @@ export async function deleteProduct(id: string, confirmation?: string) {
     }
   }
 
-  revalidatePath("/ashrafckvnradmin/products");
+  revalidatePath("/shasstorebyshahanas/products");
   revalidatePath("/products");
   revalidatePath("/");
 }
@@ -485,13 +485,13 @@ export async function updateFeaturedOrder(id: string, order: number | null) {
     console.error("updateFeaturedOrder error:", error.message);
     throw new Error("Failed to update featured order");
   }
-  revalidatePath("/ashrafckvnradmin/products");
+  revalidatePath("/shasstorebyshahanas/products");
   revalidatePath("/");
 }
 
-// ── Shirt Styles ──────────────────────────────────
+// ── Categories ──────────────────────────────────
 
-export async function addShirtStyle(formData: FormData) {
+export async function addCategory(formData: FormData) {
   await requireAuth();
 
   const name = safeString(formData.get("name") as string, 100);
@@ -506,7 +506,7 @@ export async function addShirtStyle(formData: FormData) {
   // Check display_order uniqueness
   await ensureStyleOrderAvailable(display_order);
 
-  const { error } = await supabaseAdmin.from("shirt_styles").insert([
+  const { error } = await supabaseAdmin.from("categories").insert([
     {
       name,
       description,
@@ -516,14 +516,14 @@ export async function addShirtStyle(formData: FormData) {
   ]);
 
   if (error) {
-    console.error("addShirtStyle error:", error.message);
+    console.error("addCategory error:", error.message);
     throw new Error("Failed to add shirt style");
   }
-  revalidatePath("/ashrafckvnradmin/shirt-styles");
+  revalidatePath("/shasstorebyshahanas/categories");
   revalidatePath("/");
 }
 
-export async function updateShirtStyle(id: string, formData: FormData) {
+export async function updateCategory(id: string, formData: FormData) {
   await requireAuth();
 
   const name = safeString(formData.get("name") as string, 100);
@@ -540,13 +540,13 @@ export async function updateShirtStyle(id: string, formData: FormData) {
 
   // Get the old image to clean up if replaced
   const { data: oldStyle } = await supabaseAdmin
-    .from("shirt_styles")
+    .from("categories")
     .select("image")
     .eq("id", id)
     .single();
 
   const { error } = await supabaseAdmin
-    .from("shirt_styles")
+    .from("categories")
     .update({
       name,
       description,
@@ -556,7 +556,7 @@ export async function updateShirtStyle(id: string, formData: FormData) {
     .eq("id", id);
 
   if (error) {
-    console.error("updateShirtStyle error:", error.message);
+    console.error("updateCategory error:", error.message);
     throw new Error("Failed to update shirt style");
   }
 
@@ -565,32 +565,32 @@ export async function updateShirtStyle(id: string, formData: FormData) {
     try {
       await deleteImagesByUrls([oldStyle.image as string]);
     } catch (e) {
-      console.error("updateShirtStyle: image cleanup failed:", e);
+      console.error("updateCategory: image cleanup failed:", e);
     }
   }
 
-  revalidatePath("/ashrafckvnradmin/shirt-styles");
+  revalidatePath("/shasstorebyshahanas/categories");
   revalidatePath("/");
 }
 
-export async function deleteShirtStyle(id: string, confirmation?: string) {
+export async function deleteCategory(id: string, confirmation?: string) {
   await requireAuth();
   requireConfirmation(confirmation);
 
   // Fetch the style's image first
   const { data: style } = await supabaseAdmin
-    .from("shirt_styles")
+    .from("categories")
     .select("image")
     .eq("id", id)
     .single();
 
   const { error } = await supabaseAdmin
-    .from("shirt_styles")
+    .from("categories")
     .delete()
     .eq("id", id);
 
   if (error) {
-    console.error("deleteShirtStyle error:", error.message);
+    console.error("deleteCategory error:", error.message);
     throw new Error("Failed to delete shirt style");
   }
 
@@ -599,11 +599,11 @@ export async function deleteShirtStyle(id: string, confirmation?: string) {
     try {
       await deleteImagesByUrls([style.image as string]);
     } catch (e) {
-      console.error("deleteShirtStyle: image cleanup failed:", e);
+      console.error("deleteCategory: image cleanup failed:", e);
     }
   }
 
-  revalidatePath("/ashrafckvnradmin/shirt-styles");
+  revalidatePath("/shasstorebyshahanas/categories");
   revalidatePath("/");
 }
 
@@ -758,8 +758,8 @@ export async function updateOrderStatus(
     console.error("updateOrderStatus error:", error.message);
     throw new Error("Failed to update order");
   }
-  revalidatePath("/ashrafckvnradmin/orders");
-  revalidatePath(`/ashrafckvnradmin/orders/${orderId}`);
+  revalidatePath("/shasstorebyshahanas/orders");
+  revalidatePath(`/shasstorebyshahanas/orders/${orderId}`);
 }
 
 export async function setMaintenanceMode(
@@ -954,9 +954,9 @@ export async function deleteOrder(id: string, confirmation?: string) {
     throw new Error("Failed to delete order");
   }
 
-  revalidatePath("/ashrafckvnradmin");
-  revalidatePath("/ashrafckvnradmin/orders");
-  revalidatePath("/ashrafckvnradmin/revenue");
+  revalidatePath("/shasstorebyshahanas");
+  revalidatePath("/shasstorebyshahanas/orders");
+  revalidatePath("/shasstorebyshahanas/revenue");
 }
 
 export async function deleteOrders(ids: string[], confirmation?: string) {
@@ -979,8 +979,223 @@ export async function deleteOrders(ids: string[], confirmation?: string) {
     throw new Error("Failed to delete orders");
   }
 
-  revalidatePath("/ashrafckvnradmin");
-  revalidatePath("/ashrafckvnradmin/orders");
-  revalidatePath("/ashrafckvnradmin/revenue");
+  revalidatePath("/shasstorebyshahanas");
+  revalidatePath("/shasstorebyshahanas/orders");
+  revalidatePath("/shasstorebyshahanas/revenue");
   return cleanIds.length;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Homepage section editors — write to the singleton homepage_content row.
+// Each function targets ONE section so admin saves are surgical and
+// easy to validate. All revalidate the storefront homepage (`/`).
+// ────────────────────────────────────────────────────────────────────
+
+/** Get the singleton homepage_content row id (creates the row if missing). */
+async function singletonHomepageId(): Promise<string> {
+  const { data, error } = await supabaseAdmin
+    .from("homepage_content")
+    .select("id")
+    .limit(1)
+    .maybeSingle();
+  if (error) {
+    console.error("homepage_content lookup error:", error.message);
+    throw new Error("Failed to load homepage content");
+  }
+  if (data?.id) return data.id as string;
+  // No row — insert an empty one so subsequent updates target it.
+  const { data: inserted, error: insertErr } = await supabaseAdmin
+    .from("homepage_content")
+    .insert({})
+    .select("id")
+    .single();
+  if (insertErr || !inserted?.id) {
+    throw new Error("Failed to initialize homepage content row");
+  }
+  return inserted.id as string;
+}
+
+async function updateHomepageRow(payload: Record<string, unknown>) {
+  const id = await singletonHomepageId();
+  const { error } = await supabaseAdmin
+    .from("homepage_content")
+    .update(payload)
+    .eq("id", id);
+  if (error) {
+    console.error("homepage update error:", error.message);
+    throw new Error("Failed to update homepage section");
+  }
+  revalidatePath("/");
+  revalidatePath("/shasstorebyshahanas/homepage-sections");
+}
+
+/** Story / editorial spotlight section. */
+export async function updateHomepageStory(formData: FormData) {
+  await requireAuth();
+
+  const image = safeString(formData.get("story_image") as string, 500);
+  if (image && !isAllowedImageUrl(image)) throw new Error("Invalid story image URL");
+
+  const ctaLink = safeString(formData.get("story_cta_link") as string, 200);
+  if (ctaLink && !ctaLink.startsWith("/")) {
+    throw new Error("CTA link must be a relative path (start with /)");
+  }
+
+  await updateHomepageRow({
+    story_eyebrow: safeString(formData.get("story_eyebrow") as string, 80) ?? "",
+    story_title: safeString(formData.get("story_title") as string, 200) ?? "",
+    story_subtitle: safeString(formData.get("story_subtitle") as string, 1000) ?? "",
+    story_paragraph: safeString(formData.get("story_paragraph") as string, 1000) ?? "",
+    story_image: image ?? "",
+    story_cta_text: safeString(formData.get("story_cta_text") as string, 60) ?? "",
+    story_cta_link: ctaLink ?? "/products",
+  });
+}
+
+/** Lookbook gallery — up to 4 images with optional links + labels. */
+export async function updateHomepageLookbook(formData: FormData) {
+  await requireAuth();
+
+  const rawItems = safeJsonParse<unknown[]>(
+    formData.get("lookbook_images") as string,
+    []
+  );
+  const items = (Array.isArray(rawItems) ? rawItems : [])
+    .slice(0, 4)
+    .map((raw) => {
+      const obj = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+      const image = typeof obj.image === "string" ? obj.image.trim() : "";
+      const link = typeof obj.link === "string" ? obj.link.trim() : "";
+      const label = typeof obj.label === "string" ? obj.label.trim() : "";
+      // Each image MUST be allow-listed; otherwise drop it
+      if (!image || !isAllowedImageUrl(image)) return null;
+      // Links must be relative or empty
+      const safeLink = link && link.startsWith("/") ? link.slice(0, 200) : "";
+      return {
+        image: image.slice(0, 500),
+        link: safeLink,
+        label: label.slice(0, 60),
+      };
+    })
+    .filter((x): x is { image: string; link: string; label: string } => x !== null);
+
+  await updateHomepageRow({
+    lookbook_eyebrow: safeString(formData.get("lookbook_eyebrow") as string, 80) ?? "",
+    lookbook_title: safeString(formData.get("lookbook_title") as string, 200) ?? "",
+    lookbook_subtitle: safeString(formData.get("lookbook_subtitle") as string, 500) ?? "",
+    lookbook_images: items,
+  });
+}
+
+/** Testimonials list — up to 12 entries. */
+export async function updateHomepageTestimonials(formData: FormData) {
+  await requireAuth();
+
+  const rawItems = safeJsonParse<unknown[]>(
+    formData.get("testimonials") as string,
+    []
+  );
+  const items = (Array.isArray(rawItems) ? rawItems : [])
+    .slice(0, 12)
+    .map((raw) => {
+      const obj = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+      const quote = typeof obj.quote === "string" ? obj.quote.trim() : "";
+      const name = typeof obj.name === "string" ? obj.name.trim() : "";
+      const place = typeof obj.place === "string" ? obj.place.trim() : "";
+      if (!quote || !name) return null;
+      return {
+        quote: quote.slice(0, 600),
+        name: name.slice(0, 80),
+        place: place.slice(0, 80),
+      };
+    })
+    .filter((x): x is { quote: string; name: string; place: string } => x !== null);
+
+  await updateHomepageRow({
+    testimonials_eyebrow: safeString(formData.get("testimonials_eyebrow") as string, 80) ?? "",
+    testimonials_title: safeString(formData.get("testimonials_title") as string, 200) ?? "",
+    testimonials: items,
+  });
+}
+
+/** Instagram strip — handle, profile URL (HTTPS only), and up to 6 image URLs. */
+export async function updateHomepageInstagram(formData: FormData) {
+  await requireAuth();
+
+  const profileUrlRaw = formData.get("instagram_profile_url") as string | null;
+  const profileUrlTrim = (profileUrlRaw ?? "").trim();
+  let profile = "";
+  if (profileUrlTrim) {
+    if (!profileUrlTrim.startsWith("https://")) {
+      throw new Error("Instagram profile URL must use https://");
+    }
+    profile = profileUrlTrim.slice(0, 500);
+  }
+
+  const rawImages = safeJsonParse<unknown[]>(formData.get("instagram_images") as string, []);
+  const images = sanitizeImageUrls(
+    (Array.isArray(rawImages) ? rawImages : []) as unknown[],
+    6
+  );
+
+  await updateHomepageRow({
+    instagram_eyebrow: safeString(formData.get("instagram_eyebrow") as string, 80) ?? "",
+    instagram_title: safeString(formData.get("instagram_title") as string, 200) ?? "",
+    instagram_handle: safeString(formData.get("instagram_handle") as string, 60) ?? "",
+    instagram_profile_url: profile,
+    instagram_images: images,
+  });
+}
+
+/** Closing CTA — eyebrow, title (+ italic accent), subtitle, two buttons. */
+export async function updateHomepageClosingCta(formData: FormData) {
+  await requireAuth();
+
+  const primaryLink = safeString(formData.get("closing_cta_primary_link") as string, 200) ?? "/products";
+  const secondaryLink = safeString(formData.get("closing_cta_secondary_link") as string, 200) ?? "";
+  if (primaryLink && !primaryLink.startsWith("/")) {
+    throw new Error("Primary CTA link must be a relative path");
+  }
+  if (secondaryLink && !secondaryLink.startsWith("/")) {
+    throw new Error("Secondary CTA link must be a relative path");
+  }
+
+  await updateHomepageRow({
+    closing_cta_eyebrow: safeString(formData.get("closing_cta_eyebrow") as string, 80) ?? "",
+    closing_cta_title: safeString(formData.get("closing_cta_title") as string, 200) ?? "",
+    closing_cta_title_accent: safeString(formData.get("closing_cta_title_accent") as string, 200) ?? "",
+    closing_cta_subtitle: safeString(formData.get("closing_cta_subtitle") as string, 500) ?? "",
+    closing_cta_primary_text: safeString(formData.get("closing_cta_primary_text") as string, 60) ?? "",
+    closing_cta_primary_link: primaryLink,
+    closing_cta_secondary_text: safeString(formData.get("closing_cta_secondary_text") as string, 60) ?? "",
+    closing_cta_secondary_link: secondaryLink,
+  });
+}
+
+/** Section visibility toggles — all 8 booleans in one shot. */
+export async function updateHomepageVisibility(toggles: {
+  show_usp_strip: boolean;
+  show_categories: boolean;
+  show_featured: boolean;
+  show_story: boolean;
+  show_lookbook: boolean;
+  show_testimonials: boolean;
+  show_instagram: boolean;
+  show_closing_cta: boolean;
+}) {
+  await requireAuth();
+
+  // Coerce to actual booleans so the DB never receives undefined
+  const safe = {
+    show_usp_strip: !!toggles.show_usp_strip,
+    show_categories: !!toggles.show_categories,
+    show_featured: !!toggles.show_featured,
+    show_story: !!toggles.show_story,
+    show_lookbook: !!toggles.show_lookbook,
+    show_testimonials: !!toggles.show_testimonials,
+    show_instagram: !!toggles.show_instagram,
+    show_closing_cta: !!toggles.show_closing_cta,
+  };
+
+  await updateHomepageRow(safe);
 }

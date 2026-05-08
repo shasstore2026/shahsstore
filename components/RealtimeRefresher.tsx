@@ -5,14 +5,14 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 const WATCHED_TABLES = [
   "products",
-  "shirt_styles",
+  "categories",
   "homepage_content",
   "hero_banner",
   "company_content",
   "help_content",
 ] as const;
 
-const SKIP_PATH_PREFIXES = ["/ashrafckvnradmin", "/checkout", "/cart"];
+const SKIP_PATH_PREFIXES = ["/shasstorebyshahanas", "/checkout", "/cart"];
 
 export default function RealtimeRefresher() {
   const router = useRouter();
