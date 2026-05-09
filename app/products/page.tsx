@@ -67,36 +67,50 @@ export default async function ProductsPage({
         </div>
       </div>
 
-      {/* Filter chips */}
+      {/* Filter chips
+          Behavior:
+          - "All" view (no cat selected) → show every category chip
+          - Inside a single category → show only the active chip + a
+            small "← back to all" link (other categories hidden)        */}
       <div className="border-b border-[var(--color-shas-line)] bg-[var(--color-shas-bg)]/95 backdrop-blur-md sticky z-30 top-[calc(76px+var(--top-bar-height,0px))] md:top-[calc(94px+var(--top-bar-height,0px))]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex gap-3 md:gap-4 overflow-x-auto py-3">
-          <Link
-            href="/products"
-            className={`px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border transition-all duration-300 ${
-              !cat
-                ? "border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white"
-                : "border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)]"
-            }`}
-          >
-            All
-          </Link>
-
-          {categories.map((c) => {
-            const isActive = cat?.toLowerCase() === c.name.toLowerCase();
-            return (
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center gap-3 md:gap-4 overflow-x-auto py-3">
+          {cat ? (
+            <>
+              {/* Subtle back link replacing the full chip strip */}
               <Link
-                key={c.id}
-                href={`/products?category=${encodeURIComponent(c.name)}`}
-                className={`px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border transition-all duration-300 ${
-                  isActive
-                    ? "border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white"
-                    : "border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)]"
-                }`}
+                href="/products"
+                className="text-[0.7rem] tracking-[0.25em] uppercase text-[var(--color-shas-muted)] hover:text-[var(--color-shas-rose)] transition-colors whitespace-nowrap"
               >
-                {c.name}
+                ← All Pieces
               </Link>
-            );
-          })}
+              <span aria-hidden className="text-[var(--color-shas-line-strong)]">·</span>
+              {/* Just the active category chip */}
+              <span
+                className="px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white"
+              >
+                {activeCat?.name ?? cat}
+              </span>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/products"
+                className="px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white transition-all duration-300"
+              >
+                All
+              </Link>
+
+              {categories.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/products?category=${encodeURIComponent(c.name)}`}
+                  className="px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)] transition-all duration-300"
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </>
+          )}
         </div>
       </div>
 
