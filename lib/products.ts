@@ -392,6 +392,12 @@ export type HeroBanner = {
   headline_italic: string;
   subtext: string;
   main_image: string;
+  /**
+   * Optional portrait-oriented image used on mobile (< md). When empty the
+   * layout falls back to `main_image` with a contain-fit so the model stays
+   * visible even if the desktop image is landscape.
+   */
+  mobile_image: string;
   stat1_value: string;
   stat1_label: string;
   stat2_value: string;

@@ -25,6 +25,13 @@ import type { HeroBanner } from "@/lib/products";
  */
 export default function HeroBanner({ banner }: { banner: HeroBanner }) {
   const hasImage = !!banner.main_image;
+  // Mobile uses the dedicated portrait crop when set, otherwise falls back to
+  // the desktop image. The fallback uses object-contain on mobile so a wide
+  // landscape source still shows the model in full (letterboxed) instead of
+  // cropping the subject out of frame.
+  const mobileSrc = banner.mobile_image?.trim() || banner.main_image;
+  const hasMobileImage = !!mobileSrc;
+  const hasDedicatedMobile = !!banner.mobile_image?.trim();
   const ctaHref = banner.accent_card_link?.trim() || "/collection";
   const left = banner.headline_line1?.trim() ?? "";
   const right = banner.headline_line2?.trim() ?? "";
@@ -118,12 +125,14 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
             overlaid on the same image (FableStreet mobile pattern).
           ──────────────────────────────────────────────────────────── */}
       <div className="md:hidden absolute inset-0">
-        {hasImage ? (
+        {hasMobileImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={banner.main_image}
+            src={mobileSrc}
             alt={`${left} ${right}`.trim() || "Hero"}
-            className="w-full h-full object-cover object-center"
+            className={`w-full h-full ${
+              hasDedicatedMobile ? "object-cover object-center" : "object-contain"
+            }`}
             style={{ animation: "kenBurns 22s ease-in-out infinite alternate" }}
           />
         ) : (

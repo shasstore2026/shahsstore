@@ -629,6 +629,11 @@ export async function updateHeroBanner(id: string, formData: FormData) {
     throw new Error("Invalid image URL");
   }
 
+  const mobileImage = safeString(formData.get("mobile_image") as string, 500);
+  if (mobileImage && !isAllowedImageUrl(mobileImage)) {
+    throw new Error("Invalid mobile image URL");
+  }
+
   const accentLink = safeString(formData.get("accent_card_link") as string, 200);
   if (accentLink && !accentLink.startsWith("/")) {
     throw new Error("Accent card link must be a relative path");
@@ -643,6 +648,7 @@ export async function updateHeroBanner(id: string, formData: FormData) {
       headline_italic: safeString(formData.get("headline_italic") as string, 100),
       subtext: safeString(formData.get("subtext") as string, 300),
       main_image: mainImage,
+      mobile_image: mobileImage,
       stat1_value: safeString(formData.get("stat1_value") as string, 20),
       stat1_label: safeString(formData.get("stat1_label") as string, 50),
       stat2_value: safeString(formData.get("stat2_value") as string, 20),

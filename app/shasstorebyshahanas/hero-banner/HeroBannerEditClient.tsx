@@ -32,12 +32,14 @@ export default function HeroBannerEditClient({
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(banner.main_image ?? "");
+  const [mobileImage, setMobileImage] = useState(banner.mobile_image ?? "");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
     formData.set("main_image", image);
+    formData.set("mobile_image", mobileImage);
 
     try {
       await updateHeroBanner(banner.id, formData);
@@ -69,11 +71,11 @@ export default function HeroBannerEditClient({
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-stone-100 p-4 md:p-8 space-y-6">
-        {/* ── Hero Image ── */}
+        {/* ── Desktop Hero Image ── */}
         <div>
-          <label className={labelCls}>Hero Image *</label>
+          <label className={labelCls}>Desktop Hero Image *</label>
           <p className="text-xs text-stone-400 mt-1 mb-3 font-light">
-            Use a clean editorial shot. Centred subject works best — text appears on either side.
+            Wide editorial shot for desktop & tablet. The two headline words flank the subject left & right.
           </p>
           <ImageUploader value={image} onChange={setImage} folder="hero" />
           <p className="text-xs text-stone-400 mt-2 font-light">Or paste a URL:</p>
@@ -81,6 +83,23 @@ export default function HeroBannerEditClient({
             type="url"
             value={image}
             onChange={(e) => setImage(e.target.value)}
+            className={inputCls + " mt-1"}
+            placeholder="https://lgixdwopjzuedvqddeig.supabase.co/storage/v1/object/public/product-images/hero/..."
+          />
+        </div>
+
+        {/* ── Mobile Hero Image (portrait) ── */}
+        <div className="border-t border-stone-100 pt-6">
+          <label className={labelCls}>Mobile Hero Image (portrait)</label>
+          <p className="text-xs text-stone-400 mt-1 mb-3 font-light">
+            Tall portrait crop (e.g. 9:16 or 3:4) used on phones. Frame the model head-to-toe — she&rsquo;ll fill the screen edge-to-edge with the headline overlaid on the right. Leave empty to use the desktop image (will be letterboxed).
+          </p>
+          <ImageUploader value={mobileImage} onChange={setMobileImage} folder="hero" />
+          <p className="text-xs text-stone-400 mt-2 font-light">Or paste a URL:</p>
+          <input
+            type="url"
+            value={mobileImage}
+            onChange={(e) => setMobileImage(e.target.value)}
             className={inputCls + " mt-1"}
             placeholder="https://lgixdwopjzuedvqddeig.supabase.co/storage/v1/object/public/product-images/hero/..."
           />
