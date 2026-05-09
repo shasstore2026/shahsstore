@@ -45,14 +45,24 @@ const navSections: NavSection[] = [
     ],
   },
   {
+    section: "Homepage",
+    items: [
+      { label: "Hero Banner",        href: "/shasstorebyshahanas/hero-banner",        icon: "◻" },
+      { label: "Story Section",      href: "/shasstorebyshahanas/story-section",      icon: "✎" },
+      { label: "Lookbook",           href: "/shasstorebyshahanas/lookbook",           icon: "▦" },
+      { label: "Testimonials",       href: "/shasstorebyshahanas/testimonials",       icon: "❝" },
+      { label: "Instagram Strip",    href: "/shasstorebyshahanas/instagram",          icon: "◉" },
+      { label: "Closing CTA",        href: "/shasstorebyshahanas/closing-cta",        icon: "✦" },
+      { label: "Section Visibility", href: "/shasstorebyshahanas/section-visibility", icon: "◐" },
+    ],
+  },
+  {
     section: "Website Content",
     items: [
       { label: "Top Notification", href: "/shasstorebyshahanas/top-notification", icon: "📢" },
-      { label: "Hero Banner", href: "/shasstorebyshahanas/hero-banner", icon: "◻" },
-      { label: "Homepage Sections", href: "/shasstorebyshahanas/homepage-sections", icon: "▤" },
-      { label: "Marquee Banner", href: "/shasstorebyshahanas/marquee", icon: "≡" },
-      { label: "Help Content", href: "/shasstorebyshahanas/help-content", icon: "?" },
-      { label: "Company Content", href: "/shasstorebyshahanas/company-content", icon: "◉" },
+      { label: "Marquee Banner",   href: "/shasstorebyshahanas/marquee",          icon: "≡" },
+      { label: "Help Content",     href: "/shasstorebyshahanas/help-content",     icon: "?" },
+      { label: "Company Content",  href: "/shasstorebyshahanas/company-content",  icon: "◉" },
     ],
   },
 ];
