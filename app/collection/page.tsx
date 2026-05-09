@@ -106,7 +106,7 @@ export default async function CollectionPage() {
                       </p>
                     )}
                     <span className="inline-flex items-center gap-2 text-[0.7rem] text-[var(--color-shas-blush)] tracking-[0.3em] uppercase mt-4 group-hover:gap-3 transition-all">
-                      Shop the edit →
+                      Shop the collection →
                     </span>
                   </div>
                 </div>

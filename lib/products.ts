@@ -260,8 +260,8 @@ function emptyHomepageContent(): HomepageContent {
       "Every piece in our boutique is chosen with care.",
     story_paragraph: "",
     story_image: "",
-    story_cta_text: "Shop the Edit",
-    story_cta_link: "/products",
+    story_cta_text: "Shop the Collection",
+    story_cta_link: "/collection",
 
     lookbook_eyebrow: "The Lookbook",
     lookbook_title: "Styled for the season",

@@ -8,15 +8,19 @@ import type { HeroBanner } from "@/lib/products";
  *
  * Field mapping (admin-managed via /shasstorebyshahanas/hero-banner):
  *   main_image       → full-bleed background
- *   headline_line1   → LEFT word (e.g. "Summer")
+ *   headline_line1   → LEFT word (one short word works best — e.g. "Summer")
  *   headline_line2   → RIGHT word (e.g. "Favourites")
  *   season_label     → bottom-left tracking label (e.g. "Cotton Essentials")
  *   headline_italic  → optional small italic accent under the bottom label
- *   subtext          → optional small description shown center-bottom on tablet+
  *   accent_card_link → CTA target (defaults to /collection)
  *
- * Stats + accent_card fields from the previous design are intentionally
- * unused here so admins can switch back without losing data.
+ * Long multi-word values are kept on one line via whitespace-nowrap and
+ * may visually overflow the viewport — that's intentional, but admins
+ * should prefer one short word per side.
+ *
+ * Subtext, stats, accent_card_title/price/badge fields from the previous
+ * design are intentionally unused here so admins can switch back without
+ * losing data.
  */
 export default function HeroBanner({ banner }: { banner: HeroBanner }) {
   const hasImage = !!banner.main_image;
@@ -48,19 +52,21 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
         className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30 pointer-events-none"
       />
 
-      {/* ── Desktop / tablet: headline split flanking the model ── */}
-      <div className="hidden md:flex absolute inset-0 items-center justify-between px-10 lg:px-20 xl:px-28 pointer-events-none">
+      {/* ── Desktop / tablet: headline split flanking the model.
+            whitespace-nowrap keeps multi-word labels on one line; if they
+            overflow the viewport that's fine (overflow-hidden on parent). */}
+      <div className="hidden md:flex absolute inset-0 items-center justify-between px-10 lg:px-16 xl:px-24 pointer-events-none">
         <h1
-          className="text-white font-light leading-none uppercase tracking-[0.12em]
-                     text-7xl lg:text-[9rem] xl:text-[11rem] drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
+          className="text-white font-light leading-none uppercase tracking-[0.1em] whitespace-nowrap
+                     text-6xl lg:text-8xl xl:text-9xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
                      reveal"
           style={{ ['--reveal-delay' as string]: '0.1s' }}
         >
           {left}
         </h1>
         <h1
-          className="text-white font-light leading-none uppercase tracking-[0.12em] text-right
-                     text-7xl lg:text-[9rem] xl:text-[11rem] drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
+          className="text-white font-light leading-none uppercase tracking-[0.1em] text-right whitespace-nowrap
+                     text-6xl lg:text-8xl xl:text-9xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
                      reveal"
           style={{ ['--reveal-delay' as string]: '0.25s' }}
         >
@@ -71,33 +77,21 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
       {/* ── Mobile: stacked centered headline ── */}
       <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center px-6 pointer-events-none">
         <h1
-          className="text-white font-light leading-[0.95] uppercase tracking-[0.12em] text-center
-                     text-5xl sm:text-7xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
+          className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
+                     text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
           style={{ ['--reveal-delay' as string]: '0.1s' }}
         >
           {left}
         </h1>
         <span aria-hidden className="block w-10 h-px bg-white/60 my-5 reveal" style={{ ['--reveal-delay' as string]: '0.2s' }} />
         <h1
-          className="text-white font-light leading-[0.95] uppercase tracking-[0.12em] text-center
-                     text-5xl sm:text-7xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
+          className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
+                     text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
           style={{ ['--reveal-delay' as string]: '0.3s' }}
         >
           {right}
         </h1>
       </div>
-
-      {/* Optional centered tagline — only on tablet+ to keep mobile clean */}
-      {banner.subtext && (
-        <p
-          className="hidden lg:block absolute left-1/2 -translate-x-1/2 bottom-[28%]
-                     text-white/85 text-sm tracking-[0.3em] uppercase font-light text-center max-w-md
-                     drop-shadow-[0_1px_8px_rgba(0,0,0,0.3)] reveal"
-          style={{ ['--reveal-delay' as string]: '0.5s' }}
-        >
-          {banner.subtext}
-        </p>
-      )}
 
       {/* Bottom-left tracking label */}
       {label && (
@@ -123,16 +117,10 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
         style={{ ['--reveal-delay' as string]: '0.7s' }}
       >
         <span className="border-b border-white/60 pb-1 group-hover:border-white transition-colors">
-          Shop the Edit
+          Shop the Collection
         </span>
         <span className="text-base transition-transform duration-300 group-hover:translate-x-1">→</span>
       </Link>
-
-      {/* Center scroll cue — small, only on desktop */}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-6 hidden md:flex flex-col items-center gap-2 pointer-events-none reveal" style={{ ['--reveal-delay' as string]: '0.9s' }}>
-        <span className="text-white/70 text-[0.6rem] tracking-[0.4em] uppercase font-light">Scroll</span>
-        <div className="w-px h-10 bg-gradient-to-b from-white/60 to-transparent animate-pulse" />
-      </div>
     </section>
   );
 }

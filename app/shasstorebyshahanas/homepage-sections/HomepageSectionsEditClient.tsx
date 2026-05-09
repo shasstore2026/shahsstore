@@ -288,11 +288,11 @@ function StoryCard({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelCls}>CTA Text</label>
-            <input name="story_cta_text" defaultValue={initial.story_cta_text} maxLength={60} className={inputCls} placeholder="Shop the Edit" />
+            <input name="story_cta_text" defaultValue={initial.story_cta_text} maxLength={60} className={inputCls} placeholder="Shop the Collection" />
           </div>
           <div>
             <label className={labelCls}>CTA Link</label>
-            <input name="story_cta_link" defaultValue={initial.story_cta_link} maxLength={200} className={inputCls} placeholder="/products" />
+            <input name="story_cta_link" defaultValue={initial.story_cta_link} maxLength={200} className={inputCls} placeholder="/collection" />
             <p className="text-[0.65rem] text-stone-400 mt-1">Must start with /</p>
           </div>
         </div>
