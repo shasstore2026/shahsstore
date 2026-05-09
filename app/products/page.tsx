@@ -1,8 +1,7 @@
-import ProductCard from "@/components/ProductCard";
 import Breadcrumb from "@/components/Breadcrumb";
+import ProductsListClient from "./ProductsListClient";
 import { getProducts, getCategories } from "@/lib/products";
 import { Product } from "@/types";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function ProductsPage({
@@ -77,30 +76,8 @@ export default async function ProductsPage({
         </div>
       </div>
 
-      {/* Product Grid (chip filter strip removed — browsing by category now happens via /collection) */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">
-        {filtered.length === 0 ? (
-          <div className="text-center py-24">
-            <p className="font-display italic text-3xl text-[var(--color-shas-rose)] mb-3">
-              Nothing here yet.
-            </p>
-            <p className="text-sm text-[var(--color-shas-muted)] max-w-sm mx-auto mb-6 font-light">
-              We&apos;re still styling this drop. Try another category while we get this one ready.
-            </p>
-            <Link href="/collection" className="btn-rose-outline">
-              Browse Categories
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">
-            {filtered.map((product: Product, i) => (
-              <div key={product.id} className="reveal" style={{ ['--reveal-delay' as string]: `${(i % 8) * 0.06}s` }}>
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Filter / sort + product grid (client) */}
+      <ProductsListClient products={filtered} />
     </div>
   );
 }
