@@ -102,7 +102,7 @@ export default async function HomePage() {
               expect a way into the dedicated collection page. */}
           <div className="text-center mt-10 md:mt-14">
             <Link href="/collection" className="btn-rose-outline">
-              See All Categories ({categories.length})
+              See All Categories
             </Link>
           </div>
         </section>

@@ -40,9 +40,6 @@ export default async function CollectionPage() {
           <p className="text-[var(--color-shas-muted)] mt-4 md:mt-5 max-w-xl mx-auto text-sm md:text-base font-light">
             From hand-finished dresses to jewellery designed to be passed down — every piece is chosen with care.
           </p>
-          <p className="mt-5 md:mt-7 text-xs tracking-[0.3em] uppercase text-[var(--color-shas-muted)]">
-            {categories.length} {categories.length === 1 ? "Category" : "Categories"}
-          </p>
         </div>
       </div>
 
@@ -115,15 +112,6 @@ export default async function CollectionPage() {
           </div>
         )}
 
-        {/* Soft below-grid CTA back to flat product list */}
-        <div className="mt-14 md:mt-20 text-center">
-          <p className="font-display italic text-xl text-[var(--color-shas-muted)] mb-4">
-            Or wander through the entire collection
-          </p>
-          <Link href="/products" className="btn-rose-outline">
-            View Every Piece
-          </Link>
-        </div>
       </div>
     </div>
   );

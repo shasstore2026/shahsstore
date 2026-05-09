@@ -377,7 +377,7 @@ export default function ProductDetailClient({
         <p className="text-xs tracking-[0.25em] text-[var(--color-shas-muted)] uppercase">
           <Link href="/" className="hover:text-[var(--color-shas-rose)] transition-colors">Home</Link>
           {" "}&rsaquo;{" "}
-          <Link href="/products" className="hover:text-[var(--color-shas-rose)] transition-colors">Shop</Link>
+          <Link href="/collection" className="hover:text-[var(--color-shas-rose)] transition-colors">Shop</Link>
           {" "}&rsaquo;{" "}
           <span className="text-[var(--color-shas-plum)]">{product.name}</span>
         </p>

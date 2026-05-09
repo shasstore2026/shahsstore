@@ -2,6 +2,7 @@ import ProductCard from "@/components/ProductCard";
 import { getProducts, getCategories } from "@/lib/products";
 import { Product } from "@/types";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function ProductsPage({
   searchParams,
@@ -9,27 +10,30 @@ export default async function ProductsPage({
   searchParams: Promise<{ category?: string; fit?: string; fabric?: string; occasion?: string }>;
 }) {
   const params = await searchParams;
+
+  // Active category — from any query param
+  const cat = params.fit ?? params.fabric ?? params.occasion ?? params.category;
+
+  // No category? There's no flat "all products" view — send them to the
+  // category-card page where they pick what to browse.
+  if (!cat) redirect("/collection");
+
   const [allProducts, categories] = await Promise.all([
     getProducts(),
     getCategories(),
   ]);
 
-  // Active category — from any query param
-  const cat = params.fit ?? params.fabric ?? params.occasion ?? params.category;
-
-  // Filter products
-  const filtered: Product[] = cat
-    ? allProducts.filter((p) => p.category.toLowerCase() === cat.toLowerCase())
-    : allProducts;
-
-  // Page title
-  const activeCat = categories.find(
-    (c) => c.name.toLowerCase() === cat?.toLowerCase()
+  // Filter products to the chosen category
+  const filtered: Product[] = allProducts.filter(
+    (p) => p.category.toLowerCase() === cat.toLowerCase()
   );
-  const pageTitle = cat ? (activeCat?.name ?? cat) : "Every Piece";
-  const pageSub = cat
-    ? activeCat?.description ?? "A handpicked edit, refreshed often."
-    : "Wander through the entire collection.";
+
+  // Page title — the category name itself
+  const activeCat = categories.find(
+    (c) => c.name.toLowerCase() === cat.toLowerCase()
+  );
+  const pageTitle = activeCat?.name ?? cat;
+  const pageSub = activeCat?.description ?? "A handpicked edit, refreshed often.";
 
   return (
     <div className="bg-[var(--color-shas-bg)] min-h-screen">
@@ -54,26 +58,19 @@ export default async function ProductsPage({
         </p>
 
         <div className="relative max-w-7xl mx-auto">
-          {/* Breadcrumb-style back when filtered by a single category */}
-          {cat ? (
-            <Link
-              href="/collection"
-              className="inline-flex items-center gap-2 text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose-deep)] transition-colors mb-3"
-            >
-              ← The Collection
-            </Link>
-          ) : (
-            <span className="divider-rose mb-4">Curated Edit</span>
-          )}
+          {/* Breadcrumb back to all categories */}
+          <Link
+            href="/collection"
+            className="inline-flex items-center gap-2 text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose-deep)] transition-colors mb-3"
+          >
+            ← The Collection
+          </Link>
 
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-[var(--color-shas-plum)] font-light leading-[1.05]">
             {pageTitle}
           </h1>
           <p className="text-[var(--color-shas-muted)] mt-3 md:mt-4 max-w-xl text-sm md:text-base font-light">
             {pageSub}
-          </p>
-          <p className="mt-4 md:mt-6 text-xs tracking-[0.3em] uppercase text-[var(--color-shas-muted)]">
-            {filtered.length} {filtered.length === 1 ? "Piece" : "Pieces"}
           </p>
         </div>
       </div>
@@ -86,16 +83,11 @@ export default async function ProductsPage({
               Nothing here yet.
             </p>
             <p className="text-sm text-[var(--color-shas-muted)] max-w-sm mx-auto mb-6 font-light">
-              We&apos;re still styling this drop. Browse the full edit while we get this category ready.
+              We&apos;re still styling this drop. Try another category while we get this one ready.
             </p>
-            <div className="flex justify-center gap-3 flex-wrap">
-              <Link href="/collection" className="btn-rose-outline">
-                Browse Categories
-              </Link>
-              <Link href="/products" className="link-underline text-xs tracking-[0.3em] uppercase pt-3">
-                View Everything →
-              </Link>
-            </div>
+            <Link href="/collection" className="btn-rose-outline">
+              Browse Categories
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">

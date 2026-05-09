@@ -128,9 +128,6 @@ export default function CartPage() {
           <h1 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light">
             Your Bag
           </h1>
-          <p className="text-[var(--color-shas-muted)] text-sm font-light mt-2">
-            {cartItems.length} {cartItems.length === 1 ? "piece" : "pieces"} ready for you
-          </p>
         </div>
 
         {/* Stock issues banner */}
@@ -347,7 +344,7 @@ export default function CartPage() {
               )}
 
               <Link
-                href="/products"
+                href="/collection"
                 className="block text-center text-[0.65rem] text-[var(--color-shas-muted)] hover:text-[var(--color-shas-rose)] tracking-[0.3em] uppercase mt-4 transition-colors"
               >
                 ← Continue Shopping

@@ -96,7 +96,7 @@ export default async function OrderSuccessPage() {
         )}
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/products" className="btn-plum">
+          <Link href="/collection" className="btn-plum">
             Continue Shopping
           </Link>
           <Link
