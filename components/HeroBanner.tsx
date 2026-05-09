@@ -130,10 +130,17 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
           <img
             src={mobileSrc}
             alt={`${left} ${right}`.trim() || "Hero"}
-            className={`w-full h-full ${
-              hasDedicatedMobile ? "object-cover object-center" : "object-contain"
-            }`}
-            style={{ animation: "kenBurns 22s ease-in-out infinite alternate" }}
+            className="w-full h-full object-cover"
+            style={{
+              // Dedicated portrait mobile crop → centred (subject naturally fills the frame).
+              // Landscape fallback (using the desktop image) → focus 30% from the left,
+              // because editorial fashion shots almost always place the model in the
+              // left-third of a wide image (rule-of-thirds). This keeps the model in
+              // frame on portrait phones even when the admin hasn't uploaded a
+              // dedicated mobile crop.
+              objectPosition: hasDedicatedMobile ? "center" : "30% center",
+              animation: "kenBurns 22s ease-in-out infinite alternate",
+            }}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white" />
