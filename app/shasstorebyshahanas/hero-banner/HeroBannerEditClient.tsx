@@ -71,11 +71,27 @@ export default function HeroBannerEditClient({
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-stone-100 p-4 md:p-8 space-y-6">
-        {/* ── Desktop Hero Image ── */}
-        <div>
-          <label className={labelCls}>Desktop Hero Image *</label>
-          <p className="text-xs text-stone-400 mt-1 mb-3 font-light">
-            Wide editorial shot for desktop & tablet. The two headline words flank the subject left & right.
+        {/* ── Two separate uploads: one for web, one for mobile ── */}
+        <div className="bg-stone-50 border border-stone-200 p-5 rounded-sm">
+          <p className="text-[0.65rem] tracking-[0.3em] text-stone-500 uppercase mb-1">
+            Hero Images
+          </p>
+          <p className="text-sm text-stone-600 font-light">
+            Upload <strong>two separate images</strong> — one for the web view (wide / landscape)
+            and one for the mobile view (tall / portrait). Each shows on the right device.
+          </p>
+        </div>
+
+        {/* ── 1. WEB IMAGE ── */}
+        <div className="border-2 border-stone-200 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-stone-900 text-white text-xs font-medium">1</span>
+            <label className="text-sm tracking-[0.2em] text-stone-900 uppercase font-medium">
+              Web Image <span className="text-stone-400">(landscape)</span>
+            </label>
+          </div>
+          <p className="text-xs text-stone-500 mb-3 font-light">
+            Shows on desktop and tablet. Wide editorial shot — headline flanks the subject left &amp; right.
           </p>
           <ImageUploader value={image} onChange={setImage} folder="hero" />
           <p className="text-xs text-stone-400 mt-2 font-light">Or paste a URL:</p>
@@ -88,11 +104,17 @@ export default function HeroBannerEditClient({
           />
         </div>
 
-        {/* ── Mobile Hero Image (portrait) ── */}
-        <div className="border-t border-stone-100 pt-6">
-          <label className={labelCls}>Mobile Hero Image (portrait)</label>
-          <p className="text-xs text-stone-400 mt-1 mb-3 font-light">
-            Tall portrait crop (e.g. 9:16 or 3:4) used on phones. Frame the model head-to-toe — she&rsquo;ll fill the screen edge-to-edge with the headline overlaid on the right. Leave empty to use the desktop image (will be letterboxed).
+        {/* ── 2. MOBILE IMAGE ── */}
+        <div className="border-2 border-stone-200 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-stone-900 text-white text-xs font-medium">2</span>
+            <label className="text-sm tracking-[0.2em] text-stone-900 uppercase font-medium">
+              Mobile Image <span className="text-stone-400">(portrait)</span>
+            </label>
+          </div>
+          <p className="text-xs text-stone-500 mb-3 font-light">
+            Shows on phones. Tall portrait crop (9:16 or 3:4). Frame the model head-to-toe — she&rsquo;ll
+            fill the screen edge-to-edge with the headline overlaid on the right.
           </p>
           <ImageUploader value={mobileImage} onChange={setMobileImage} folder="hero" />
           <p className="text-xs text-stone-400 mt-2 font-light">Or paste a URL:</p>
