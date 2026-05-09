@@ -90,25 +90,29 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
         </div>
       )}
 
-      {/* ── Mobile: stacked centered headline ── */}
+      {/* ── Mobile: stacked centered headline.
+            pt-32 reserves space for the fixed navbar at top, pb-32
+            keeps the headline clear of the bottom-corner labels and
+            CTA. Type scaled down on the smallest screens so a long
+            two-word stack still fits without colliding. ── */}
       {hasHeadline && (
-        <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center px-6 pointer-events-none">
+        <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center px-6 pt-32 pb-32 pointer-events-none">
           {left && (
             <h1
-              className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
-                         text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
+              className="text-white font-light leading-[0.95] uppercase tracking-[0.08em] text-center whitespace-nowrap
+                         text-3xl sm:text-5xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
               style={{ ['--reveal-delay' as string]: '0.1s' }}
             >
               {left}
             </h1>
           )}
           {left && right && (
-            <span aria-hidden className="block w-10 h-px bg-white/60 my-5 reveal" style={{ ['--reveal-delay' as string]: '0.2s' }} />
+            <span aria-hidden className="block w-8 h-px bg-white/60 my-3 reveal" style={{ ['--reveal-delay' as string]: '0.2s' }} />
           )}
           {right && (
             <h1
-              className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
-                         text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
+              className="text-white font-light leading-[0.95] uppercase tracking-[0.08em] text-center whitespace-nowrap
+                         text-3xl sm:text-5xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
               style={{ ['--reveal-delay' as string]: '0.3s' }}
             >
               {right}
