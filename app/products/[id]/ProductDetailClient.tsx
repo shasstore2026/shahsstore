@@ -264,19 +264,32 @@ export default function ProductDetailClient({
   const { addToCart, cartItems } = useCart();
   const router = useRouter();
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedBottomSize, setSelectedBottomSize] = useState("");
   const [sizeError, setSizeError] = useState(false);
+  const [bottomSizeError, setBottomSizeError] = useState(false);
+
+  // Bottom sizes are optional per product — if non-empty, the selector shows.
+  const hasBottomSizes =
+    Array.isArray(product.bottom_sizes) && product.bottom_sizes.length > 0;
 
   // Is the currently selected variant already in cart?
-  const isInCart = !!selectedSize && cartItems.some(
-    (i) => i.id === product.id && i.selectedSize === selectedSize
-  );
+  const isInCart =
+    !!selectedSize &&
+    (!hasBottomSizes || !!selectedBottomSize) &&
+    cartItems.some(
+      (i) =>
+        i.id === product.id &&
+        i.selectedSize === selectedSize &&
+        (i.selectedBottomSize ?? "") === (hasBottomSizes ? selectedBottomSize : "")
+    );
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
   const thumbStripRef = useRef<HTMLDivElement>(null);
-  const sizeRef = useRef<HTMLDivElement>(null); // ← NEW
+  const sizeRef = useRef<HTMLDivElement>(null);
+  const bottomSizeRef = useRef<HTMLDivElement>(null);
 
   const allImages =
     Array.isArray(product.images) && product.images.length > 0
@@ -291,7 +304,6 @@ export default function ProductDetailClient({
 
   // ── Add to Cart / Go to Cart handler ──
   const handleAddToCart = () => {
-    // If this variant is already in cart, navigate to cart
     if (isInCart) {
       router.push("/cart");
       return;
@@ -308,7 +320,21 @@ export default function ProductDetailClient({
       setTimeout(() => setSizeError(false), 600);
       return;
     }
-    addToCart(product, selectedSize);
+    if (hasBottomSizes) {
+      if (!selectedBottomSize) {
+        setBottomSizeError(true);
+        bottomSizeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => setBottomSizeError(false), 600);
+        return;
+      }
+      const bottomStock = getStockForSize(product.bottom_size_inventory, selectedBottomSize);
+      if (bottomStock === 0) {
+        setBottomSizeError(true);
+        setTimeout(() => setBottomSizeError(false), 600);
+        return;
+      }
+    }
+    addToCart(product, selectedSize, hasBottomSizes ? selectedBottomSize : undefined);
   };
 
   function scrollThumbs(dir: "left" | "right") {
@@ -440,16 +466,16 @@ export default function ProductDetailClient({
           <div className="w-12 h-px bg-[var(--color-shas-line-strong)] mb-6" />
           <p className="text-[var(--color-shas-muted)] font-light leading-relaxed text-sm mb-8">{product.description}</p>
 
-          {/* ── Sizes with per-size stock ── */}
+          {/* ── Top Size selector ── */}
           <div
             ref={sizeRef}
-            className={`mb-8 ${sizeError ? "shake" : ""}`}
+            className={`mb-6 ${sizeError ? "shake" : ""}`}
           >
             <div className="flex justify-between items-center mb-3">
               <p className={`text-xs tracking-[0.25em] uppercase font-medium transition-colors duration-300 ${
                 sizeError ? "text-red-500" : "text-[var(--color-shas-plum)]"
               }`}>
-                Select Size
+                {hasBottomSizes ? "Top Size" : "Select Size"}
               </p>
               <button
                 onClick={() => setSizeGuideOpen(true)}
@@ -461,9 +487,6 @@ export default function ProductDetailClient({
             <div className="flex gap-2 flex-wrap pt-2">
               {product.sizes.map((size) => {
                 const stock = getStockForSize(product.size_inventory, size);
-                // When admin has marked the product sold out, treat every size
-                // as out and suppress per-size urgency badges — never tease
-                // "1 left" on a product that can't be bought.
                 const isOut = !productInStock || stock === 0;
                 const isLow = productInStock && stock > 0 && stock <= LOW_STOCK_THRESHOLD;
                 return (
@@ -499,18 +522,79 @@ export default function ProductDetailClient({
               })}
             </div>
 
-            {/* Selected size out of stock message */}
             {selectedSize && getStockForSize(product.size_inventory, selectedSize) === 0 && (
               <p className="text-xs text-red-500 mt-3 font-medium">Out of stock — please pick another size</p>
             )}
 
-            {/* Inline error or hint */}
             <p className={`text-xs mt-2 transition-all duration-300 ${
               sizeError ? "text-red-400" : "text-[var(--color-shas-muted)]"
             }`}>
-              {sizeError ? "Please choose a size to continue" : !selectedSize ? "Please select a size to continue" : ""}
+              {sizeError ? "Please choose a size to continue" : !selectedSize ? (hasBottomSizes ? "Please select a top size" : "Please select a size to continue") : ""}
             </p>
           </div>
+
+          {/* ── Bottom Size selector (co-ord sets / pant-paired pieces) ── */}
+          {hasBottomSizes && (
+            <div
+              ref={bottomSizeRef}
+              className={`mb-8 ${bottomSizeError ? "shake" : ""}`}
+            >
+              <div className="flex justify-between items-center mb-3">
+                <p className={`text-xs tracking-[0.25em] uppercase font-medium transition-colors duration-300 ${
+                  bottomSizeError ? "text-red-500" : "text-[var(--color-shas-plum)]"
+                }`}>
+                  Bottom Size
+                </p>
+              </div>
+              <div className="flex gap-2 flex-wrap pt-2">
+                {(product.bottom_sizes ?? []).map((size) => {
+                  const stock = getStockForSize(product.bottom_size_inventory, size);
+                  const isOut = !productInStock || stock === 0;
+                  const isLow = productInStock && stock > 0 && stock <= LOW_STOCK_THRESHOLD;
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => {
+                        if (isOut) return;
+                        setSelectedBottomSize(size);
+                        setBottomSizeError(false);
+                      }}
+                      disabled={isOut}
+                      className={`relative border px-5 py-2.5 text-xs tracking-widest uppercase font-medium transition-all duration-200 ${
+                        isOut
+                          ? "border-[var(--color-shas-line)] text-[var(--color-shas-line-strong)] bg-[var(--color-shas-cream)]/50 line-through cursor-not-allowed"
+                          : selectedBottomSize === size
+                          ? "bg-[var(--color-shas-plum)] text-white border-[var(--color-shas-plum)]"
+                          : bottomSizeError
+                          ? "border-red-300 text-red-400 hover:border-red-500"
+                          : "border-[var(--color-shas-line)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-plum)] hover:text-[var(--color-shas-plum)]"
+                      }`}
+                    >
+                      {size}
+                      {isLow && !isOut && (
+                        <span
+                          className="absolute -top-2.5 -right-3 bg-red-500 text-white text-[9px] leading-none px-1.5 py-1 rounded-full font-medium tracking-normal whitespace-nowrap"
+                          title={`Only ${stock} ${stock === 1 ? "piece" : "pieces"} left`}
+                        >
+                          {stock} left
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {selectedBottomSize && getStockForSize(product.bottom_size_inventory, selectedBottomSize) === 0 && (
+                <p className="text-xs text-red-500 mt-3 font-medium">Out of stock — please pick another bottom size</p>
+              )}
+
+              <p className={`text-xs mt-2 transition-all duration-300 ${
+                bottomSizeError ? "text-red-400" : "text-[var(--color-shas-muted)]"
+              }`}>
+                {bottomSizeError ? "Please choose a bottom size to continue" : !selectedBottomSize ? "Please select a bottom size" : ""}
+              </p>
+            </div>
+          )}
 
           {/* Add to Cart / Go to Cart */}
           <div className="flex gap-3 mb-8">

@@ -260,9 +260,8 @@ export async function addProduct(formData: FormData) {
   const size_inventory = sanitizeSizeInventory(
     safeJsonParse<Record<string, number>>(sizeInventoryRaw, {})
   );
-  // Derive sizes from size_inventory keys (preserve order from JSON)
+  // Derive sizes (top sizes) from size_inventory keys
   let sizes = Object.keys(size_inventory).filter((k) => k.trim());
-  // Backwards-compat fallback to old `sizes` field if size_inventory is empty
   if (sizes.length === 0) {
     const sizesRaw = formData.get("sizes") as string;
     sizes = (sizesRaw ?? "")
@@ -270,6 +269,12 @@ export async function addProduct(formData: FormData) {
       .map((s) => s.trim())
       .filter(Boolean);
   }
+  // Bottom sizes — optional. Empty when not a co-ord/two-piece product.
+  const bottomSizeInventoryRaw = formData.get("bottom_size_inventory") as string;
+  const bottom_size_inventory = sanitizeSizeInventory(
+    safeJsonParse<Record<string, number>>(bottomSizeInventoryRaw, {})
+  );
+  const bottom_sizes = Object.keys(bottom_size_inventory).filter((k) => k.trim());
   const inStock = formData.get("inStock") === "true";
   const featuredRaw = formData.get("featured_order") as string;
   const featured_order =
@@ -305,6 +310,8 @@ export async function addProduct(formData: FormData) {
       description,
       sizes,
       size_inventory,
+      bottom_sizes,
+      bottom_size_inventory,
       in_stock: inStock,
       featured_order,
       images,
@@ -340,9 +347,7 @@ export async function updateProduct(id: string, formData: FormData) {
   const size_inventory = sanitizeSizeInventory(
     safeJsonParse<Record<string, number>>(sizeInventoryRaw, {})
   );
-  // Derive sizes from size_inventory keys (preserve order from JSON)
   let sizes = Object.keys(size_inventory).filter((k) => k.trim());
-  // Backwards-compat fallback to old `sizes` field if size_inventory is empty
   if (sizes.length === 0) {
     const sizesRaw = formData.get("sizes") as string;
     sizes = (sizesRaw ?? "")
@@ -350,6 +355,13 @@ export async function updateProduct(id: string, formData: FormData) {
       .map((s) => s.trim())
       .filter(Boolean);
   }
+  // Bottom sizes — optional
+  const bottomSizeInventoryRaw = formData.get("bottom_size_inventory") as string;
+  const bottom_size_inventory = sanitizeSizeInventory(
+    safeJsonParse<Record<string, number>>(bottomSizeInventoryRaw, {})
+  );
+  const bottom_sizes = Object.keys(bottom_size_inventory).filter((k) => k.trim());
+
   const inStock = formData.get("inStock") === "true";
   const featuredRaw = formData.get("featured_order") as string;
   const featured_order =
@@ -393,6 +405,8 @@ export async function updateProduct(id: string, formData: FormData) {
       description,
       sizes,
       size_inventory,
+      bottom_sizes,
+      bottom_size_inventory,
       in_stock: inStock,
       featured_order,
       images,

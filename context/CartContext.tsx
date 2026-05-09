@@ -17,7 +17,7 @@ export type QuantityUpdateResult =
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, size: string) => void;
+  addToCart: (product: Product, size: string, bottomSize?: string) => void;
   removeFromCart: (id: string, size: string) => void;
   updateQuantity: (id: string, selectedSize: string, qty: number) => QuantityUpdateResult;
   updateSize: (id: string, oldSize: string, newSize: string) => void;
@@ -56,6 +56,10 @@ function sanitizeStoredCartItem(raw: unknown): CartItem | null {
   const category = typeof o.category === "string" ? o.category.slice(0, 100) : null;
   const selectedSize =
     typeof o.selectedSize === "string" ? o.selectedSize.slice(0, 20) : null;
+  const selectedBottomSize =
+    typeof o.selectedBottomSize === "string" && o.selectedBottomSize.trim()
+      ? o.selectedBottomSize.slice(0, 20)
+      : undefined;
   const quantityRaw = Number(o.quantity);
   const quantity = Number.isFinite(quantityRaw)
     ? Math.max(1, Math.min(10, Math.floor(quantityRaw)))
@@ -65,19 +69,21 @@ function sanitizeStoredCartItem(raw: unknown): CartItem | null {
     return null;
   }
 
-  // Sanitise the size_inventory map — only string keys with non-negative ints
-  const rawInv = o.size_inventory;
-  let size_inventory: Record<string, number> | undefined;
-  if (rawInv && typeof rawInv === "object" && !Array.isArray(rawInv)) {
+  // Sanitise inventory maps — only string keys with non-negative ints
+  function sanitizeInventoryMap(raw: unknown): Record<string, number> | undefined {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return undefined;
     const inv: Record<string, number> = {};
-    for (const [k, v] of Object.entries(rawInv as Record<string, unknown>)) {
+    for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
       const key = String(k).trim().slice(0, 20);
       if (!key) continue;
       const n = typeof v === "number" ? v : Number(v);
       if (Number.isFinite(n) && n >= 0) inv[key] = Math.floor(n);
     }
-    size_inventory = inv;
+    return inv;
   }
+
+  const size_inventory = sanitizeInventoryMap(o.size_inventory);
+  const bottom_size_inventory = sanitizeInventoryMap(o.bottom_size_inventory);
 
   // Build a fresh object — never spread the untrusted source
   return {
@@ -87,6 +93,7 @@ function sanitizeStoredCartItem(raw: unknown): CartItem | null {
     image: image ?? "",
     category: category ?? "",
     selectedSize,
+    selectedBottomSize,
     quantity,
     description: typeof o.description === "string" ? o.description.slice(0, 5000) : "",
     inStock: typeof o.inStock === "boolean" ? o.inStock : true,
@@ -95,7 +102,13 @@ function sanitizeStoredCartItem(raw: unknown): CartItem | null {
           .filter((s): s is string => typeof s === "string")
           .slice(0, 20)
       : [],
+    bottom_sizes: Array.isArray(o.bottom_sizes)
+      ? (o.bottom_sizes as unknown[])
+          .filter((s): s is string => typeof s === "string")
+          .slice(0, 20)
+      : [],
     size_inventory,
+    bottom_size_inventory,
   } as CartItem;
 }
 
@@ -125,19 +138,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: Product, size: string) => {
+  const addToCart = (product: Product, size: string, bottomSize?: string) => {
+    const cleanBottom = bottomSize && bottomSize.trim() ? bottomSize : undefined;
     setCartItems((prev) => {
+      // A line is unique on (id, top size, bottom size) — co-ord sets with
+      // different bottom sizes are separate cart entries.
       const existing = prev.find(
-        (item) => item.id === product.id && item.selectedSize === size
+        (item) =>
+          item.id === product.id &&
+          item.selectedSize === size &&
+          (item.selectedBottomSize ?? undefined) === cleanBottom
       );
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id && item.selectedSize === size
+          item.id === product.id &&
+          item.selectedSize === size &&
+          (item.selectedBottomSize ?? undefined) === cleanBottom
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1, selectedSize: size }];
+      return [
+        ...prev,
+        {
+          ...product,
+          quantity: 1,
+          selectedSize: size,
+          selectedBottomSize: cleanBottom,
+        },
+      ];
     });
   };
 

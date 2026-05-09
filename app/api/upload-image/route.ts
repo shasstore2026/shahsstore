@@ -14,8 +14,15 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/gif",
 ]);
 const ALLOWED_FOLDERS = new Set(["products", "styles", "banners", "general", "hero"]);
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+// 8 MB ceiling matches Vercel Pro's request body limit. IMPORTANT: on
+// Vercel **Hobby** plan, the platform itself caps incoming request bodies
+// at ~4.5 MB before the route handler runs — uploads above that fail with
+// a 413 from the edge regardless of this limit. If you're on Hobby, ask
+// uploaders to compress images first (squoosh.app / TinyPNG / ImageOptim
+// — most product photos compress to <1 MB without visible quality loss).
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
 const MIN_FILE_SIZE = 100; // bytes — reject empty/tiny files
+const MAX_FILE_SIZE_MB = (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
 
 export async function POST(req: NextRequest) {
   const csrf = checkSameOrigin(req);
@@ -57,8 +64,13 @@ export async function POST(req: NextRequest) {
 
   // File size cap
   if (file.size > MAX_FILE_SIZE) {
+    const actualMb = (file.size / (1024 * 1024)).toFixed(1);
     return NextResponse.json(
-      { error: "File too large. Maximum size is 5 MB." },
+      {
+        error:
+          `Image is ${actualMb} MB — too large. Maximum is ${MAX_FILE_SIZE_MB} MB. ` +
+          `Try compressing it at squoosh.app or tinypng.com first (most photos shrink to <1 MB without visible quality loss).`,
+      },
       { status: 400 }
     );
   }

@@ -171,12 +171,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Step 5: Atomically decrement inventory ───────────────────────
+    // ── Step 5: Atomically decrement inventory (top + optional bottom) ──
     const inventoryItems = cartItems.map(
-      (item: { id: string; selectedSize: string; quantity?: number }) => ({
+      (item: {
+        id: string;
+        selectedSize: string;
+        selectedBottomSize?: string;
+        quantity?: number;
+      }) => ({
         id: item.id,
         size: item.selectedSize,
         quantity: item.quantity ?? 1,
+        // RPC treats empty/missing bottom_size as "no bottom decrement"
+        bottom_size: item.selectedBottomSize?.trim() || undefined,
       })
     );
 
@@ -245,9 +252,20 @@ export async function POST(req: NextRequest) {
     }
 
     const sanitizedItems = cartItems.map(
-      (item: { id: string; selectedSize: string; quantity?: number; name?: string; price?: number }) => ({
+      (item: {
+        id: string;
+        selectedSize: string;
+        selectedBottomSize?: string;
+        quantity?: number;
+        name?: string;
+        price?: number;
+      }) => ({
         id: String(item.id).slice(0, 64),
         selectedSize: String(item.selectedSize ?? "").slice(0, 20),
+        selectedBottomSize:
+          typeof item.selectedBottomSize === "string" && item.selectedBottomSize.trim()
+            ? item.selectedBottomSize.slice(0, 20)
+            : undefined,
         quantity: Math.max(1, Math.min(10, Math.floor(Number(item.quantity ?? 1)))),
         name: typeof item.name === "string" ? item.name.slice(0, 200) : undefined,
         price: typeof item.price === "number" ? item.price : undefined,

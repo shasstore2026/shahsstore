@@ -6,8 +6,14 @@ export interface Product {
   image: string;
   images?: string[];
   category: string;
+  /** Top-half sizes (renamed UI-side from "Sizes"). Empty array → no top selector. */
   sizes: string[];
+  /** Per-top-size stock count. */
   size_inventory?: Record<string, number>;
+  /** Bottom-half sizes (skirts / pants / co-ord set bottoms). Empty → no bottom selector. */
+  bottom_sizes?: string[];
+  /** Per-bottom-size stock count. */
+  bottom_size_inventory?: Record<string, number>;
   description: string;
   inStock: boolean;
   featuredOrder?: number | null;
@@ -21,5 +27,8 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
+  /** Top size selected. Always required (UI defaults to first size if no top sizes). */
   selectedSize: string;
+  /** Bottom size selected — only present when the product has bottom_sizes. */
+  selectedBottomSize?: string;
 }

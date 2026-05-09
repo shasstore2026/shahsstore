@@ -19,11 +19,11 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    section: "Shirts",
+    section: "Catalog",
     items: [
-      { label: "All Products", href: "/shasstorebyshahanas/products", icon: "☰" },
-      { label: "Add New Shirt", href: "/shasstorebyshahanas/products/new", icon: "+" },
-      { label: "Categories", href: "/shasstorebyshahanas/categories", icon: "◈" },
+      { label: "All Products", href: "/shasstorebyshahanas/products",     icon: "☰" },
+      { label: "Add Product",  href: "/shasstorebyshahanas/products/new", icon: "+" },
+      { label: "Categories",   href: "/shasstorebyshahanas/categories",   icon: "◈" },
     ],
   },
   {

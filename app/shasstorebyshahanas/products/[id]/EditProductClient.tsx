@@ -69,7 +69,7 @@ export default function EditProductClient({
     product.style_specs ?? {}
   );
 
-  // Size inventory — initialize from existing data, fallback to sizes array with 0 stock
+  // Top-size inventory — initialize from existing data, fallback to sizes array with 10 stock
   const initialInventory: Record<string, number> = {};
   if (product.size_inventory && Object.keys(product.size_inventory).length > 0) {
     Object.assign(initialInventory, product.size_inventory);
@@ -79,6 +79,17 @@ export default function EditProductClient({
     });
   }
   const [sizeInventory, setSizeInventory] = useState<Record<string, number>>(initialInventory);
+
+  // Bottom-size inventory — same pattern, optional
+  const initialBottomInventory: Record<string, number> = {};
+  if (product.bottom_size_inventory && Object.keys(product.bottom_size_inventory).length > 0) {
+    Object.assign(initialBottomInventory, product.bottom_size_inventory);
+  } else if (product.bottom_sizes) {
+    product.bottom_sizes.forEach((s) => {
+      initialBottomInventory[s] = 10;
+    });
+  }
+  const [bottomSizeInventory, setBottomSizeInventory] = useState<Record<string, number>>(initialBottomInventory);
 
   function updateExtraImage(index: number, url: string) {
     setExtraImages((prev) => {
@@ -104,6 +115,7 @@ export default function EditProductClient({
 
     // Inject details/about/specs as JSON
     formData.set("size_inventory", JSON.stringify(sizeInventory));
+    formData.set("bottom_size_inventory", JSON.stringify(bottomSizeInventory));
     formData.set("product_details", JSON.stringify(productDetails));
     formData.set("about_items", JSON.stringify(aboutItems));
     formData.set("style_specs", JSON.stringify(styleSpecs));
@@ -111,7 +123,7 @@ export default function EditProductClient({
     // Validate
     const validSizes = Object.entries(sizeInventory).filter(([k]) => k.trim());
     if (validSizes.length === 0) {
-      toast.error("Sizes required", "Add at least one size with stock quantity.");
+      toast.error("Top sizes required", "Add at least one top size with stock quantity.");
       setLoading(false);
       return;
     }
@@ -130,11 +142,11 @@ export default function EditProductClient({
 
     try {
       await updateProduct(product.id, formData);
-      toast.success("Shirt updated", `"${product.name}" has been saved.`);
+      toast.success("Product updated", `"${product.name}" has been saved.`);
       router.push("/shasstorebyshahanas/products");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Could not save changes. Please try again.";
-      toast.error("Could not update shirt", message);
+      toast.error("Could not update product", message);
       console.error(err);
     } finally {
       setLoading(false);
@@ -144,17 +156,17 @@ export default function EditProductClient({
   return (
     <div className="max-w-2xl">
       <div className="mb-10">
-        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Admin</p>
+        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Catalog</p>
         <h1 className="text-4xl text-stone-900 font-light"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Edit Shirt
+          Edit Product
         </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-stone-100 p-8 space-y-6">
         {/* Name */}
         <div>
-          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Shirt Name *</label>
+          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Product Name *</label>
           <input name="name" required defaultValue={product.name}
             className="w-full border border-stone-200 px-4 py-3 text-sm text-stone-800 focus:outline-none focus:border-stone-500 transition-colors" />
         </div>
@@ -165,9 +177,9 @@ export default function EditProductClient({
           initialOriginalPrice={product.original_price}
         />
 
-        {/* Category / Category */}
+        {/* Category */}
         <div>
-          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Category / Category *</label>
+          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Category *</label>
           <select name="category" required defaultValue={product.category}
             className="w-full border border-stone-200 px-4 py-3 text-sm text-stone-800 focus:outline-none focus:border-stone-500 bg-white">
             {styles.map((style) => (
@@ -203,17 +215,31 @@ export default function EditProductClient({
           </div>
         </div>
 
-        {/* Sizes & Inventory */}
+        {/* ── Top Sizes & Inventory ── */}
         <div>
           <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">
-            Sizes & Stock Quantity *
+            Top Sizes & Stock *
           </label>
           <p className="text-xs text-stone-400 mb-3">
-            Stock auto-decreases when orders are placed. Update here to restock.
+            Sizes for the top half (top, kurti, blouse). Stock auto-decreases when orders are placed.
           </p>
           <SizeInventoryEditor
             initialData={sizeInventory}
             onChange={setSizeInventory}
+          />
+        </div>
+
+        {/* ── Bottom Sizes & Inventory (optional) ── */}
+        <div>
+          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">
+            Bottom Sizes & Stock <span className="normal-case text-stone-400">(optional — only for co-ord sets / pant-paired pieces)</span>
+          </label>
+          <p className="text-xs text-stone-400 mb-3">
+            Sizes for the bottom half (skirt, pants, leggings). Customers will be asked to pick both top and bottom sizes.
+          </p>
+          <SizeInventoryEditor
+            initialData={bottomSizeInventory}
+            onChange={setBottomSizeInventory}
           />
         </div>
 

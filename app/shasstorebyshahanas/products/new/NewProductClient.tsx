@@ -47,6 +47,7 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
   const [aboutItems, setAboutItems] = useState<string[]>([]);
   const [styleSpecs, setStyleSpecs] = useState<Record<string, string>>({});
   const [sizeInventory, setSizeInventory] = useState<Record<string, number>>({});
+  const [bottomSizeInventory, setBottomSizeInventory] = useState<Record<string, number>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
 
@@ -62,7 +63,7 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
     const errs: Record<string, string> = {};
 
     const name = (formData.get("name") as string)?.trim();
-    if (!name) errs.name = "Shirt name is required";
+    if (!name) errs.name = "Product name is required";
     else if (name.length < 3) errs.name = "Name must be at least 3 characters";
     else if (name.length > 100) errs.name = "Name is too long (max 100 chars)";
 
@@ -82,17 +83,21 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
     }
 
     const category = (formData.get("category") as string)?.trim();
-    if (!category) errs.category = "Please select a shirt style / category";
+    if (!category) errs.category = "Please select a category";
 
     if (!primaryImage) errs.primaryImage = "Please upload a primary image";
 
     const validSizes = Object.entries(sizeInventory).filter(([k]) => k.trim());
-    if (validSizes.length === 0) errs.size_inventory = "Add at least one size with stock quantity";
-    else if (validSizes.length > 20) errs.size_inventory = "Too many sizes (max 20)";
+    if (validSizes.length === 0) errs.size_inventory = "Add at least one top size with stock quantity";
+    else if (validSizes.length > 20) errs.size_inventory = "Too many top sizes (max 20)";
     else {
       const totalStock = validSizes.reduce((sum, [, qty]) => sum + (qty || 0), 0);
-      if (totalStock === 0) errs.size_inventory = "Total stock cannot be zero. Set quantity for at least one size.";
+      if (totalStock === 0) errs.size_inventory = "Total top-size stock cannot be zero. Set quantity for at least one size.";
     }
+
+    // Bottom sizes are OPTIONAL — only validate if any rows present
+    const validBottoms = Object.entries(bottomSizeInventory).filter(([k]) => k.trim());
+    if (validBottoms.length > 20) errs.bottom_size_inventory = "Too many bottom sizes (max 20)";
 
     const description = (formData.get("description") as string)?.trim();
     if (!description) errs.description = "Description is required";
@@ -144,18 +149,19 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
     const filledExtras = extraImages.filter((img) => img.trim() !== "");
     formData.set("images", JSON.stringify([primaryImage, ...filledExtras]));
     formData.set("size_inventory", JSON.stringify(sizeInventory));
+    formData.set("bottom_size_inventory", JSON.stringify(bottomSizeInventory));
     formData.set("product_details", JSON.stringify(productDetails));
     formData.set("about_items", JSON.stringify(aboutItems));
     formData.set("style_specs", JSON.stringify(styleSpecs));
     try {
-      const productName = (formData.get("name") as string) ?? "Shirt";
+      const productName = (formData.get("name") as string) ?? "Product";
       await addProduct(formData);
-      toast.success("Shirt added", `"${productName}" has been added to your store.`);
+      toast.success("Product added", `"${productName}" has been added to your store.`);
       router.push("/shasstorebyshahanas/products");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to add shirt. Please try again.";
+      const message = err instanceof Error ? err.message : "Failed to add product. Please try again.";
       setSubmitError(message);
-      toast.error("Could not add shirt", message);
+      toast.error("Could not add product", message);
       console.error(err);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
@@ -171,10 +177,10 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
   return (
     <div className="max-w-2xl">
       <div className="mb-10">
-        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Admin</p>
+        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Catalog</p>
         <h1 className="text-4xl text-stone-900 font-light"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Add New Shirt
+          Add Product
         </h1>
       </div>
 
@@ -182,7 +188,7 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
         {/* Submit error banner */}
         {submitError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded text-sm text-red-700">
-            <p className="font-medium mb-1">⚠ Could not add shirt</p>
+            <p className="font-medium mb-1">⚠ Could not add product</p>
             <p className="text-xs">{submitError}</p>
           </div>
         )}
@@ -201,10 +207,10 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
 
         {/* Name */}
         <div>
-          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Shirt Name *</label>
+          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Product Name *</label>
           <input
             name="name"
-            placeholder="e.g. White Oxford Dress Shirt"
+            placeholder="e.g. Olive Linen Co-ord Set"
             className={`w-full border ${errClass("name")} px-4 py-3 text-sm text-stone-800 focus:outline-none transition-colors`}
           />
           {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
@@ -221,9 +227,9 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
           )}
         </div>
 
-        {/* Category / Category */}
+        {/* Category */}
         <div>
-          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Category / Category *</label>
+          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Category *</label>
           <select
             name="category"
             className={`w-full border ${errClass("category")} px-4 py-3 text-sm text-stone-800 focus:outline-none transition-colors bg-white`}
@@ -266,13 +272,13 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
           </div>
         </div>
 
-        {/* Sizes & Inventory */}
+        {/* ── Top Sizes & Inventory ── */}
         <div>
           <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">
-            Sizes & Stock Quantity *
+            Top Sizes & Stock *
           </label>
           <p className="text-xs text-stone-400 mb-3">
-            Add available sizes and stock quantity for each. Stock auto-decreases when orders are placed.
+            Sizes for the top half (top, kurti, blouse). Stock auto-decreases when orders are placed.
           </p>
           <div className={errors.size_inventory ? "ring-2 ring-red-300 rounded p-2" : ""}>
             <SizeInventoryEditor
@@ -283,13 +289,30 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
           {errors.size_inventory && <p className="text-xs text-red-500 mt-1">{errors.size_inventory}</p>}
         </div>
 
+        {/* ── Bottom Sizes & Inventory (optional) ── */}
+        <div>
+          <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">
+            Bottom Sizes & Stock <span className="normal-case text-stone-400">(optional — only for co-ord sets / pant-paired pieces)</span>
+          </label>
+          <p className="text-xs text-stone-400 mb-3">
+            Sizes for the bottom half (skirt, pants, leggings). Customers will be asked to pick both top and bottom sizes when adding to bag.
+          </p>
+          <div className={errors.bottom_size_inventory ? "ring-2 ring-red-300 rounded p-2" : ""}>
+            <SizeInventoryEditor
+              initialData={bottomSizeInventory}
+              onChange={setBottomSizeInventory}
+            />
+          </div>
+          {errors.bottom_size_inventory && <p className="text-xs text-red-500 mt-1">{errors.bottom_size_inventory}</p>}
+        </div>
+
         {/* Description */}
         <div>
           <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Description *</label>
           <textarea
             name="description"
             rows={4}
-            placeholder="Describe the shirt fabric, fit, and style (min 10 characters)..."
+            placeholder="Describe the fabric, fit, and styling (min 10 characters)..."
             className={`w-full border ${errClass("description")} px-4 py-3 text-sm text-stone-800 focus:outline-none transition-colors resize-none`}
           />
           {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
@@ -370,7 +393,7 @@ export default function NewProductClient({ styles }: { styles: Category[] }) {
         <div className="flex gap-4 pt-2">
           <button type="submit" disabled={loading}
             className="flex-1 bg-stone-900 text-white py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-stone-700 transition-all disabled:bg-stone-300">
-            {loading ? "Adding Shirt..." : "Add Shirt"}
+            {loading ? "Adding Product…" : "Add Product"}
           </button>
           <button type="button" onClick={() => router.back()}
             className="px-8 border border-stone-200 text-stone-500 text-xs tracking-widest uppercase hover:border-stone-500 transition-colors">

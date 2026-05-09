@@ -18,8 +18,11 @@ function mapProduct(row: Record<string, unknown>): Product {
     image: primaryImage,
     images,
     category: row.category as string,
-    sizes: row.sizes as string[],
+    sizes: (row.sizes as string[]) ?? [],
     size_inventory: (row.size_inventory as Record<string, number>) ?? {},
+    bottom_sizes: (row.bottom_sizes as string[]) ?? [],
+    bottom_size_inventory:
+      (row.bottom_size_inventory as Record<string, number>) ?? {},
     description: row.description as string,
     inStock: row.in_stock as boolean,
     featuredOrder: row.featured_order as number | null,

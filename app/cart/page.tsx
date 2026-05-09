@@ -168,7 +168,7 @@ export default function CartPage() {
               const hint = stockHints[`${item.id}-${item.selectedSize}`];
               return (
               <div
-                key={`${item.id}-${item.selectedSize}`}
+                key={`${item.id}-${item.selectedSize}-${item.selectedBottomSize ?? ""}`}
                 className="flex gap-6 surface-soft p-5"
               >
                 {/* Image */}
@@ -185,18 +185,30 @@ export default function CartPage() {
                     {item.name}
                   </h3>
 
-                  {/* ── Size dropdown ── */}
-                  <div className="mt-2 flex items-center gap-2">
-                    <label className="text-xs text-[var(--color-shas-muted)] tracking-wide">Size:</label>
-                    <select
-                      value={item.selectedSize}
-                      onChange={(e) => updateSize(item.id, item.selectedSize, e.target.value)}
-                      className="text-xs text-[var(--color-shas-plum)] border border-[var(--color-shas-line)] bg-white px-2 py-1 focus:outline-none focus:border-[var(--color-shas-muted)] transition-colors cursor-pointer hover:border-[var(--color-shas-muted)]"
-                    >
-                      {item.sizes.map((s) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
+                  {/* ── Size dropdown(s) — shows top size, plus bottom if present ── */}
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs text-[var(--color-shas-muted)] tracking-wide">
+                        {item.selectedBottomSize ? "Top:" : "Size:"}
+                      </label>
+                      <select
+                        value={item.selectedSize}
+                        onChange={(e) => updateSize(item.id, item.selectedSize, e.target.value)}
+                        className="text-xs text-[var(--color-shas-plum)] border border-[var(--color-shas-line)] bg-white px-2 py-1 focus:outline-none focus:border-[var(--color-shas-muted)] transition-colors cursor-pointer hover:border-[var(--color-shas-muted)]"
+                      >
+                        {item.sizes.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+                    {item.selectedBottomSize && (
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs text-[var(--color-shas-muted)] tracking-wide">Bottom:</label>
+                        <span className="text-xs text-[var(--color-shas-plum)] border border-[var(--color-shas-line)] bg-white px-2 py-1">
+                          {item.selectedBottomSize}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* ── Quantity + price ── */}
