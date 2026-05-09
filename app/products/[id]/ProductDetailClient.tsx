@@ -227,13 +227,21 @@ function RelatedProducts({ products }: { products: Product[] }) {
           {products.map((p) => (
             <Link key={p.id} href={`/products/${p.id}`} className="group">
               <div className="relative w-full h-56 md:h-80 bg-[var(--color-shas-cream)] overflow-hidden mb-3">
-                <Image
-                  src={p.image}
-                  alt={p.name}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                {p.image ? (
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white flex items-center justify-center p-4">
+                    <p className="font-display italic text-lg md:text-xl text-[var(--color-shas-plum)]/70 text-center leading-tight">
+                      {p.name}
+                    </p>
+                  </div>
+                )}
               </div>
               <p className="text-xs tracking-widest uppercase text-[var(--color-shas-muted)] mb-1">{p.category}</p>
               <h3
@@ -291,13 +299,17 @@ export default function ProductDetailClient({
   const sizeRef = useRef<HTMLDivElement>(null);
   const bottomSizeRef = useRef<HTMLDivElement>(null);
 
+  // Build the gallery — drop empty strings so we never feed Next/Image a "" src.
+  // If admin hasn't uploaded any images yet, allImages is [] and we render
+  // a tasteful gradient fallback below instead of the gallery.
   const allImages =
     Array.isArray(product.images) && product.images.length > 0
-      ? product.images
-      : [product.image];
+      ? product.images.filter(Boolean)
+      : [product.image].filter(Boolean);
 
-  const [activeImage, setActiveImage] = useState(allImages[0]);
+  const [activeImage, setActiveImage] = useState<string>(allImages[0] ?? "");
   const activeIndex = allImages.indexOf(activeImage);
+  const hasGalleryImage = allImages.length > 0 && !!activeImage;
 
   const totalStock = getTotalStock(product.size_inventory);
   const productInStock = product.inStock && totalStock > 0;
@@ -376,22 +388,41 @@ export default function ProductDetailClient({
         {/* Image Gallery — sticky on desktop */}
         <div className="flex flex-col gap-4 md:sticky md:top-28 md:self-start">
           <div
-            className="relative w-full h-[360px] md:h-[520px] bg-[var(--color-shas-cream)] overflow-hidden cursor-zoom-in group"
+            className={`relative w-full h-[360px] md:h-[520px] bg-[var(--color-shas-cream)] overflow-hidden group ${
+              hasGalleryImage ? "cursor-zoom-in" : ""
+            }`}
             onClick={() => {
+              if (!hasGalleryImage) return;
               setLightboxIndex(activeIndex >= 0 ? activeIndex : 0);
               setLightboxOpen(true);
             }}
           >
-            <Image
-              src={activeImage}
-              alt={product.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover transition-opacity duration-300"
-            />
-            <div className="absolute bottom-3 right-3 bg-black/30 text-white text-xs px-2.5 py-1.5 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              ⊕ Zoom
-            </div>
+            {hasGalleryImage ? (
+              <>
+                <Image
+                  src={activeImage}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-opacity duration-300"
+                />
+                <div className="absolute bottom-3 right-3 bg-black/30 text-white text-xs px-2.5 py-1.5 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  ⊕ Zoom
+                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white flex items-center justify-center p-10">
+                <span
+                  aria-hidden
+                  className="absolute -bottom-10 -right-6 font-italiana text-[14rem] text-[var(--color-shas-rose)]/15 leading-none select-none pointer-events-none"
+                >
+                  ✦
+                </span>
+                <p className="relative z-10 font-display italic text-3xl md:text-5xl text-[var(--color-shas-plum)]/70 text-center leading-tight">
+                  {product.name}
+                </p>
+              </div>
+            )}
             {!product.inStock && (
               <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
                 <span className="text-[var(--color-shas-muted)] text-xs tracking-[0.3em] uppercase border border-[var(--color-shas-line-strong)] px-6 py-3">

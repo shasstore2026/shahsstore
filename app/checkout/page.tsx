@@ -382,7 +382,11 @@ export default function CheckoutPage() {
                                 {cartItems.map((item) => (
                                     <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4 items-center">
                                         <div className="relative w-14 h-16 bg-[var(--color-shas-cream)] flex-shrink-0 overflow-hidden">
-                                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                            {item.image ? (
+                                              <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                            ) : (
+                                              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white" />
+                                            )}
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-[var(--color-shas-plum)] text-sm font-light">{item.name}</p>

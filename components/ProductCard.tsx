@@ -17,7 +17,8 @@ export default function ProductCard({ product }: { product: Product }) {
     ? Object.entries(product.size_inventory).filter(([, q]) => q === 1).map(([s]) => s)
     : [];
 
-  // Use second image as hover swap if available
+  const hasImage = !!product.image;
+  // Use second image as hover swap if available AND different from primary
   const hoverImage =
     Array.isArray(product.images) && product.images.length > 1
       ? product.images[1]
@@ -29,23 +30,38 @@ export default function ProductCard({ product }: { product: Product }) {
     <div className="group relative">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative h-60 sm:h-72 md:h-[26rem] overflow-hidden bg-[var(--color-shas-cream)]">
-          {/* Primary image */}
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-opacity duration-700 group-hover:opacity-0"
-          />
-          {/* Hover image (only renders if different) */}
-          {hoverImage && hoverImage !== product.image && (
-            <Image
-              src={hoverImage}
-              alt={`${product.name} alternate view`}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover scale-105 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
-            />
+          {hasImage ? (
+            <>
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover transition-opacity duration-700 group-hover:opacity-0"
+              />
+              {hoverImage && hoverImage !== product.image && (
+                <Image
+                  src={hoverImage}
+                  alt={`${product.name} alternate view`}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover scale-105 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                />
+              )}
+            </>
+          ) : (
+            /* No image yet → boutique gradient with italic product name */
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white flex items-center justify-center p-6">
+              <span
+                aria-hidden
+                className="absolute -bottom-6 -right-2 font-italiana text-[7rem] text-[var(--color-shas-rose)]/15 leading-none select-none pointer-events-none"
+              >
+                ✦
+              </span>
+              <p className="relative z-10 font-display italic text-xl md:text-2xl text-[var(--color-shas-plum)]/70 text-center leading-tight">
+                {product.name}
+              </p>
+            </div>
           )}
 
           {/* Soft gradient at bottom for legibility of badges */}

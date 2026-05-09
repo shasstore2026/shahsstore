@@ -173,7 +173,15 @@ export default function CartPage() {
               >
                 {/* Image */}
                 <div className="relative w-24 h-28 bg-[var(--color-shas-cream)] flex-shrink-0 overflow-hidden">
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  {item.image ? (
+                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white flex items-center justify-center p-1">
+                      <p className="font-display italic text-xs text-[var(--color-shas-plum)]/70 text-center leading-tight line-clamp-3">
+                        {item.name}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Details */}
