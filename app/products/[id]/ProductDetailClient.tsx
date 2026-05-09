@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Product } from "@/types";
 import { getDiscountPercent, getStockForSize, LOW_STOCK_THRESHOLD, getTotalStock } from "@/lib/constants";
+import Breadcrumb from "@/components/Breadcrumb";
 
 // ── Image Lightbox ─────────────────────────────────────────
 function ImageLightbox({
@@ -372,15 +373,15 @@ export default function ProductDetailClient({
         .shake { animation: shake 0.6s ease; }
       `}</style>
 
-      {/* Breadcrumb */}
+      {/* Breadcrumb: Home › Category › <product> */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6">
-        <p className="text-xs tracking-[0.25em] text-[var(--color-shas-muted)] uppercase">
-          <Link href="/" className="hover:text-[var(--color-shas-rose)] transition-colors">Home</Link>
-          {" "}&rsaquo;{" "}
-          <Link href="/collection" className="hover:text-[var(--color-shas-rose)] transition-colors">Shop</Link>
-          {" "}&rsaquo;{" "}
-          <span className="text-[var(--color-shas-plum)]">{product.name}</span>
-        </p>
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Category", href: "/collection" },
+            { label: product.name },
+          ]}
+        />
       </div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 pb-12 md:pb-24 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">

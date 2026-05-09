@@ -1,5 +1,6 @@
 import { getCompanyContent } from "@/lib/products";
 import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 
 function Bullets({ text }: { text: string }) {
   const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -32,6 +33,13 @@ export default async function CompanyPage() {
 
   return (
     <div className="bg-[var(--color-shas-bg)] min-h-screen pt-28 md:pt-36 pb-24">
+      {/* Breadcrumb */}
+      <div className="max-w-4xl mx-auto px-6 md:px-8 mb-8 md:mb-10">
+        <Breadcrumb
+          items={[{ label: "Home", href: "/" }, { label: "Our Story" }]}
+        />
+      </div>
+
       {/* Hero — the brand mark, large */}
       <div className="max-w-4xl mx-auto px-6 md:px-8 mb-16 md:mb-24 reveal text-center">
         <span className="divider-rose mb-5">The Atelier</span>

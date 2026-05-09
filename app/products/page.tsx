@@ -1,4 +1,5 @@
 import ProductCard from "@/components/ProductCard";
+import Breadcrumb from "@/components/Breadcrumb";
 import { getProducts, getCategories } from "@/lib/products";
 import { Product } from "@/types";
 import Link from "next/link";
@@ -58,13 +59,14 @@ export default async function ProductsPage({
         </p>
 
         <div className="relative max-w-7xl mx-auto">
-          {/* Breadcrumb back to all categories */}
-          <Link
-            href="/collection"
-            className="inline-flex items-center gap-2 text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose-deep)] transition-colors mb-3"
-          >
-            ← The Collection
-          </Link>
+          <Breadcrumb
+            className="mb-5"
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Category", href: "/collection" },
+              { label: pageTitle },
+            ]}
+          />
 
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-[var(--color-shas-plum)] font-light leading-[1.05]">
             {pageTitle}

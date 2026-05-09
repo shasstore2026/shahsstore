@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCategories } from "@/lib/products";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata = {
   title: "The Collection — Shasstore",
@@ -31,6 +32,12 @@ export default async function CollectionPage() {
         >
           ✦
         </p>
+
+        <div className="relative max-w-7xl mx-auto mb-8 md:mb-10">
+          <Breadcrumb
+            items={[{ label: "Home", href: "/" }, { label: "Category" }]}
+          />
+        </div>
 
         <div className="relative max-w-7xl mx-auto text-center">
           <span className="divider-rose mb-5">The Collection</span>

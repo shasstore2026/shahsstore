@@ -1,4 +1,5 @@
 import { getHelpContent } from "@/lib/products";
+import Breadcrumb from "@/components/Breadcrumb";
 
 function BulletContent({ text }: { text: string }) {
   const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -34,6 +35,10 @@ export default async function HelpPage() {
     <div className="bg-[var(--color-shas-bg)] min-h-screen pt-28 md:pt-36 pb-24">
       {/* Editorial header */}
       <div className="max-w-3xl mx-auto px-6 md:px-8 mb-12 md:mb-20 reveal">
+        <Breadcrumb
+          className="mb-6"
+          items={[{ label: "Home", href: "/" }, { label: "Help" }]}
+        />
         <span className="divider-rose mb-4">Support</span>
         <h1 className="font-display text-5xl md:text-7xl text-[var(--color-shas-plum)] font-light leading-[1.05] mb-4">
           Help <em className="text-[var(--color-shas-rose)]">Centre</em>
