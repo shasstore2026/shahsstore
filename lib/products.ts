@@ -111,6 +111,7 @@ export async function getCategories(): Promise<Category[]> {
 // ── Homepage content ──────────────────────────────
 export type LookbookImage = { image: string; link?: string; label?: string };
 export type Testimonial = { quote: string; name: string; place: string };
+export type InstagramPost = { image: string; post_url?: string };
 
 export type HomepageContent = {
   // legacy / hero
@@ -155,6 +156,9 @@ export type HomepageContent = {
   instagram_title: string;
   instagram_handle: string;
   instagram_profile_url: string;
+  /** Per-tile {image, post_url} — preferred. */
+  instagram_posts: InstagramPost[];
+  /** @deprecated kept only for backwards compat with the seed migration */
   instagram_images: string[];
 
   // ── Closing CTA ────────────────────────────────────
@@ -279,6 +283,7 @@ function emptyHomepageContent(): HomepageContent {
     instagram_title: "@shasstore on Instagram",
     instagram_handle: "@shasstore",
     instagram_profile_url: "",
+    instagram_posts: [],
     instagram_images: [],
 
     closing_cta_eyebrow: "The Shasstore Promise",
@@ -321,6 +326,15 @@ export async function getHomepageContent(): Promise<HomepageContent> {
     ? (data.testimonials as Testimonial[])
     : [];
 
+  // Instagram migrated from text[] (instagram_images) → jsonb (instagram_posts).
+  // Read from new column; fall back to old array for legacy rows.
+  let instagram_posts: InstagramPost[] = [];
+  if (Array.isArray(data.instagram_posts) && data.instagram_posts.length > 0) {
+    instagram_posts = data.instagram_posts as InstagramPost[];
+  } else if (Array.isArray(data.instagram_images) && data.instagram_images.length > 0) {
+    instagram_posts = (data.instagram_images as string[]).map((image) => ({ image }));
+  }
+
   // Merge with defaults so the homepage works even if a column is null.
   const fallback = emptyHomepageContent();
   return {
@@ -329,8 +343,26 @@ export async function getHomepageContent(): Promise<HomepageContent> {
     lookbook_images: lookbook,
     testimonials,
     marquee_items: Array.isArray(data.marquee_items) ? data.marquee_items : fallback.marquee_items,
+    instagram_posts,
     instagram_images: Array.isArray(data.instagram_images) ? data.instagram_images : [],
   };
+}
+
+/**
+ * Latest products by created_at desc — powers the "New Arrivals" section
+ * directly under the hero. No new schema field needed.
+ */
+export async function getNewArrivals(limit = 8): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error(error.message);
+    return [];
+  }
+  return data.map(mapProduct);
 }
 // Hero banner------------------------
 export type HeroBanner = {

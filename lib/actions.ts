@@ -1132,7 +1132,12 @@ export async function updateHomepageTestimonials(formData: FormData) {
   });
 }
 
-/** Instagram strip — handle, profile URL (HTTPS only), and up to 6 image URLs. */
+/**
+ * Instagram strip — handle, profile URL, and up to 6 per-post entries.
+ * Each post = { image, post_url? }. post_url is the link a tile clicks
+ * through to (the IG post itself); empty string means fall back to the
+ * profile URL on the storefront.
+ */
 export async function updateHomepageInstagram(formData: FormData) {
   await requireAuth();
 
@@ -1146,18 +1151,36 @@ export async function updateHomepageInstagram(formData: FormData) {
     profile = profileUrlTrim.slice(0, 500);
   }
 
-  const rawImages = safeJsonParse<unknown[]>(formData.get("instagram_images") as string, []);
-  const images = sanitizeImageUrls(
-    (Array.isArray(rawImages) ? rawImages : []) as unknown[],
-    6
-  );
+  const rawPosts = safeJsonParse<unknown[]>(formData.get("instagram_posts") as string, []);
+  const posts = (Array.isArray(rawPosts) ? rawPosts : [])
+    .slice(0, 6)
+    .map((raw) => {
+      const obj = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+      const image = typeof obj.image === "string" ? obj.image.trim() : "";
+      const post_url = typeof obj.post_url === "string" ? obj.post_url.trim() : "";
+      if (!image || !isAllowedImageUrl(image)) return null;
+      // Per-tile post URL must be HTTPS if provided
+      if (post_url && !post_url.startsWith("https://")) {
+        throw new Error("Instagram post URLs must use https://");
+      }
+      return {
+        image: image.slice(0, 500),
+        post_url: post_url.slice(0, 500),
+      };
+    })
+    .filter((x): x is { image: string; post_url: string } => x !== null);
+
+  // Keep the legacy text[] in sync so older homepage rows / read paths
+  // continue to render even if they read from the old column.
+  const legacyImages = posts.map((p) => p.image);
 
   await updateHomepageRow({
     instagram_eyebrow: safeString(formData.get("instagram_eyebrow") as string, 80) ?? "",
     instagram_title: safeString(formData.get("instagram_title") as string, 200) ?? "",
     instagram_handle: safeString(formData.get("instagram_handle") as string, 60) ?? "",
     instagram_profile_url: profile,
-    instagram_images: images,
+    instagram_posts: posts,
+    instagram_images: legacyImages,
   });
 }
 

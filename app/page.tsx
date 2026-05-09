@@ -1,115 +1,166 @@
 import HeroBanner from "@/components/HeroBanner";
+import ProductCard from "@/components/ProductCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import {
   getHomepageContent,
   getCategories,
   getHeroBanner,
+  getNewArrivals,
 } from "@/lib/products";
 import Link from "next/link";
 import Image from "next/image";
 
 export default async function HomePage() {
-  const [content, categories, banner] = await Promise.all([
+  const [content, categories, banner, newArrivals] = await Promise.all([
     getHomepageContent(),
     getCategories(),
     getHeroBanner(),
+    getNewArrivals(8),
   ]);
-
-  const visibleCategories = categories.slice(0, 4);
 
   return (
     <div className="bg-[var(--color-shas-bg)]">
       {banner && <HeroBanner banner={banner} />}
 
       {/* ────────────────────────────────────────────────────────────
-          1. USP marquee strip
+          1. New Arrivals — directly under the hero, horizontal scroll
           ──────────────────────────────────────────────────────────── */}
-      {content.show_usp_strip && content.marquee_items.length > 0 && (
-        <section className="bg-[var(--color-shas-plum)] text-white/85 py-4 overflow-hidden">
-          <div className="marquee-row text-[0.65rem] tracking-[0.4em] uppercase font-light">
-            {Array(4)
-              .fill(content.marquee_items)
-              .flat()
-              .map((text: string, i: number) => (
-                <span key={i} className="flex items-center gap-3">
-                  <span className="text-[var(--color-shas-rose)]">✦</span>
-                  <span>{text}</span>
-                </span>
-              ))}
+      {newArrivals.length > 0 && (
+        <section className="bg-[var(--color-shas-bg)] py-14 md:py-20">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 reveal">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7 md:mb-10">
+              <div>
+                <span className="divider-rose mb-3">Just In</span>
+                <h2 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light leading-tight">
+                  New Arrivals
+                </h2>
+                <p className="text-[var(--color-shas-muted)] text-sm font-light mt-2 max-w-md">
+                  Fresh-off-the-loom pieces, just landed at the boutique.
+                </p>
+              </div>
+              <Link
+                href="/collection"
+                className="link-underline text-[0.7rem] tracking-[0.3em] uppercase whitespace-nowrap"
+              >
+                Shop the Collection →
+              </Link>
+            </div>
           </div>
+
+          {/* Full-bleed horizontal scroll — first card flush left, peek of next on right */}
+          <div
+            className="overflow-x-auto snap-x snap-mandatory scroll-smooth"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            aria-label="New arrivals"
+          >
+            <div className="flex gap-4 md:gap-6 pl-4 md:pl-8 pr-4 md:pr-8">
+              {newArrivals.map((product, idx) => (
+                <div
+                  key={product.id}
+                  className="snap-start shrink-0 w-[68vw] sm:w-[42vw] md:w-[28vw] lg:w-[22vw] reveal"
+                  style={{ ['--reveal-delay' as string]: `${(idx % 6) * 0.06}s` }}
+                >
+                  {/* "NEW" ribbon for the latest 3 */}
+                  <div className="relative">
+                    {idx < 3 && (
+                      <span className="absolute top-3 right-3 z-20 bg-[var(--color-shas-plum)] text-white text-[0.55rem] tracking-[0.3em] uppercase px-2.5 py-1 font-medium">
+                        New
+                      </span>
+                    )}
+                    <ProductCard product={product} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <style>{`
+            section[aria-label="New arrivals"]::-webkit-scrollbar,
+            div[aria-label="New arrivals"]::-webkit-scrollbar { display: none; }
+          `}</style>
         </section>
       )}
 
       {/* ────────────────────────────────────────────────────────────
-          2. Shop by Category
+          2. Shop by Category — full-bleed horizontal scroll
           ──────────────────────────────────────────────────────────── */}
       {content.show_categories && (
-        <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-28">
-          <div className="text-center mb-12 md:mb-16 reveal">
+        <section className="py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 text-center mb-10 md:mb-14 reveal">
             <span className="divider-rose mb-5">Shop by Category</span>
             <h2 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light leading-tight max-w-2xl mx-auto">
               For every <em className="text-[var(--color-shas-rose)]">moment</em> of you
             </h2>
           </div>
 
-          {visibleCategories.length === 0 ? (
-            <div className="text-center py-20 border border-dashed border-[var(--color-shas-line-strong)]">
-              <p className="font-display italic text-2xl text-[var(--color-shas-rose)]">
-                Categories will appear here once added in the admin
-              </p>
+          {categories.length === 0 ? (
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
+              <div className="text-center py-20 border border-dashed border-[var(--color-shas-line-strong)]">
+                <p className="font-display italic text-2xl text-[var(--color-shas-rose)]">
+                  Categories will appear here once added in the admin
+                </p>
+              </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-              {visibleCategories.map((cat, idx) => (
-                <Link
-                  key={cat.id}
-                  href={`/products?category=${encodeURIComponent(cat.name)}`}
-                  className="group relative overflow-hidden reveal"
-                  style={{ ['--reveal-delay' as string]: `${idx * 0.08}s` }}
-                >
-                  <div className="relative h-[20rem] md:h-[26rem] bg-[var(--color-shas-cream)] overflow-hidden img-zoom-wrap">
-                    {cat.image ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] to-[var(--color-shas-cream)] flex items-end p-6">
-                        <p className="font-display text-3xl text-[var(--color-shas-plum)] italic opacity-60">
-                          {cat.name}
-                        </p>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-shas-plum)]/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
-                      <h3 className="font-display text-white text-2xl md:text-3xl font-light leading-tight">
-                        {cat.name}
-                      </h3>
-                      {cat.description && (
-                        <p className="text-white/80 text-xs md:text-sm tracking-wide mt-1.5 line-clamp-1 group-hover:text-[var(--color-shas-blush)] transition-colors">
-                          {cat.description}
-                        </p>
+            <div
+              className="overflow-x-auto snap-x snap-mandatory scroll-smooth"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              aria-label="Shop by category"
+            >
+              {/* No left/right padding on this scroller — first card is flush
+                  with the screen edge per design.  Cards have width that
+                  doesn't fit a whole number on desktop, so the next card
+                  always peeks on the right, hinting at scrollability. */}
+              <div className="flex gap-3 md:gap-5">
+                {categories.map((cat, idx) => (
+                  <Link
+                    key={cat.id}
+                    href={`/products?category=${encodeURIComponent(cat.name)}`}
+                    className="group relative overflow-hidden shrink-0 snap-start
+                               w-[78vw] sm:w-[44vw] md:w-[30vw] lg:w-[23vw]
+                               reveal"
+                    style={{ ['--reveal-delay' as string]: `${(idx % 6) * 0.06}s` }}
+                  >
+                    <div className="relative h-[22rem] md:h-[28rem] bg-[var(--color-shas-cream)] overflow-hidden img-zoom-wrap">
+                      {cat.image ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white flex items-end p-6 relative">
+                          <span aria-hidden className="absolute -bottom-8 -right-3 font-italiana text-[10rem] text-[var(--color-shas-rose)]/15 leading-none select-none">✦</span>
+                          <p className="font-display text-3xl md:text-4xl text-[var(--color-shas-plum)] italic relative z-10">
+                            {cat.name}
+                          </p>
+                        </div>
                       )}
-                      <span className="inline-flex items-center gap-2 text-[0.65rem] text-[var(--color-shas-blush)] tracking-[0.3em] uppercase mt-3 group-hover:gap-3 transition-all">
-                        Discover →
-                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-shas-plum)]/70 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                        <h3 className="font-display text-white text-2xl md:text-3xl font-light leading-tight">
+                          {cat.name}
+                        </h3>
+                        {cat.description && (
+                          <p className="text-white/80 text-xs md:text-sm tracking-wide mt-1.5 line-clamp-1 group-hover:text-[var(--color-shas-blush)] transition-colors">
+                            {cat.description}
+                          </p>
+                        )}
+                        <span className="inline-flex items-center gap-2 text-[0.65rem] text-[var(--color-shas-blush)] tracking-[0.3em] uppercase mt-3 group-hover:gap-3 transition-all">
+                          Discover →
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
+              <style>{`
+                div[aria-label="Shop by category"]::-webkit-scrollbar { display: none; }
+              `}</style>
             </div>
           )}
-
-          {/* Always show the "See all" CTA — even with ≤4 categories, users
-              expect a way into the dedicated collection page. */}
-          <div className="text-center mt-10 md:mt-14">
-            <Link href="/collection" className="btn-rose-outline">
-              See All Categories
-            </Link>
-          </div>
         </section>
       )}
 
       {/* ────────────────────────────────────────────────────────────
-          4. Editorial spotlight (Story)
+          3. Editorial spotlight (Story)
           ──────────────────────────────────────────────────────────── */}
       {content.show_story && (content.story_title || content.story_image) && (
         <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-32 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -154,7 +205,7 @@ export default async function HomePage() {
             )}
             {content.story_cta_text && (
               <div className="flex gap-3 flex-wrap">
-                <Link href={content.story_cta_link || "/products"} className="btn-plum">
+                <Link href={content.story_cta_link || "/collection"} className="btn-plum">
                   {content.story_cta_text}
                 </Link>
                 <Link href="/company#about" className="link-underline text-[0.7rem] tracking-[0.3em] uppercase pt-3">
@@ -162,6 +213,26 @@ export default async function HomePage() {
                 </Link>
               </div>
             )}
+          </div>
+        </section>
+      )}
+
+      {/* ────────────────────────────────────────────────────────────
+          4. USP marquee strip — moved here so it sits just above the
+             Lookbook as a quiet break between editorial and gallery.
+          ──────────────────────────────────────────────────────────── */}
+      {content.show_usp_strip && content.marquee_items.length > 0 && (
+        <section className="bg-[var(--color-shas-plum)] text-white/85 py-4 overflow-hidden">
+          <div className="marquee-row text-[0.65rem] tracking-[0.4em] uppercase font-light">
+            {Array(4)
+              .fill(content.marquee_items)
+              .flat()
+              .map((text: string, i: number) => (
+                <span key={i} className="flex items-center gap-3">
+                  <span className="text-[var(--color-shas-rose)]">✦</span>
+                  <span>{text}</span>
+                </span>
+              ))}
           </div>
         </section>
       )}
@@ -201,7 +272,7 @@ export default async function HomePage() {
                 return (
                   <Link
                     key={idx}
-                    href={item.link || "/products"}
+                    href={item.link || "/collection"}
                     className={`${layout} relative overflow-hidden img-zoom-wrap reveal`}
                     style={{ ['--reveal-delay' as string]: `${idx * 0.08}s` }}
                   >
@@ -227,7 +298,7 @@ export default async function HomePage() {
       )}
 
       {/* ────────────────────────────────────────────────────────────
-          6. From our customers — testimonials
+          6. Testimonials
           ──────────────────────────────────────────────────────────── */}
       {content.show_testimonials && (
         <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-28">
@@ -247,9 +318,10 @@ export default async function HomePage() {
       )}
 
       {/* ────────────────────────────────────────────────────────────
-          7. Instagram strip
+          7. Instagram strip — per-post URLs (each tile can link to its
+             own Instagram post; falls back to profile URL).
           ──────────────────────────────────────────────────────────── */}
-      {content.show_instagram && content.instagram_images.length > 0 && (
+      {content.show_instagram && content.instagram_posts.length > 0 && (
         <section className="border-t border-[var(--color-shas-line)] bg-[var(--color-shas-cream)]/40">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-14 md:py-20">
             <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8 md:mb-10">
@@ -276,29 +348,32 @@ export default async function HomePage() {
             </div>
 
             <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
-              {content.instagram_images.slice(0, 6).map((src, i) => (
-                <a
-                  key={i}
-                  href={content.instagram_profile_url || "#"}
-                  target={content.instagram_profile_url ? "_blank" : undefined}
-                  rel={content.instagram_profile_url ? "noopener noreferrer" : undefined}
-                  className="relative aspect-square overflow-hidden img-zoom-wrap reveal group"
-                  style={{ ['--reveal-delay' as string]: `${i * 0.05}s` }}
-                >
-                  <Image
-                    src={src}
-                    alt={`Instagram post ${i + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 33vw, 16vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[var(--color-shas-plum)]/0 group-hover:bg-[var(--color-shas-plum)]/40 transition-colors duration-500 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069Zm0-2.163C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0Zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881Z"/>
-                    </svg>
-                  </div>
-                </a>
-              ))}
+              {content.instagram_posts.slice(0, 6).map((post, i) => {
+                const tileHref = post.post_url || content.instagram_profile_url;
+                const isExternal = !!tileHref;
+                const Tag = isExternal ? "a" : "div";
+                return (
+                  <Tag
+                    key={i}
+                    {...(isExternal ? { href: tileHref, target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="relative aspect-square overflow-hidden img-zoom-wrap reveal group"
+                    style={{ ['--reveal-delay' as string]: `${i * 0.05}s` }}
+                  >
+                    <Image
+                      src={post.image}
+                      alt={`Instagram post ${i + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 33vw, 16vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-[var(--color-shas-plum)]/0 group-hover:bg-[var(--color-shas-plum)]/40 transition-colors duration-500 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069Zm0-2.163C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0Zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881Z"/>
+                      </svg>
+                    </div>
+                  </Tag>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -331,7 +406,7 @@ export default async function HomePage() {
             )}
             <div className="flex justify-center gap-3 flex-wrap">
               {content.closing_cta_primary_text && (
-                <Link href={content.closing_cta_primary_link || "/products"} className="btn-plum">
+                <Link href={content.closing_cta_primary_link || "/collection"} className="btn-plum">
                   {content.closing_cta_primary_text}
                 </Link>
               )}

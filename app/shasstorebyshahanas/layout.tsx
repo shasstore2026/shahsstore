@@ -49,6 +49,7 @@ const navSections: NavSection[] = [
     items: [
       { label: "Hero Banner",        href: "/shasstorebyshahanas/hero-banner",        icon: "◻" },
       { label: "Story Section",      href: "/shasstorebyshahanas/story-section",      icon: "✎" },
+      { label: "Marquee Banner",     href: "/shasstorebyshahanas/marquee",            icon: "≡" },
       { label: "Lookbook",           href: "/shasstorebyshahanas/lookbook",           icon: "▦" },
       { label: "Testimonials",       href: "/shasstorebyshahanas/testimonials",       icon: "❝" },
       { label: "Instagram Strip",    href: "/shasstorebyshahanas/instagram",          icon: "◉" },
@@ -57,10 +58,9 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    section: "Website Content",
+    section: "Site-wide",
     items: [
       { label: "Top Notification", href: "/shasstorebyshahanas/top-notification", icon: "📢" },
-      { label: "Marquee Banner",   href: "/shasstorebyshahanas/marquee",          icon: "≡" },
       { label: "Help Content",     href: "/shasstorebyshahanas/help-content",     icon: "?" },
       { label: "Company Content",  href: "/shasstorebyshahanas/company-content",  icon: "◉" },
     ],
