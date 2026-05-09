@@ -111,7 +111,7 @@ export default function CartPage() {
           <p className="text-[var(--color-shas-muted)] text-sm font-light mb-8 italic">
             Take your time. Your perfect piece is waiting.
           </p>
-          <Link href="/products" className="btn-plum">
+          <Link href="/collection" className="btn-plum">
             Browse the Collection
           </Link>
         </div>

@@ -20,7 +20,6 @@ export default async function HomePage() {
   ]);
 
   const visibleCategories = categories.slice(0, 4);
-  const hasMoreCategories = categories.length > 4;
 
   return (
     <div className="bg-[var(--color-shas-bg)]">
@@ -103,13 +102,13 @@ export default async function HomePage() {
             </div>
           )}
 
-          {hasMoreCategories && (
-            <div className="text-center mt-10 md:mt-14">
-              <Link href="/products" className="btn-rose-outline">
-                See All Categories ({categories.length})
-              </Link>
-            </div>
-          )}
+          {/* Always show the "See all" CTA — even with ≤4 categories, users
+              expect a way into the dedicated collection page. */}
+          <div className="text-center mt-10 md:mt-14">
+            <Link href="/collection" className="btn-rose-outline">
+              See All Categories ({categories.length})
+            </Link>
+          </div>
         </section>
       )}
 

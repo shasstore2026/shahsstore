@@ -107,7 +107,7 @@ export default async function CompanyPage() {
           <p className="font-display italic text-xl text-[var(--color-shas-muted)] mb-6">
             Style is a quiet conversation between you and your wardrobe.
           </p>
-          <Link href="/products" className="btn-plum">
+          <Link href="/collection" className="btn-plum">
             Shop the Collection
           </Link>
         </section>

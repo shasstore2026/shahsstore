@@ -26,10 +26,10 @@ export default async function ProductsPage({
   const activeCat = categories.find(
     (c) => c.name.toLowerCase() === cat?.toLowerCase()
   );
-  const pageTitle = cat ? (activeCat?.name ?? cat) : "The Collection";
+  const pageTitle = cat ? (activeCat?.name ?? cat) : "Every Piece";
   const pageSub = cat
     ? activeCat?.description ?? "A handpicked edit, refreshed often."
-    : "Every piece, hand-curated for you.";
+    : "Wander through the entire collection.";
 
   return (
     <div className="bg-[var(--color-shas-bg)] min-h-screen">
@@ -54,7 +54,18 @@ export default async function ProductsPage({
         </p>
 
         <div className="relative max-w-7xl mx-auto">
-          <span className="divider-rose mb-4">Curated Edit</span>
+          {/* Breadcrumb-style back when filtered by a single category */}
+          {cat ? (
+            <Link
+              href="/collection"
+              className="inline-flex items-center gap-2 text-[0.65rem] tracking-[0.35em] uppercase text-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose-deep)] transition-colors mb-3"
+            >
+              ← The Collection
+            </Link>
+          ) : (
+            <span className="divider-rose mb-4">Curated Edit</span>
+          )}
+
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-[var(--color-shas-plum)] font-light leading-[1.05]">
             {pageTitle}
           </h1>
@@ -67,54 +78,7 @@ export default async function ProductsPage({
         </div>
       </div>
 
-      {/* Filter chips
-          Behavior:
-          - "All" view (no cat selected) → show every category chip
-          - Inside a single category → show only the active chip + a
-            small "← back to all" link (other categories hidden)        */}
-      <div className="border-b border-[var(--color-shas-line)] bg-[var(--color-shas-bg)]/95 backdrop-blur-md sticky z-30 top-[calc(76px+var(--top-bar-height,0px))] md:top-[calc(94px+var(--top-bar-height,0px))]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center gap-3 md:gap-4 overflow-x-auto py-3">
-          {cat ? (
-            <>
-              {/* Subtle back link replacing the full chip strip */}
-              <Link
-                href="/products"
-                className="text-[0.7rem] tracking-[0.25em] uppercase text-[var(--color-shas-muted)] hover:text-[var(--color-shas-rose)] transition-colors whitespace-nowrap"
-              >
-                ← All Pieces
-              </Link>
-              <span aria-hidden className="text-[var(--color-shas-line-strong)]">·</span>
-              {/* Just the active category chip */}
-              <span
-                className="px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white"
-              >
-                {activeCat?.name ?? cat}
-              </span>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/products"
-                className="px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border border-[var(--color-shas-plum)] bg-[var(--color-shas-plum)] text-white transition-all duration-300"
-              >
-                All
-              </Link>
-
-              {categories.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/products?category=${encodeURIComponent(c.name)}`}
-                  className="px-5 py-2 text-[0.7rem] tracking-[0.25em] uppercase font-medium whitespace-nowrap rounded-full border border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)] transition-all duration-300"
-                >
-                  {c.name}
-                </Link>
-              ))}
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Product Grid */}
+      {/* Product Grid (chip filter strip removed — browsing by category now happens via /collection) */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">
         {filtered.length === 0 ? (
           <div className="text-center py-24">
@@ -124,9 +88,14 @@ export default async function ProductsPage({
             <p className="text-sm text-[var(--color-shas-muted)] max-w-sm mx-auto mb-6 font-light">
               We&apos;re still styling this drop. Browse the full edit while we get this category ready.
             </p>
-            <Link href="/products" className="link-underline text-xs tracking-[0.3em] uppercase">
-              View Everything →
-            </Link>
+            <div className="flex justify-center gap-3 flex-wrap">
+              <Link href="/collection" className="btn-rose-outline">
+                Browse Categories
+              </Link>
+              <Link href="/products" className="link-underline text-xs tracking-[0.3em] uppercase pt-3">
+                View Everything →
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">

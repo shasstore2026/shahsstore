@@ -240,7 +240,7 @@ export default function CheckoutPage() {
                     <p className="font-display text-4xl md:text-5xl text-[var(--color-shas-plum)] font-light mb-6">
                         Nothing to checkout.
                     </p>
-                    <Link href="/products" className="btn-plum">
+                    <Link href="/collection" className="btn-plum">
                         Browse the Collection
                     </Link>
                 </div>

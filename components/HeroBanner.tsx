@@ -58,7 +58,7 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
           </p>
 
           <div className="flex gap-3 sm:gap-4 flex-wrap">
-            <Link href="/products" className="btn-plum">
+            <Link href="/collection" className="btn-plum">
               Shop the Collection
             </Link>
             <Link href="/company#about" className="btn-rose-outline">
