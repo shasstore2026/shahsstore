@@ -61,7 +61,7 @@ export default function NewCategoryPage() {
       <form onSubmit={handleSubmit} className="bg-white border border-stone-100 p-8 space-y-6">
         <div>
           <label className="text-xs tracking-widest uppercase text-stone-500 block mb-2">Style Name *</label>
-          <input name="name" required placeholder="e.g. Formal Shirts"
+          <input name="name" required placeholder="e.g. Dresses"
             className="w-full border border-stone-200 px-4 py-3 text-sm focus:outline-none focus:border-stone-500" />
         </div>
 

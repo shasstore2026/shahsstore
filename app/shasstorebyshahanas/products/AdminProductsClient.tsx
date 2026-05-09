@@ -87,7 +87,7 @@ export default function AdminProductsClient({ products }: { products: Product[] 
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, shirt style, price, size, stock..."
+          placeholder="Search by name, category, price, size, stock..."
           className="flex-1 min-w-[220px] border border-stone-200 px-4 py-2.5 text-sm text-stone-800 focus:outline-none focus:border-stone-500 placeholder:text-stone-300"
         />
         <select
@@ -105,7 +105,7 @@ export default function AdminProductsClient({ products }: { products: Product[] 
           {["All", "In Stock", "Sold Out"].map((s) => <option key={s}>{s}</option>)}
         </select>
         <div className="flex items-center px-4 py-2.5 bg-stone-50 border border-stone-100 text-xs text-stone-400 tracking-widest uppercase">
-          {filtered.length} / {products.length} shirts
+          {filtered.length} / {products.length} products
         </div>
       </div>
 
@@ -114,7 +114,7 @@ export default function AdminProductsClient({ products }: { products: Product[] 
         <table className="w-full">
           <thead className="bg-stone-50 border-b border-stone-100">
             <tr>
-              {["Image", "Name", "Shirt Style / Category", "Price", "Stock", "Featured", "Actions"].map((h) => (
+              {["Image", "Name", "Category", "Price", "Stock", "Featured", "Actions"].map((h) => (
                 <th key={h} className="text-left px-6 py-4 text-xs tracking-widest uppercase text-stone-400 font-medium">
                   {h}
                 </th>
@@ -125,7 +125,7 @@ export default function AdminProductsClient({ products }: { products: Product[] 
             {filtered.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-6 py-16 text-center text-stone-300 text-sm tracking-widest uppercase">
-                  No shirts found
+                  No products found
                 </td>
               </tr>
             ) : (
@@ -204,7 +204,7 @@ export default function AdminProductsClient({ products }: { products: Product[] 
       <div className="md:hidden space-y-3">
         {filtered.length === 0 ? (
           <div className="bg-white border border-stone-100 p-8 text-center text-stone-300 text-sm tracking-widest uppercase">
-            No shirts found
+            No products found
           </div>
         ) : (
           filtered.map((product) => (
@@ -259,11 +259,11 @@ export default function AdminProductsClient({ products }: { products: Product[] 
           if (!deleteTarget) return;
           const name = deleteTarget.name;
           await handleDelete(deleteTarget.id, phrase);
-          toast.success("Shirt deleted", `"${name}" has been removed from your store.`);
+          toast.success("Product deleted", `"${name}" has been removed from your store.`);
           setDeleteTarget(null);
         }}
         title={deleteTarget?.name ?? ""}
-        itemType="shirt"
+        itemType="product"
         details={
           deleteTarget && (
             <div className="flex gap-4">

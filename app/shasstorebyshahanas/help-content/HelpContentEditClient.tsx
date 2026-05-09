@@ -70,7 +70,7 @@ export default function HelpContentEditClient({ help }: { help: HelpContent }) {
 
       <form onSubmit={handleSubmit} className="bg-white border border-stone-100 p-4 md:p-8 space-y-6">
 
-        {textArea("Shirt Size Guide", "size_guide", help.size_guide)}
+        {textArea("Size & Fit Guide", "size_guide", help.size_guide)}
         {textArea("Returns Policy", "returns", help.returns)}
         {textArea("Shipping Info", "shipping", help.shipping)}
 

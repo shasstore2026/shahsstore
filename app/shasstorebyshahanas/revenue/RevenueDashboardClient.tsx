@@ -256,22 +256,22 @@ export default function RevenueDashboardClient({
         </div>
       </section>
 
-      {/* Revenue per Shirt — expandable size breakdown */}
+      {/* Revenue per Product — expandable size breakdown */}
       <section className="mb-10">
         <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-4">
-          Revenue by Shirt
+          Revenue by Product
         </p>
         <p className="text-xs text-stone-400 mb-3">
-          Click a row to see the size breakdown for that shirt.
+          Click a row to see the size breakdown for that product.
         </p>
         <div className="bg-white border border-stone-100 rounded-lg overflow-hidden">
           {aggregates.shirtRows.length === 0 ? (
-            <p className="px-6 py-8 text-center text-stone-400 text-sm">No shirts sold in this period.</p>
+            <p className="px-6 py-8 text-center text-stone-400 text-sm">No products sold in this period.</p>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-stone-50 border-b border-stone-100">
                 <tr>
-                  {["", "Shirt", "Category", "Units Sold", "Revenue", "% of Total"].map((h, i) => (
+                  {["", "Product", "Category", "Units Sold", "Revenue", "% of Total"].map((h, i) => (
                     <th key={`${h}-${i}`} className="text-left px-4 py-3 text-xs tracking-widest uppercase text-stone-400 font-medium">
                       {h}
                     </th>
@@ -333,10 +333,10 @@ export default function RevenueDashboardClient({
         </div>
       </section>
 
-      {/* Revenue by Size (across all shirts) */}
+      {/* Revenue by Size (across all products) */}
       <section className="mb-10">
         <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-4">
-          Revenue by Size — All Shirts
+          Revenue by Size — All Products
         </p>
         <div className="bg-white border border-stone-100 rounded-lg overflow-hidden">
           {aggregates.sizeRows.length === 0 ? (
@@ -381,7 +381,7 @@ export default function RevenueDashboardClient({
       {/* Quiet hint about category fallback */}
       {categories.length === 0 && (
         <p className="text-xs text-stone-400">
-          (No shirt styles defined. Categories above come from product records directly.)
+          (No categories defined. Category labels above come from product records directly.)
         </p>
       )}
     </div>

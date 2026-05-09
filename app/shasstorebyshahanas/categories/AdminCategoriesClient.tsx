@@ -80,7 +80,7 @@ export default function AdminCategoriesClient({ styles }: { styles: Style[] }) {
           router.refresh();
         }}
         title={deleteTarget?.name ?? ""}
-        itemType="shirt style / category"
+        itemType="category"
         details={
           deleteTarget && (
             <div className="flex gap-4">

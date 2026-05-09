@@ -23,11 +23,11 @@ export default async function StockDashboard() {
 
   // ── Catalog overview cards (moved from Order Dashboard) ──
   const catalogStats = [
-    { label: "Total Shirts", value: products.length, color: "bg-stone-900" },
+    { label: "Total Products", value: products.length, color: "bg-stone-900" },
     { label: "In Stock", value: inStock, color: "bg-emerald-700" },
     { label: "Out of Stock", value: outOfStock, color: "bg-red-700" },
     { label: "Featured", value: featured, color: "bg-blue-700" },
-    { label: "Category / Category", value: categories.length, color: "bg-purple-700" },
+    { label: "Categories", value: categories.length, color: "bg-purple-700" },
   ];
   const lowStockProducts = products.filter((p) => {
     const stock = getTotalStock(p.size_inventory);

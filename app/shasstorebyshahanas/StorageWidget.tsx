@@ -50,7 +50,7 @@ export default function StorageWidget() {
   }, []);
 
   const handleCleanup = async () => {
-    if (!confirm("Scan storage and delete images not referenced by any product, shirt style, or banner?\n\nThis cannot be undone.")) {
+    if (!confirm("Scan storage and delete images not referenced by any product, category, or banner?\n\nThis cannot be undone.")) {
       return;
     }
     setCleaningUp(true);

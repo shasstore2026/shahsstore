@@ -14,14 +14,14 @@ export default async function AdminProductsPage() {
             className="text-4xl text-stone-900 font-light"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
-            All Shirts
+            All Products
           </h1>
         </div>
         <Link
           href="/shasstorebyshahanas/products/new"
           className="bg-stone-900 text-white px-6 py-3 text-xs tracking-widest uppercase hover:bg-stone-700 transition-all"
         >
-          + Add New Shirt
+          + Add Product
         </Link>
       </div>
 
