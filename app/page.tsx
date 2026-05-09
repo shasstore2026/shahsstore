@@ -1,20 +1,16 @@
 import HeroBanner from "@/components/HeroBanner";
-import ProductCard from "@/components/ProductCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import {
   getHomepageContent,
-  getFeaturedProducts,
   getCategories,
   getHeroBanner,
 } from "@/lib/products";
 import Link from "next/link";
 import Image from "next/image";
-import { Product } from "@/types";
 
 export default async function HomePage() {
-  const [content, featuredProducts, categories, banner] = await Promise.all([
+  const [content, categories, banner] = await Promise.all([
     getHomepageContent(),
-    getFeaturedProducts(),
     getCategories(),
     getHeroBanner(),
   ]);
@@ -108,46 +104,6 @@ export default async function HomePage() {
             <Link href="/collection" className="btn-rose-outline">
               See All Categories ({categories.length})
             </Link>
-          </div>
-        </section>
-      )}
-
-      {/* ────────────────────────────────────────────────────────────
-          3. Just Arrived / Featured pieces
-          ──────────────────────────────────────────────────────────── */}
-      {content.show_featured && (
-        <section className="bg-[var(--color-shas-cream)]/40">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-28">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-10 md:mb-14">
-              <div>
-                <span className="divider-rose mb-4">Just Arrived</span>
-                <h2 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light">
-                  Pieces we&apos;re loving right now
-                </h2>
-              </div>
-              <Link href="/products" className="link-underline text-[0.7rem] tracking-[0.3em] uppercase">
-                View Everything →
-              </Link>
-            </div>
-
-            {featuredProducts.length === 0 ? (
-              <div className="text-center py-20 border border-dashed border-[var(--color-shas-line-strong)] bg-white/40">
-                <p className="font-display italic text-2xl text-[var(--color-shas-rose)] mb-2">
-                  Featured pieces will appear here
-                </p>
-                <p className="text-sm text-[var(--color-shas-muted)]">
-                  Mark a product as featured in the admin to see it here.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-7">
-                {featuredProducts.map((product: Product, idx) => (
-                  <div key={product.id} className="reveal" style={{ ['--reveal-delay' as string]: `${idx * 0.08}s` }}>
-                    <ProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </section>
       )}
