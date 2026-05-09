@@ -156,31 +156,6 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="text-[0.65rem] text-[var(--color-shas-muted)] tracking-[0.2em] uppercase">Sold Out</span>
           )}
         </div>
-
-        {/* Size chips preview */}
-        <div className="flex gap-1.5 mt-2.5 flex-wrap">
-          {product.sizes.slice(0, 4).map((size) => {
-            const sizeStock = product.size_inventory?.[size] ?? 0;
-            const sizeOut = isOutOfStock || sizeStock === 0;
-            return (
-              <span
-                key={size}
-                className={`text-[0.65rem] tracking-wider px-2 py-0.5 transition-colors ${
-                  sizeOut
-                    ? "border border-[var(--color-shas-line)] text-[var(--color-shas-line-strong)] line-through"
-                    : "border border-[var(--color-shas-line-strong)] text-[var(--color-shas-muted)] hover:border-[var(--color-shas-rose)] hover:text-[var(--color-shas-rose)]"
-                }`}
-              >
-                {size}
-              </span>
-            );
-          })}
-          {product.sizes.length > 4 && (
-            <span className="text-[0.65rem] text-[var(--color-shas-muted)]">
-              +{product.sizes.length - 4}
-            </span>
-          )}
-        </div>
       </div>
     </div>
   );
