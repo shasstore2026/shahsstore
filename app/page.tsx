@@ -30,13 +30,19 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4 md:px-8 reveal">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 md:mb-8">
               <div>
-                <span className="divider-rose mb-3">Just In</span>
-                <h2 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light leading-tight">
-                  New Arrivals
-                </h2>
-                <p className="text-[var(--color-shas-muted)] text-sm font-light mt-2 max-w-md">
-                  Fresh-off-the-loom pieces, just landed at the boutique.
-                </p>
+                {content.new_arrivals_eyebrow && (
+                  <span className="divider-rose mb-3">{content.new_arrivals_eyebrow}</span>
+                )}
+                {content.new_arrivals_title && (
+                  <h2 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light leading-tight">
+                    {content.new_arrivals_title}
+                  </h2>
+                )}
+                {content.new_arrivals_subtitle && (
+                  <p className="text-[var(--color-shas-muted)] text-sm font-light mt-2 max-w-md">
+                    {content.new_arrivals_subtitle}
+                  </p>
+                )}
               </div>
               <Link
                 href="/collection"
@@ -87,10 +93,32 @@ export default async function HomePage() {
       {content.show_categories && (
         <section className="py-10 md:py-16">
           <div className="max-w-7xl mx-auto px-4 md:px-8 text-center mb-8 md:mb-10 reveal">
-            <span className="divider-rose mb-5">Shop by Category</span>
-            <h2 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light leading-tight max-w-2xl mx-auto">
-              For every <em className="text-[var(--color-shas-rose)]">moment</em> of you
-            </h2>
+            {content.categories_eyebrow && (
+              <span className="divider-rose mb-5">{content.categories_eyebrow}</span>
+            )}
+            {content.categories_title && (
+              <h2 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light leading-tight max-w-2xl mx-auto">
+                {(() => {
+                  const accent = content.categories_title_accent;
+                  if (!accent) return content.categories_title;
+                  // Highlight the accent word inside the title in italic rose-gold.
+                  // Case-insensitive, first match only.
+                  const idx = content.categories_title
+                    .toLowerCase()
+                    .indexOf(accent.toLowerCase());
+                  if (idx === -1) return content.categories_title;
+                  return (
+                    <>
+                      {content.categories_title.slice(0, idx)}
+                      <em className="text-[var(--color-shas-rose)]">
+                        {content.categories_title.slice(idx, idx + accent.length)}
+                      </em>
+                      {content.categories_title.slice(idx + accent.length)}
+                    </>
+                  );
+                })()}
+              </h2>
+            )}
           </div>
 
           {categories.length === 0 ? (
@@ -175,9 +203,7 @@ export default async function HomePage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] to-[var(--color-shas-cream)] flex items-center justify-center">
-                  <p className="font-display italic text-2xl text-[var(--color-shas-rose)]">Add a story image</p>
-                </div>
+                <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] to-[var(--color-shas-cream)]" />
               )}
             </div>
             <div className="hidden md:block absolute -right-6 -bottom-8 w-44 h-44 bg-[var(--color-shas-blush)] -z-10" />

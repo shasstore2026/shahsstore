@@ -1185,6 +1185,26 @@ export async function updateHomepageInstagram(formData: FormData) {
 }
 
 /** Closing CTA — eyebrow, title (+ italic accent), subtitle, two buttons. */
+/** Categories section header (eyebrow + title + accent word). */
+export async function updateHomepageCategoriesSection(formData: FormData) {
+  await requireAuth();
+  await updateHomepageRow({
+    categories_eyebrow:      safeString(formData.get("categories_eyebrow")      as string, 80) ?? "",
+    categories_title:        safeString(formData.get("categories_title")        as string, 200) ?? "",
+    categories_title_accent: safeString(formData.get("categories_title_accent") as string, 80) ?? "",
+  });
+}
+
+/** New Arrivals section header (eyebrow + title + subtitle). */
+export async function updateHomepageNewArrivals(formData: FormData) {
+  await requireAuth();
+  await updateHomepageRow({
+    new_arrivals_eyebrow:  safeString(formData.get("new_arrivals_eyebrow")  as string, 80) ?? "",
+    new_arrivals_title:    safeString(formData.get("new_arrivals_title")    as string, 200) ?? "",
+    new_arrivals_subtitle: safeString(formData.get("new_arrivals_subtitle") as string, 500) ?? "",
+  });
+}
+
 export async function updateHomepageClosingCta(formData: FormData) {
   await requireAuth();
 

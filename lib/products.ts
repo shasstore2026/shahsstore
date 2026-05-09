@@ -161,6 +161,17 @@ export type HomepageContent = {
   /** @deprecated kept only for backwards compat with the seed migration */
   instagram_images: string[];
 
+  // ── Categories section header (storefront homepage) ─
+  categories_eyebrow: string;
+  categories_title: string;
+  /** italic rose-gold accent inside the categories headline */
+  categories_title_accent: string;
+
+  // ── New Arrivals section header ────────────────────
+  new_arrivals_eyebrow: string;
+  new_arrivals_title: string;
+  new_arrivals_subtitle: string;
+
   // ── Closing CTA ────────────────────────────────────
   closing_cta_eyebrow: string;
   closing_cta_title: string;
@@ -285,6 +296,14 @@ function emptyHomepageContent(): HomepageContent {
     instagram_profile_url: "",
     instagram_posts: [],
     instagram_images: [],
+
+    categories_eyebrow: "",
+    categories_title: "",
+    categories_title_accent: "",
+
+    new_arrivals_eyebrow: "",
+    new_arrivals_title: "",
+    new_arrivals_subtitle: "",
 
     closing_cta_eyebrow: "The Shasstore Promise",
     closing_cta_title: "",

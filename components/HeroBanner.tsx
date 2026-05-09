@@ -23,21 +23,32 @@ import type { HeroBanner } from "@/lib/products";
  * losing data.
  */
 export default function HeroBanner({ banner }: { banner: HeroBanner }) {
+  // Everything below comes straight from the hero_banner DB row — no
+  // hardcoded fallback content. If the admin clears a field, that part
+  // of the hero just doesn't render. (CTA link is the one exception:
+  // we route to /collection by default since "no link" would break the
+  // Shop the Collection button.)
   const hasImage = !!banner.main_image;
-  const ctaHref = banner.accent_card_link || "/collection";
-  const left = banner.headline_line1 || "Curated";
-  const right = banner.headline_line2 || "Edits";
-  const label = banner.season_label || banner.headline_italic || "";
+  const ctaHref = banner.accent_card_link?.trim() || "/collection";
+  const left = banner.headline_line1?.trim() ?? "";
+  const right = banner.headline_line2?.trim() ?? "";
+  const label = (banner.season_label || banner.headline_italic || "").trim();
+  const italicAccent = banner.headline_italic?.trim() ?? "";
+  const ctaText = "Shop the Collection";
+  const hasHeadline = left.length > 0 || right.length > 0;
 
   return (
     <section className="relative w-full h-[100svh] min-h-[600px] overflow-hidden bg-[var(--color-shas-cream)]">
-      {/* Full-bleed image with subtle ken-burns */}
+      {/* Full-bleed image with subtle ken-burns. When admin hasn't
+          uploaded a hero image yet we render a soft gradient backdrop —
+          no placeholder text, no "add an image" prompt visible to
+          shoppers. */}
       <div className="absolute inset-0">
         {hasImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={banner.main_image}
-            alt={`${left} ${right}`}
+            alt={`${left} ${right}`.trim() || "Hero"}
             className="w-full h-full object-cover object-center"
             style={{ animation: "kenBurns 22s ease-in-out infinite alternate" }}
           />
@@ -53,45 +64,58 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
       />
 
       {/* ── Desktop / tablet: headline split flanking the model.
-            whitespace-nowrap keeps multi-word labels on one line; if they
-            overflow the viewport that's fine (overflow-hidden on parent). */}
-      <div className="hidden md:flex absolute inset-0 items-center justify-between px-10 lg:px-16 xl:px-24 pointer-events-none">
-        <h1
-          className="text-white font-light leading-none uppercase tracking-[0.1em] whitespace-nowrap
-                     text-6xl lg:text-8xl xl:text-9xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
-                     reveal"
-          style={{ ['--reveal-delay' as string]: '0.1s' }}
-        >
-          {left}
-        </h1>
-        <h1
-          className="text-white font-light leading-none uppercase tracking-[0.1em] text-right whitespace-nowrap
-                     text-6xl lg:text-8xl xl:text-9xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
-                     reveal"
-          style={{ ['--reveal-delay' as string]: '0.25s' }}
-        >
-          {right}
-        </h1>
-      </div>
+            Each word renders only when the matching DB field has a value. */}
+      {hasHeadline && (
+        <div className="hidden md:flex absolute inset-0 items-center justify-between px-10 lg:px-16 xl:px-24 pointer-events-none">
+          {left && (
+            <h1
+              className="text-white font-light leading-none uppercase tracking-[0.1em] whitespace-nowrap
+                         text-6xl lg:text-8xl xl:text-9xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
+                         reveal"
+              style={{ ['--reveal-delay' as string]: '0.1s' }}
+            >
+              {left}
+            </h1>
+          )}
+          {right && (
+            <h1
+              className={`text-white font-light leading-none uppercase tracking-[0.1em] whitespace-nowrap
+                         text-6xl lg:text-8xl xl:text-9xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.3)]
+                         reveal ${left ? "text-right" : "text-right ml-auto"}`}
+              style={{ ['--reveal-delay' as string]: '0.25s' }}
+            >
+              {right}
+            </h1>
+          )}
+        </div>
+      )}
 
       {/* ── Mobile: stacked centered headline ── */}
-      <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center px-6 pointer-events-none">
-        <h1
-          className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
-                     text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
-          style={{ ['--reveal-delay' as string]: '0.1s' }}
-        >
-          {left}
-        </h1>
-        <span aria-hidden className="block w-10 h-px bg-white/60 my-5 reveal" style={{ ['--reveal-delay' as string]: '0.2s' }} />
-        <h1
-          className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
-                     text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
-          style={{ ['--reveal-delay' as string]: '0.3s' }}
-        >
-          {right}
-        </h1>
-      </div>
+      {hasHeadline && (
+        <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center px-6 pointer-events-none">
+          {left && (
+            <h1
+              className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
+                         text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
+              style={{ ['--reveal-delay' as string]: '0.1s' }}
+            >
+              {left}
+            </h1>
+          )}
+          {left && right && (
+            <span aria-hidden className="block w-10 h-px bg-white/60 my-5 reveal" style={{ ['--reveal-delay' as string]: '0.2s' }} />
+          )}
+          {right && (
+            <h1
+              className="text-white font-light leading-[0.95] uppercase tracking-[0.1em] text-center whitespace-nowrap
+                         text-4xl sm:text-6xl drop-shadow-[0_2px_30px_rgba(0,0,0,0.4)] reveal"
+              style={{ ['--reveal-delay' as string]: '0.3s' }}
+            >
+              {right}
+            </h1>
+          )}
+        </div>
+      )}
 
       {/* Bottom-left tracking label */}
       {label && (
