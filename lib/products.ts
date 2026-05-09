@@ -253,7 +253,7 @@ function emptyHomepageContent(): HomepageContent {
     why_title: "",
     cta_title: "",
     cta_subtitle: "",
-    cta_button_text: "Shop All",
+    cta_button_text: "Shop the Collection",
     top_notification_enabled: false,
     top_notification_items: [],
 

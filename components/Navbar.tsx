@@ -39,7 +39,7 @@ export default function Navbar() {
         const data = await res.json();
         setCategories(data);
       } catch {
-        // Silently fall back to showing only "Shop All" link
+        // Silently fall back to showing only the "Categories" link
       }
     }
     fetchCats();
@@ -57,8 +57,10 @@ export default function Navbar() {
 
   const isTransparent = isHome && !scrolled;
 
+  // First nav item → /collection (full category-card page), then the
+  // first four categories as direct filter links into /products.
   const dynamicLinks: Record<string, string> = {
-    "Shop All": "/products",
+    "Categories": "/collection",
   };
   categories.slice(0, 4).forEach((cat) => {
     dynamicLinks[cat.name] = `/products?category=${encodeURIComponent(cat.name)}`;
