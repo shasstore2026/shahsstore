@@ -113,92 +113,89 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
       </Link>
 
       {/* ────────────────────────────────────────────────────────────
-          MOBILE (< md): 55/45 split.
-            Left  — cropped image (model stays visible) + bottom labels.
-            Right — vertical-stacked, right-aligned headline on cream.
+          MOBILE (< md): full-bleed image (model fully visible) +
+            vertical right-edge headline + bottom-left labels — all
+            overlaid on the same image (FableStreet mobile pattern).
           ──────────────────────────────────────────────────────────── */}
-      <div className="md:hidden absolute inset-0 grid grid-cols-[58%_42%]">
-        {/* ─── Left half: image + overlay labels ─────────────────── */}
-        <div className="relative overflow-hidden">
-          {hasImage ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={banner.main_image}
-              alt={`${left} ${right}`.trim() || "Hero"}
-              className="w-full h-full object-cover object-left"
-              style={{ animation: "kenBurns 22s ease-in-out infinite alternate" }}
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white" />
-          )}
-
-          {/* Soft gradient at the bottom for label legibility */}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/15 pointer-events-none"
+      <div className="md:hidden absolute inset-0">
+        {hasImage ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={banner.main_image}
+            alt={`${left} ${right}`.trim() || "Hero"}
+            className="w-full h-full object-cover object-center"
+            style={{ animation: "kenBurns 22s ease-in-out infinite alternate" }}
           />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-[var(--color-shas-blush)] via-[var(--color-shas-cream)] to-white" />
+        )}
 
-          {/* Bottom-left labels — both tracking label AND CTA on the
-              left half, per the requested layout. */}
-          <div className="absolute bottom-6 left-4 right-4 flex flex-col gap-3 reveal" style={{ ['--reveal-delay' as string]: '0.5s' }}>
-            {label && (
-              <div>
-                <p className="text-white text-[0.6rem] tracking-[0.4em] uppercase font-light drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
-                  {label}
-                </p>
-                {italicAccent && label !== italicAccent && (
-                  <p className="font-display italic text-white/85 text-sm mt-1 drop-shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
-                    {italicAccent}
-                  </p>
-                )}
-              </div>
+        {/* Tonal overlay — soft top, slightly stronger bottom so the
+            white labels and right-edge headline both stay legible. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/50 pointer-events-none"
+        />
+
+        {/* Vertical right-edge headline. Each headline word is its
+            own vertical column so a 2-word brand mark like
+            "ELEGANT EDITS" reads as two adjacent vertical strings
+            rather than a single run-on phrase. */}
+        {hasHeadline && (
+          <div className="absolute top-0 bottom-0 right-3 flex items-center justify-center gap-2 pointer-events-none">
+            {left && (
+              <h1
+                className="text-white font-light uppercase tracking-[0.25em] text-xl
+                           drop-shadow-[0_2px_20px_rgba(0,0,0,0.55)] reveal"
+                style={{
+                  writingMode: 'vertical-rl',
+                  ['--reveal-delay' as string]: '0.15s',
+                }}
+              >
+                {left}
+              </h1>
             )}
-            <Link
-              href={ctaHref}
-              className="text-white text-[0.6rem] tracking-[0.4em] uppercase font-light
-                         inline-flex items-center gap-1.5 self-start group
-                         drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]"
-            >
-              <span className="border-b border-white/60 pb-1 group-hover:border-white transition-colors">
-                Shop the Collection
-              </span>
-              <span className="text-sm transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-            </Link>
+            {right && (
+              <h1
+                className="text-white font-light uppercase tracking-[0.25em] text-xl
+                           drop-shadow-[0_2px_20px_rgba(0,0,0,0.55)] reveal"
+                style={{
+                  writingMode: 'vertical-rl',
+                  ['--reveal-delay' as string]: '0.3s',
+                }}
+              >
+                {right}
+              </h1>
+            )}
           </div>
-        </div>
+        )}
 
-        {/* ─── Right half: cream panel with vertical-stacked headline ─ */}
-        <div className="relative bg-[var(--color-shas-cream)] flex flex-col items-end justify-center pt-20 pb-10 pr-4 pl-3 gap-3">
-          {/* Decorative serif glyph */}
-          <span
-            aria-hidden
-            className="font-italiana absolute top-24 right-2 text-[5rem] text-[var(--color-shas-rose)]/15 leading-none select-none pointer-events-none"
+        {/* Bottom-left: tracking label + italic accent + CTA. Right
+            padding leaves room for the vertical headline column. */}
+        <div className="absolute bottom-7 left-4 right-20 flex flex-col gap-3 reveal" style={{ ['--reveal-delay' as string]: '0.5s' }}>
+          {label && (
+            <div>
+              <p className="text-white text-[0.6rem] tracking-[0.4em] uppercase font-light drop-shadow-[0_1px_10px_rgba(0,0,0,0.55)]">
+                {label}
+              </p>
+              {italicAccent && label !== italicAccent && (
+                <p className="font-display italic text-white/85 text-sm mt-1 drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
+                  {italicAccent}
+                </p>
+              )}
+            </div>
+          )}
+          <Link
+            href={ctaHref}
+            className="text-white text-[0.6rem] tracking-[0.4em] uppercase font-light
+                       inline-flex items-center gap-1.5 self-start group
+                       drop-shadow-[0_1px_10px_rgba(0,0,0,0.55)]"
           >
-            ✦
-          </span>
-
-          {hasHeadline ? (
-            <>
-              {left && (
-                <h1
-                  className="text-[var(--color-shas-plum)] font-light leading-[0.95] uppercase
-                             tracking-[0.08em] text-right text-2xl sm:text-3xl whitespace-nowrap reveal"
-                  style={{ ['--reveal-delay' as string]: '0.15s' }}
-                >
-                  {left}
-                </h1>
-              )}
-              {right && (
-                <h1
-                  className="text-[var(--color-shas-plum)] font-light leading-[0.95] uppercase
-                             tracking-[0.08em] text-right text-2xl sm:text-3xl whitespace-nowrap reveal"
-                  style={{ ['--reveal-delay' as string]: '0.3s' }}
-                >
-                  {right}
-                </h1>
-              )}
-            </>
-          ) : null}
+            <span className="border-b border-white/60 pb-1 group-hover:border-white transition-colors">
+              Shop the Collection
+            </span>
+            <span className="text-sm transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+          </Link>
         </div>
       </div>
     </section>
