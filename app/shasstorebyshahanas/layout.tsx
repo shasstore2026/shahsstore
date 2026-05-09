@@ -55,14 +55,9 @@ const navSections: NavSection[] = [
       { label: "Instagram Strip",    href: "/shasstorebyshahanas/instagram",          icon: "◉" },
       { label: "Closing CTA",        href: "/shasstorebyshahanas/closing-cta",        icon: "✦" },
       { label: "Section Visibility", href: "/shasstorebyshahanas/section-visibility", icon: "◐" },
-    ],
-  },
-  {
-    section: "Site-wide",
-    items: [
-      { label: "Top Notification", href: "/shasstorebyshahanas/top-notification", icon: "📢" },
-      { label: "Help Content",     href: "/shasstorebyshahanas/help-content",     icon: "?" },
-      { label: "Company Content",  href: "/shasstorebyshahanas/company-content",  icon: "◉" },
+      { label: "Top Notification",   href: "/shasstorebyshahanas/top-notification",   icon: "📢" },
+      { label: "Help Content",       href: "/shasstorebyshahanas/help-content",       icon: "?" },
+      { label: "Company Content",    href: "/shasstorebyshahanas/company-content",    icon: "◉" },
     ],
   },
 ];
