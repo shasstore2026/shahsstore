@@ -26,9 +26,9 @@ export default async function HomePage() {
           1. New Arrivals — directly under the hero, horizontal scroll
           ──────────────────────────────────────────────────────────── */}
       {newArrivals.length > 0 && (
-        <section className="bg-[var(--color-shas-bg)] py-14 md:py-20">
+        <section className="bg-[var(--color-shas-bg)] py-10 md:py-14">
           <div className="max-w-7xl mx-auto px-4 md:px-8 reveal">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7 md:mb-10">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 md:mb-8">
               <div>
                 <span className="divider-rose mb-3">Just In</span>
                 <h2 className="font-display text-3xl md:text-5xl text-[var(--color-shas-plum)] font-light leading-tight">
@@ -85,8 +85,8 @@ export default async function HomePage() {
           2. Shop by Category — full-bleed horizontal scroll
           ──────────────────────────────────────────────────────────── */}
       {content.show_categories && (
-        <section className="py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 text-center mb-10 md:mb-14 reveal">
+        <section className="py-10 md:py-16">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 text-center mb-8 md:mb-10 reveal">
             <span className="divider-rose mb-5">Shop by Category</span>
             <h2 className="font-display text-4xl md:text-6xl text-[var(--color-shas-plum)] font-light leading-tight max-w-2xl mx-auto">
               For every <em className="text-[var(--color-shas-rose)]">moment</em> of you
@@ -163,7 +163,7 @@ export default async function HomePage() {
           3. Editorial spotlight (Story)
           ──────────────────────────────────────────────────────────── */}
       {content.show_story && (content.story_title || content.story_image) && (
-        <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-32 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <section className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
           <div className="relative order-2 md:order-1 reveal">
             <div className="relative aspect-[4/5] overflow-hidden img-zoom-wrap shadow-[0_20px_60px_-20px_rgba(62,31,42,0.3)]">
               {content.story_image ? (
@@ -241,9 +241,9 @@ export default async function HomePage() {
           5. Lookbook
           ──────────────────────────────────────────────────────────── */}
       {content.show_lookbook && content.lookbook_images.length > 0 && (
-        <section className="bg-[var(--color-shas-plum)] text-white py-16 md:py-28 overflow-hidden">
+        <section className="bg-[var(--color-shas-plum)] text-white py-12 md:py-20 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
-            <div className="text-center mb-10 md:mb-16 reveal">
+            <div className="text-center mb-8 md:mb-10 reveal">
               {content.lookbook_eyebrow && (
                 <span className="divider-rose text-[var(--color-shas-blush)] mb-4">
                   {content.lookbook_eyebrow}
@@ -301,8 +301,8 @@ export default async function HomePage() {
           6. Testimonials
           ──────────────────────────────────────────────────────────── */}
       {content.show_testimonials && (
-        <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-28">
-          <div className="text-center mb-12 md:mb-16 reveal">
+        <section className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20">
+          <div className="text-center mb-8 md:mb-10 reveal">
             {content.testimonials_eyebrow && (
               <span className="divider-rose mb-4">{content.testimonials_eyebrow}</span>
             )}
@@ -323,8 +323,8 @@ export default async function HomePage() {
           ──────────────────────────────────────────────────────────── */}
       {content.show_instagram && content.instagram_posts.length > 0 && (
         <section className="border-t border-[var(--color-shas-line)] bg-[var(--color-shas-cream)]/40">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-14 md:py-20">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8 md:mb-10">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-14">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-6 md:mb-8">
               <div>
                 {content.instagram_eyebrow && (
                   <span className="divider-rose mb-3">{content.instagram_eyebrow}</span>
@@ -383,7 +383,7 @@ export default async function HomePage() {
           8. Closing CTA
           ──────────────────────────────────────────────────────────── */}
       {content.show_closing_cta && (content.closing_cta_title || content.closing_cta_subtitle) && (
-        <section className="relative bg-[var(--color-shas-blush)] py-16 md:py-32 text-center px-4 overflow-hidden">
+        <section className="relative bg-[var(--color-shas-blush)] py-12 md:py-24 text-center px-4 overflow-hidden">
           <div aria-hidden className="absolute -top-12 -left-12 w-72 h-72 rounded-full bg-[var(--color-shas-rose)]/20 blur-3xl" />
           <div aria-hidden className="absolute -bottom-20 -right-20 w-96 h-96 rounded-full bg-white/40 blur-3xl" />
 
