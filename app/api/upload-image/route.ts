@@ -13,7 +13,7 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/webp",
   "image/gif",
 ]);
-const ALLOWED_FOLDERS = new Set(["products", "styles", "banners", "general", "hero"]);
+const ALLOWED_FOLDERS = new Set(["products", "styles", "banners", "general", "hero", "branding"]);
 // 8 MB ceiling matches Vercel Pro's request body limit. IMPORTANT: on
 // Vercel **Hobby** plan, the platform itself caps incoming request bodies
 // at ~4.5 MB before the route handler runs — uploads above that fail with

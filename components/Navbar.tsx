@@ -17,14 +17,19 @@ type Branding = {
   logo_height_px: number;
 };
 
-export default function Navbar() {
+export default function Navbar({
+  initialBranding = null,
+}: {
+  /** Server-prefetched branding so the logo renders on first paint. */
+  initialBranding?: Branding | null;
+}) {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [notificationVisible, setNotificationVisible] = useState(false);
-  const [branding, setBranding] = useState<Branding | null>(null);
+  const [branding, setBranding] = useState<Branding | null>(initialBranding);
   const pathname = usePathname();
 
   const isHome = pathname === "/";
@@ -62,13 +67,17 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
-  // Fetch site branding (logo image)
+  // Fetch site branding only when the server didn't prefetch it
+  // (e.g. on routes where the prop wasn't passed). When server-prefetched
+  // the logo paints with the first frame — no flash, no spinner, no extra
+  // network round-trip.
   useEffect(() => {
+    if (initialBranding) return;
     fetch("/api/branding")
       .then((res) => res.json())
       .then((data: Branding) => setBranding(data))
       .catch(() => {});
-  }, []);
+  }, [initialBranding]);
 
   const isTransparent = isHome && !scrolled;
 

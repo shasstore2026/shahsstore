@@ -10,7 +10,7 @@ import RealtimeRefresher from "@/components/RealtimeRefresher";
 import OverlayScrollbar from "@/components/OverlayScrollbar";
 import { CartProvider } from "@/context/CartContext";
 import { headers } from "next/headers";
-import { getMaintenanceStatus } from "@/lib/products";
+import { getMaintenanceStatus, getSiteBranding } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Shasstore — Curated Dresses & Jewellery",
@@ -38,6 +38,13 @@ export default async function RootLayout({
         phone2: "",
       }));
 
+  // Prefetch site branding (navbar logo) server-side so the image
+  // renders on first paint — no flash of the wordmark while the
+  // client-side fetch is in flight.
+  const initialBranding = isAdmin
+    ? null
+    : await getSiteBranding().catch(() => null);
+
   return (
     <html lang="en">
       <body>
@@ -51,7 +58,7 @@ export default async function RootLayout({
             initialPhone2={initialMaintenance.phone2}
           />
           {!isAdmin && <TopNotification />}
-          {!isAdmin && <Navbar />}
+          {!isAdmin && <Navbar initialBranding={initialBranding} />}
           {!isAdmin && <RealtimeRefresher />}
           {/* When the top notification is visible, push every customer page
               down by its height so content never slides under the navbar.
