@@ -72,7 +72,7 @@ export default function BrandingEditClient({
   return (
     <div className="max-w-2xl">
       <div className="mb-10">
-        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Site Control</p>
+        <p className="text-xs tracking-[0.3em] text-stone-400 uppercase mb-2">Website Content</p>
         <h1
           className="text-3xl md:text-4xl text-stone-900 font-light"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}

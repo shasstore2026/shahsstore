@@ -41,13 +41,13 @@ const navSections: NavSection[] = [
   {
     section: "Site Control",
     items: [
-      { label: "Brand Logo",       href: "/shasstorebyshahanas/branding",         icon: "◆" },
       { label: "Maintenance Mode", href: "/shasstorebyshahanas/maintenance-mode", icon: "🚧" },
     ],
   },
   {
-    section: "Homepage",
+    section: "Website Content",
     items: [
+      { label: "Brand Logo",         href: "/shasstorebyshahanas/branding",            icon: "◆" },
       { label: "Hero Banner",        href: "/shasstorebyshahanas/hero-banner",         icon: "◻" },
       { label: "New Arrivals",       href: "/shasstorebyshahanas/new-arrivals",        icon: "✦" },
       { label: "Shop by Category",   href: "/shasstorebyshahanas/categories-section",  icon: "◈" },
