@@ -10,12 +10,19 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const { data, error } = await supabase
     .from("site_branding")
-    .select("logo_image, logo_alt, logo_height_px")
+    .select("logo_image, wordmark_image, brand_text, brand_subtext, logo_alt, logo_height_px")
     .single();
 
   if (error) {
     return NextResponse.json(
-      { logo_image: "", logo_alt: "Shasstore", logo_height_px: 44 },
+      {
+        logo_image: "",
+        wordmark_image: "",
+        brand_text: "Shasstore",
+        brand_subtext: "by shahanas",
+        logo_alt: "Shasstore",
+        logo_height_px: 44,
+      },
       { status: 200 },
     );
   }

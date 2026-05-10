@@ -621,7 +621,7 @@ export async function deleteCategory(id: string, confirmation?: string) {
   revalidatePath("/");
 }
 
-// ─── Site Branding (navbar logo) ─────────────────────────────────────────
+// ─── Site Branding (navbar logo / wordmark / text) ───────────────────────
 export async function updateSiteBranding(id: string, formData: FormData) {
   await requireAuth();
 
@@ -630,7 +630,14 @@ export async function updateSiteBranding(id: string, formData: FormData) {
     throw new Error("Invalid logo image URL");
   }
 
-  const logoAlt = safeString(formData.get("logo_alt") as string, 100) || "Shasstore";
+  const wordmarkImage = safeString(formData.get("wordmark_image") as string, 500);
+  if (wordmarkImage && !isAllowedImageUrl(wordmarkImage)) {
+    throw new Error("Invalid wordmark image URL");
+  }
+
+  const brandText    = safeString(formData.get("brand_text") as string, 80);
+  const brandSubtext = safeString(formData.get("brand_subtext") as string, 80);
+  const logoAlt      = safeString(formData.get("logo_alt") as string, 100) || brandText || "Shasstore";
 
   const heightRaw = Number(formData.get("logo_height_px"));
   const logoHeight = Number.isFinite(heightRaw) && heightRaw >= 16 && heightRaw <= 120
@@ -641,6 +648,9 @@ export async function updateSiteBranding(id: string, formData: FormData) {
     .from("site_branding")
     .update({
       logo_image: logoImage,
+      wordmark_image: wordmarkImage,
+      brand_text: brandText,
+      brand_subtext: brandSubtext,
       logo_alt: logoAlt,
       logo_height_px: logoHeight,
     })
@@ -650,7 +660,7 @@ export async function updateSiteBranding(id: string, formData: FormData) {
     console.error("updateSiteBranding error:", error.message);
     throw new Error("Failed to update site branding");
   }
-  // Logo shows on every page → revalidate everything
+  // Branding shows on every page → revalidate everything
   revalidatePath("/", "layout");
 }
 

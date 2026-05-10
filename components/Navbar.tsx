@@ -13,6 +13,9 @@ type Category = {
 
 type Branding = {
   logo_image: string;
+  wordmark_image: string;
+  brand_text: string;
+  brand_subtext: string;
   logo_alt: string;
   logo_height_px: number;
 };
@@ -103,35 +106,79 @@ export default function Navbar({
         style={{ top: notificationVisible ? "var(--top-bar-height, 0px)" : "0px" }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-5 flex justify-between items-center gap-6">
-          {/* Logo — uploaded image when admin set one, otherwise the
-              wordmark. Mobile auto-scales to ~80% of the configured
-              height so it doesn't crowd the icons / hamburger. */}
+          {/* Logo / Brand — composed from up to three independent slots
+              (any combination is valid):
+                · branding.logo_image      — symbol/mark on the left
+                · branding.wordmark_image  — brand name as image
+                · branding.brand_text      — brand name as text (used when
+                                              wordmark_image is empty)
+                · branding.brand_subtext   — small tagline beneath
+              When the admin hasn't set anything (or branding hasn't loaded
+              yet) we fall back to the original SHASSTORE / BY SHAHANAS
+              wordmark so the navbar never looks empty. */}
           <Link
             href="/"
-            aria-label={branding?.logo_alt || "Shasstore — Home"}
-            className="flex items-center leading-none text-black"
+            aria-label={branding?.logo_alt || branding?.brand_text || "Shasstore — Home"}
+            className="flex items-center gap-3 leading-none text-black"
+            style={{ ['--logo-h' as string]: `${branding?.logo_height_px || 44}px` }}
           >
-            {branding?.logo_image ? (
+            {/* (1) Logo mark */}
+            {branding?.logo_image && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={branding.logo_image}
-                alt={branding.logo_alt || "Shasstore"}
+                alt={branding.logo_alt || branding.brand_text || "Logo"}
                 className="w-auto h-[calc(var(--logo-h)*0.8)] md:h-[var(--logo-h)] max-h-[60px] md:max-h-[80px] object-contain"
-                style={{ ['--logo-h' as string]: `${branding.logo_height_px || 44}px` }}
               />
-            ) : (
-              <span className="flex flex-col leading-none">
-                <span
-                  className="font-italiana text-2xl md:text-3xl tracking-[0.32em] uppercase"
-                  style={{ fontWeight: 400 }}
-                >
-                  Shasstore
-                </span>
-                <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.55em] uppercase mt-1 self-end pr-0.5 text-black/65">
-                  by shahanas
-                </span>
-              </span>
             )}
+
+            {/* (2/3) Wordmark image OR brand text + (optional) tagline */}
+            {(() => {
+              // No branding loaded yet OR all slots empty → fall back to wordmark
+              const hasAnyBrand =
+                !!(branding?.logo_image || branding?.wordmark_image || branding?.brand_text);
+              if (!hasAnyBrand) {
+                return (
+                  <span className="flex flex-col leading-none">
+                    <span
+                      className="font-italiana text-2xl md:text-3xl tracking-[0.32em] uppercase"
+                      style={{ fontWeight: 400 }}
+                    >
+                      Shasstore
+                    </span>
+                    <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.55em] uppercase mt-1 self-end pr-0.5 text-black/65">
+                      by shahanas
+                    </span>
+                  </span>
+                );
+              }
+              return (
+                <span className="flex flex-col leading-none">
+                  {branding?.wordmark_image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={branding.wordmark_image}
+                      alt={branding.logo_alt || branding.brand_text || "Brand"}
+                      className="w-auto h-[calc(var(--logo-h)*0.56)] md:h-[calc(var(--logo-h)*0.7)] max-h-[44px] md:max-h-[56px] object-contain"
+                    />
+                  ) : (
+                    branding?.brand_text && (
+                      <span
+                        className="font-italiana text-2xl md:text-3xl tracking-[0.32em] uppercase"
+                        style={{ fontWeight: 400 }}
+                      >
+                        {branding.brand_text}
+                      </span>
+                    )
+                  )}
+                  {branding?.brand_subtext && (
+                    <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.55em] uppercase mt-1 self-end pr-0.5 text-black/65">
+                      {branding.brand_subtext}
+                    </span>
+                  )}
+                </span>
+              );
+            })()}
           </Link>
 
           {/* Desktop Nav — always black, hover rose */}

@@ -420,12 +420,18 @@ export async function getHeroBanner(): Promise<HeroBanner | null> {
   return data;
 }
 
-// Site Branding (navbar logo etc.) ------------------------
+// Site Branding (navbar logo / wordmark / text) ------------------------
 export type SiteBranding = {
   id: string;
-  /** Public URL of the navbar logo image. Empty string → fall back to wordmark. */
+  /** Symbol / icon / mark image (left of navbar). Empty = no mark shown. */
   logo_image: string;
-  /** Alt text / aria-label for the logo image. */
+  /** Brand name as a styled image (replaces brand_text when set). */
+  wordmark_image: string;
+  /** Brand name as plain text — used when wordmark_image is empty. */
+  brand_text: string;
+  /** Small tagline under the brand name (e.g. "by shahanas"). */
+  brand_subtext: string;
+  /** Alt text for the logo / wordmark images. */
   logo_alt: string;
   /** Rendered height in px on desktop (mobile auto-scales to ~80%). */
   logo_height_px: number;
@@ -434,7 +440,7 @@ export type SiteBranding = {
 export async function getSiteBranding(): Promise<SiteBranding | null> {
   const { data, error } = await supabase
     .from("site_branding")
-    .select("id, logo_image, logo_alt, logo_height_px")
+    .select("id, logo_image, wordmark_image, brand_text, brand_subtext, logo_alt, logo_height_px")
     .single();
   if (error) { console.error(error.message); return null; }
   return data;
