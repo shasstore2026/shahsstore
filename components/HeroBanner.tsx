@@ -153,18 +153,23 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
           className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/50 pointer-events-none"
         />
 
-        {/* Vertical right-edge headline. Each headline word is its
-            own vertical column so a 2-word brand mark like
-            "ELEGANT EDITS" reads as two adjacent vertical strings
-            rather than a single run-on phrase. */}
+        {/* Vertical right-edge headline.
+            Each LETTER is rendered upright and stacked top-to-bottom
+            (writing-mode: vertical-rl + text-orientation: upright)
+            so the brand mark reads like a totem rather than the
+            sideways-letter FableStreet style. Each word stays in its
+            own column — "ELEGANT" and "EDITS" sit as two adjacent
+            upright stacks anchored to the right edge. */}
         {hasHeadline && (
-          <div className="absolute top-0 bottom-0 right-3 flex items-center justify-center gap-2 pointer-events-none">
+          <div className="absolute top-0 bottom-0 right-3 flex items-center justify-center gap-3 pointer-events-none">
             {left && (
               <h1
-                className="text-white font-light uppercase tracking-[0.25em] text-xl
+                className="text-white font-light uppercase text-xl leading-none
                            drop-shadow-[0_2px_20px_rgba(0,0,0,0.55)] reveal"
                 style={{
                   writingMode: 'vertical-rl',
+                  textOrientation: 'upright',
+                  letterSpacing: '0.2em',
                   ['--reveal-delay' as string]: '0.15s',
                 }}
               >
@@ -173,10 +178,12 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
             )}
             {right && (
               <h1
-                className="text-white font-light uppercase tracking-[0.25em] text-xl
+                className="text-white font-light uppercase text-xl leading-none
                            drop-shadow-[0_2px_20px_rgba(0,0,0,0.55)] reveal"
                 style={{
                   writingMode: 'vertical-rl',
+                  textOrientation: 'upright',
+                  letterSpacing: '0.2em',
                   ['--reveal-delay' as string]: '0.3s',
                 }}
               >
