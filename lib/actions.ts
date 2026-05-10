@@ -621,6 +621,39 @@ export async function deleteCategory(id: string, confirmation?: string) {
   revalidatePath("/");
 }
 
+// ─── Site Branding (navbar logo) ─────────────────────────────────────────
+export async function updateSiteBranding(id: string, formData: FormData) {
+  await requireAuth();
+
+  const logoImage = safeString(formData.get("logo_image") as string, 500);
+  if (logoImage && !isAllowedImageUrl(logoImage)) {
+    throw new Error("Invalid logo image URL");
+  }
+
+  const logoAlt = safeString(formData.get("logo_alt") as string, 100) || "Shasstore";
+
+  const heightRaw = Number(formData.get("logo_height_px"));
+  const logoHeight = Number.isFinite(heightRaw) && heightRaw >= 16 && heightRaw <= 120
+    ? Math.round(heightRaw)
+    : 44;
+
+  const { error } = await supabaseAdmin
+    .from("site_branding")
+    .update({
+      logo_image: logoImage,
+      logo_alt: logoAlt,
+      logo_height_px: logoHeight,
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error("updateSiteBranding error:", error.message);
+    throw new Error("Failed to update site branding");
+  }
+  // Logo shows on every page → revalidate everything
+  revalidatePath("/", "layout");
+}
+
 export async function updateHeroBanner(id: string, formData: FormData) {
   await requireAuth();
 

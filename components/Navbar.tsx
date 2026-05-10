@@ -11,6 +11,12 @@ type Category = {
   display_order: number;
 };
 
+type Branding = {
+  logo_image: string;
+  logo_alt: string;
+  logo_height_px: number;
+};
+
 export default function Navbar() {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,6 +24,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [notificationVisible, setNotificationVisible] = useState(false);
+  const [branding, setBranding] = useState<Branding | null>(null);
   const pathname = usePathname();
 
   const isHome = pathname === "/";
@@ -55,6 +62,14 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
+  // Fetch site branding (logo image)
+  useEffect(() => {
+    fetch("/api/branding")
+      .then((res) => res.json())
+      .then((data: Branding) => setBranding(data))
+      .catch(() => {});
+  }, []);
+
   const isTransparent = isHome && !scrolled;
 
   // First nav item → /collection (full category-card page), then the
@@ -79,21 +94,35 @@ export default function Navbar() {
         style={{ top: notificationVisible ? "var(--top-bar-height, 0px)" : "0px" }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-5 flex justify-between items-center gap-6">
-          {/* Logo — always black for legibility on cream hero AND scrolled state */}
+          {/* Logo — uploaded image when admin set one, otherwise the
+              wordmark. Mobile auto-scales to ~80% of the configured
+              height so it doesn't crowd the icons / hamburger. */}
           <Link
             href="/"
-            aria-label="Shasstore — Home"
-            className="flex flex-col leading-none text-black"
+            aria-label={branding?.logo_alt || "Shasstore — Home"}
+            className="flex items-center leading-none text-black"
           >
-            <span
-              className="font-italiana text-2xl md:text-3xl tracking-[0.32em] uppercase"
-              style={{ fontWeight: 400 }}
-            >
-              Shasstore
-            </span>
-            <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.55em] uppercase mt-1 self-end pr-0.5 text-black/65">
-              by shahanas
-            </span>
+            {branding?.logo_image ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={branding.logo_image}
+                alt={branding.logo_alt || "Shasstore"}
+                className="w-auto h-[calc(var(--logo-h)*0.8)] md:h-[var(--logo-h)] max-h-[60px] md:max-h-[80px] object-contain"
+                style={{ ['--logo-h' as string]: `${branding.logo_height_px || 44}px` }}
+              />
+            ) : (
+              <span className="flex flex-col leading-none">
+                <span
+                  className="font-italiana text-2xl md:text-3xl tracking-[0.32em] uppercase"
+                  style={{ fontWeight: 400 }}
+                >
+                  Shasstore
+                </span>
+                <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.55em] uppercase mt-1 self-end pr-0.5 text-black/65">
+                  by shahanas
+                </span>
+              </span>
+            )}
           </Link>
 
           {/* Desktop Nav — always black, hover rose */}

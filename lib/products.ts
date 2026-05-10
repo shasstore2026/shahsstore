@@ -420,6 +420,26 @@ export async function getHeroBanner(): Promise<HeroBanner | null> {
   return data;
 }
 
+// Site Branding (navbar logo etc.) ------------------------
+export type SiteBranding = {
+  id: string;
+  /** Public URL of the navbar logo image. Empty string → fall back to wordmark. */
+  logo_image: string;
+  /** Alt text / aria-label for the logo image. */
+  logo_alt: string;
+  /** Rendered height in px on desktop (mobile auto-scales to ~80%). */
+  logo_height_px: number;
+};
+
+export async function getSiteBranding(): Promise<SiteBranding | null> {
+  const { data, error } = await supabase
+    .from("site_branding")
+    .select("id, logo_image, logo_alt, logo_height_px")
+    .single();
+  if (error) { console.error(error.message); return null; }
+  return data;
+}
+
 export type HelpContent = {
   id: string;
   size_guide: string;

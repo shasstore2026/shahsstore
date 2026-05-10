@@ -41,6 +41,7 @@ const navSections: NavSection[] = [
   {
     section: "Site Control",
     items: [
+      { label: "Brand Logo",       href: "/shasstorebyshahanas/branding",         icon: "◆" },
       { label: "Maintenance Mode", href: "/shasstorebyshahanas/maintenance-mode", icon: "🚧" },
     ],
   },
