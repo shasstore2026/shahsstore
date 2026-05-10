@@ -154,40 +154,46 @@ export default function HeroBanner({ banner }: { banner: HeroBanner }) {
         />
 
         {/* Vertical right-edge headline.
-            Each LETTER is rendered upright and stacked top-to-bottom
-            (writing-mode: vertical-rl + text-orientation: upright)
-            so the brand mark reads like a totem rather than the
-            sideways-letter FableStreet style. Each word stays in its
-            own column — "ELEGANT" and "EDITS" sit as two adjacent
-            upright stacks anchored to the right edge. */}
+            Each LETTER is its own flex-item span, stacked upright in a
+            flex-col with justify-between so the column SPANS the full
+            available height (just below the navbar to the bottom of
+            the hero). Bigger letters and the natural top-to-bottom
+            distribution make the headline read like a totem.
+
+            Top offset = navbar height (76px on mobile) + optional top
+            notification bar var, so the column starts flush under the
+            navbar regardless of whether the marquee is shown.
+            Bottom-6 leaves a touch of breathing room from the edge.
+
+            Two words → two adjacent columns. Both use justify-between
+            so each visually fills the same vertical band. */}
         {hasHeadline && (
-          <div className="absolute top-0 bottom-0 right-3 flex items-center justify-center gap-3 pointer-events-none">
+          <div
+            className="absolute right-3 flex items-stretch gap-4 pointer-events-none
+                       top-[calc(76px+var(--top-bar-height,0px)+8px)] bottom-6"
+          >
             {left && (
               <h1
-                className="text-white font-light uppercase text-xl leading-none
+                className="flex flex-col items-center justify-between
+                           text-white font-light uppercase text-3xl leading-none
                            drop-shadow-[0_2px_20px_rgba(0,0,0,0.55)] reveal"
-                style={{
-                  writingMode: 'vertical-rl',
-                  textOrientation: 'upright',
-                  letterSpacing: '0.2em',
-                  ['--reveal-delay' as string]: '0.15s',
-                }}
+                style={{ ['--reveal-delay' as string]: '0.15s' }}
               >
-                {left}
+                {Array.from(left).map((c, i) => (
+                  <span key={i}>{c === ' ' ? ' ' : c}</span>
+                ))}
               </h1>
             )}
             {right && (
               <h1
-                className="text-white font-light uppercase text-xl leading-none
+                className="flex flex-col items-center justify-between
+                           text-white font-light uppercase text-3xl leading-none
                            drop-shadow-[0_2px_20px_rgba(0,0,0,0.55)] reveal"
-                style={{
-                  writingMode: 'vertical-rl',
-                  textOrientation: 'upright',
-                  letterSpacing: '0.2em',
-                  ['--reveal-delay' as string]: '0.3s',
-                }}
+                style={{ ['--reveal-delay' as string]: '0.3s' }}
               >
-                {right}
+                {Array.from(right).map((c, i) => (
+                  <span key={i}>{c === ' ' ? ' ' : c}</span>
+                ))}
               </h1>
             )}
           </div>
