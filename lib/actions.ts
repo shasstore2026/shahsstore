@@ -625,18 +625,21 @@ export async function deleteCategory(id: string, confirmation?: string) {
 export async function updateSiteBranding(id: string, formData: FormData) {
   await requireAuth();
 
-  const logoImage = safeString(formData.get("logo_image") as string, 500);
+  // safeString returns null for empty/whitespace input. The site_branding
+  // columns are NOT NULL with empty-string defaults, so coerce nulls to ""
+  // before the UPDATE — otherwise Postgres throws "null value in column …".
+  const logoImage = safeString(formData.get("logo_image") as string, 500) ?? "";
   if (logoImage && !isAllowedImageUrl(logoImage)) {
     throw new Error("Invalid logo image URL");
   }
 
-  const wordmarkImage = safeString(formData.get("wordmark_image") as string, 500);
+  const wordmarkImage = safeString(formData.get("wordmark_image") as string, 500) ?? "";
   if (wordmarkImage && !isAllowedImageUrl(wordmarkImage)) {
     throw new Error("Invalid wordmark image URL");
   }
 
-  const brandText    = safeString(formData.get("brand_text") as string, 80);
-  const brandSubtext = safeString(formData.get("brand_subtext") as string, 80);
+  const brandText    = safeString(formData.get("brand_text") as string, 80) ?? "";
+  const brandSubtext = safeString(formData.get("brand_subtext") as string, 80) ?? "";
   const logoAlt      = safeString(formData.get("logo_alt") as string, 100) || brandText || "Shasstore";
 
   const heightRaw = Number(formData.get("logo_height_px"));
@@ -672,7 +675,9 @@ export async function updateHeroBanner(id: string, formData: FormData) {
     throw new Error("Invalid image URL");
   }
 
-  const mobileImage = safeString(formData.get("mobile_image") as string, 500);
+  // mobile_image is NOT NULL — coerce empty/null to "" so blank uploads
+  // don't trigger a Postgres constraint error.
+  const mobileImage = safeString(formData.get("mobile_image") as string, 500) ?? "";
   if (mobileImage && !isAllowedImageUrl(mobileImage)) {
     throw new Error("Invalid mobile image URL");
   }
